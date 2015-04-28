@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="jar_deps/asm-4.2.jar"/>
+	<classpathentry kind="lib" path="jar_deps/box2dlights-1.3.jar"/>
+	<classpathentry kind="lib" path="jar_deps/gdx-1.5.6.jar"/>
+	<classpathentry kind="lib" path="jar_deps/gdx-box2d-1.5.6.jar"/>
+	<classpathentry kind="lib" path="jar_deps/gdx-freetype-1.5.3.jar"/>
+	<classpathentry kind="lib" path="jar_deps/libgdx-utils-0.10.0.jar"/>
+	<classpathentry kind="lib" path="jar_deps/libgdx-utils-box2d-0.10.0.jar"/>
+	<classpathentry kind="lib" path="jar_deps/overlap2d-runtime-libgdx-0.0.8.jar"/>
+	<classpathentry kind="lib" path="jar_deps/reflectasm-1.10.0.jar"/>
+	<classpathentry kind="lib" path="jar_deps/vis-ui-0.7.3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
