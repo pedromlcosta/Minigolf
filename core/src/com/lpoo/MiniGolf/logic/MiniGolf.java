@@ -12,6 +12,10 @@ public class MiniGolf extends Game {
 	Sprite img;
 	static int ballN = 0;
 
+	public enum obstacleType {
+		normalSquareWall, normalTriangularWall, teleporter, squareOne, regularFloor,accFloor,accWall,startSquareWall,startTriangularWall,
+	};
+
 	public void create() {
 		batch = new SpriteBatch();
 		img = new Sprite(new Texture("hero.png"));
