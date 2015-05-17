@@ -16,20 +16,23 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.lpoo.MiniGolf.screens.*;
 
 public class MiniGolf extends Game {
 	SpriteBatch batch;
 	Sprite img;
 	static int ballN = 0;
-	ArrayList<Ball> balls;
+	ArrayList<Player> players;
 	ArrayList<Obstacle> obstacles;
 	Point endPoint;
 	Point startPoint;
 	int tacadasMax;
 	int tempoMax;
-	int height;
-	int width;
 	World W;
+	public static final String TITLE = "Game Project";
+	public static int WIDTH = 480; // used later to set
+									// window size
+	public static int HEIGHT = 800;
 
 	public enum obstacleType {
 		normalSquareWall, normalTriangularWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
@@ -40,27 +43,29 @@ public class MiniGolf extends Game {
 	}
 
 	public void create() {
-		batch = new SpriteBatch();
-		img = new Sprite(new Texture("hero.png"));
+		// batch = new SpriteBatch();
+		// img = new Sprite(new Texture("hero.png"));
+		setScreen(new Splash());
 	}
 
 	// testes
-	public void render() {
-		W = new World(new Vector2(0, -10), true);
-		 
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		int xi = 0;
-		int yi = 0;
-		for (int i = 0; i < 15; i++) {
-			batch.draw(img.getTexture(), xi, yi, 20, 20);
-			xi += 20;
-			yi += 20;
-		}
-		batch.end();
-	 
-	}
+//	public void render() {
+//		// W = new World(new Vector2(0, -10), true);
+//		//
+//		// Gdx.gl.glClearColor(1, 0, 0, 1);
+//		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//		// batch.begin();
+//		// int xi = 0;
+//		// int yi = 0;
+//		// for (int i = 0; i < 15; i++) {
+//		// batch.draw(img.getTexture(), xi, yi, 20, 20);
+//		// xi += 20;
+//		// yi += 20;
+//		// }
+//		// batch.end();
+//
+//
+//	}
 
 	public SpriteBatch getBatch() {
 		return batch;
@@ -78,24 +83,24 @@ public class MiniGolf extends Game {
 		this.img = img;
 	}
 
-	public ArrayList<Ball> getBalls() {
-		return balls;
+	public ArrayList<Player> getBalls() {
+		return players;
 	}
 
-	public void setBalls(ArrayList<Ball> balls) {
-		this.balls = balls;
+	public void setBalls(ArrayList<Player> players) {
+		this.players = players;
 	}
 
-	public Ball getBall(int i) {
+	public Player getBall(int i) {
 
-		if (i < balls.size())
-			return balls.get(i);
+		if (i < players.size())
+			return players.get(i);
 		else
 			return null;
 	}
 
 	public int getNBalls() {
-		return balls.size();
+		return players.size();
 	}
 
 	public int getNObstacles() {
@@ -159,18 +164,18 @@ public class MiniGolf extends Game {
 	}
 
 	public int getHeight() {
-		return height;
+		return HEIGHT;
 	}
 
 	public void setHeight(int height) {
-		this.height = height;
+		this.HEIGHT = height;
 	}
 
 	public int getWidth() {
-		return width;
+		return WIDTH;
 	}
 
 	public void setWidth(int width) {
-		this.width = width;
+		this.WIDTH = width;
 	}
 }

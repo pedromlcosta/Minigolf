@@ -10,14 +10,14 @@ public class Ball extends Element {
 
 	public Ball() {
 		super();
-		number = MiniGolf.ballN;
-		MiniGolf.ballN++;
+//		number = MiniGolf.ballN;
+//		MiniGolf.ballN++;
 	}
 
 	public Ball(Vector2 pos, int height, int width, World w) {
 		super(pos, height, width);
-		number = MiniGolf.ballN;
-		MiniGolf.ballN++;
+//		number = MiniGolf.ballN;
+//		MiniGolf.ballN++;
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;

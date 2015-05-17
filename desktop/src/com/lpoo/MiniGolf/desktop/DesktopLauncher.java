@@ -10,24 +10,14 @@ public class DesktopLauncher {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
-		// switch (Gdx.app.getType()) {
-		// // case Android: {
-		// // break;
-		// // }
-		// // case Desktop: {
 		config.addIcon("golfWindowsLinux.png", FileType.Local);
-		// // break;
-		// // }
-		// // case iOS: {
 		config.addIcon("golfMac.png", FileType.Local);
-		// // break;
-		// // }
-		// default: {
 		config.addIcon("golfWindowsLinux.png", FileType.Local);
-		// break;
-		// }
-		// }
 		config.addIcon("golfWindowsLinux.png", FileType.Local);
+
+		config.width = MiniGolf.WIDTH; // sets window width
+		config.height = MiniGolf.HEIGHT; // sets window height
+
 		new LwjglApplication(new MiniGolf(), config);
 	}
 }
