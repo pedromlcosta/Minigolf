@@ -1,5 +1,6 @@
 package com.lpoo.MiniGolf.logic;
 
+import com.badlogic.gdx.math.Vector2;
 import com.lpoo.MiniGolf.logic.MiniGolf.obstacleType;
 
 public class Obstacle extends Element {
@@ -12,8 +13,8 @@ public class Obstacle extends Element {
 
 	}
 
-	public Obstacle(Point pos, int height, int width, double aceleracaoX, double aceleracaoY, obstacleType type) {
-		super(pos, height, width, aceleracaoX, aceleracaoY);
+	public Obstacle(Vector2 pos, int height, int width, obstacleType type) {
+		super(pos, height, width);
 		this.type = type;
 	}
 

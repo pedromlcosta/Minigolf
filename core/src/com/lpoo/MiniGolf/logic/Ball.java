@@ -1,24 +1,27 @@
 package com.lpoo.MiniGolf.logic;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+
 public class Ball extends Element {
 	int number;
-	double velocidadeX;
-	double velocidadeY;
 
 	public Ball() {
 		super();
 		number = MiniGolf.ballN;
-		velocidadeX = 0;
-		velocidadeY = 0;
 		MiniGolf.ballN++;
 	}
 
-	public Ball(Point pos, int height, int width, double aceleracaoX, double aceleracaoY, double velocidadeX, double velocidadeY) {
-		super(pos, height, width, aceleracaoX, aceleracaoY);
+	public Ball(Vector2 pos, int height, int width, World w) {
+		super(pos, height, width);
 		number = MiniGolf.ballN;
-		this.velocidadeX = velocidadeX;
-		this.velocidadeY = velocidadeY;
 		MiniGolf.ballN++;
+
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.DynamicBody;
+		this.body = w.createBody(bodyDef);
 	}
 
 	public int getNumber() {
@@ -27,22 +30,6 @@ public class Ball extends Element {
 
 	public void setNumber(int number) {
 		this.number = number;
-	}
-
-	public double getVelocidadeX() {
-		return velocidadeX;
-	}
-
-	public void setVelocidadeX(double velocidadeX) {
-		this.velocidadeX = velocidadeX;
-	}
-
-	public double getVelocidadeY() {
-		return velocidadeY;
-	}
-
-	public void setVelocidadeY(double velocidadeY) {
-		this.velocidadeY = velocidadeY;
 	}
 
 }

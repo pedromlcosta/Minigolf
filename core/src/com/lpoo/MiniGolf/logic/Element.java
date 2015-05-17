@@ -1,76 +1,63 @@
 package com.lpoo.MiniGolf.logic;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+
 public class Element {
-	Point pos;
-	Point oldPos;
+	Body body;
+	Vector2 oldPos;
 	int height;
 	int width;
-	double aceleracaoX;
-	double aceleracaoY;
 
 	public Element() {
-		pos = new Point();
-		oldPos = new Point();
+		oldPos = new Vector2();
 		height = 0;
 		width = 0;
-		aceleracaoX = 0.0;
-		aceleracaoY = 0.0;
 	}
 
-	public Element(Point pos, int height, int width, double aceleracaoX, double aceleracaoY) {
-		this.pos = pos;
+	public Element(Vector2 pos, int height, int width) {
 		this.oldPos = pos;
 		this.height = height;
 		this.width = width;
-		this.aceleracaoX = aceleracaoX;
-		this.aceleracaoY = aceleracaoY;
 	}
 
-	public int getPosX() {
-		return pos.getX();
+	public float getPosX() {
+		return body.getPosition().x;
 	}
 
-	public int getPosY() {
-		return pos.getY();
+	public Body getBody() {
+		return body;
 	}
 
-	public void setPosX(int x) {
-		this.pos.setX(x);
+	public void setBody(Body body) {
+		this.body = body;
 	}
 
-	public void setPosY(int y) {
-		this.pos.setY(y);
+	public float getPosY() {
+		return body.getPosition().y;
 	}
 
-	public int getOldPosX() {
-		return oldPos.getX();
+	public float getOldPosX() {
+		return oldPos.x;
 	}
 
-	public int getOldPosY() {
-		return oldPos.getY();
+	public float getOldPosY() {
+		return oldPos.y;
 	}
 
-	public void setOldPosX(int x) {
-		this.oldPos.setX(x);
+	public void setOldPosX(float x) {
+		this.oldPos.x = x;
 	}
 
-	public void setOldPosY(int y) {
-		this.pos.setY(y);
+	public Vector2 getPos() {
+		return body.getPosition();
 	}
 
-	public Point getPos() {
-		return pos;
-	}
-
-	public void setPos(Point pos) {
-		this.pos = pos;
-	}
-
-	public Point getOldPos() {
+	public Vector2 getOldPos() {
 		return oldPos;
 	}
 
-	public void setOldPos(Point oldPos) {
+	public void setOldPos(Vector2 oldPos) {
 		this.oldPos = oldPos;
 	}
 
@@ -88,22 +75,6 @@ public class Element {
 
 	public void setWidth(int width) {
 		this.width = width;
-	}
-
-	public double getAceleracaoX() {
-		return aceleracaoX;
-	}
-
-	public void setAceleracaoX(double aceleracaoX) {
-		this.aceleracaoX = aceleracaoX;
-	}
-
-	public double getAceleracaoY() {
-		return aceleracaoY;
-	}
-
-	public void setAceleracaoY(double aceleracaoY) {
-		this.aceleracaoY = aceleracaoY;
 	}
 
 }
