@@ -29,6 +29,40 @@ public class MiniGolf extends Game {
 	int tacadasMax;
 	int tempoMax;
 	World W;
+	int courseHeight;
+	int courseWidth;
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(ArrayList<Player> players) {
+		this.players = players;
+	}
+
+	public World getW() {
+		return W;
+	}
+
+	public void setW(World w) {
+		W = w;
+	}
+
+	public int getCourseHeight() {
+		return courseHeight;
+	}
+
+	public void setCourseHeight(int courseHeight) {
+		this.courseHeight = courseHeight;
+	}
+
+	public int getCourseWidth() {
+		return courseWidth;
+	}
+
+	public void setCourseWidth(int courseWidth) {
+		this.courseWidth = courseWidth;
+	}
+
 	public static final String TITLE = "Game Project";
 	public static int WIDTH = 480; // used later to set
 									// window size
@@ -49,23 +83,23 @@ public class MiniGolf extends Game {
 	}
 
 	// testes
-//	public void render() {
-//		// W = new World(new Vector2(0, -10), true);
-//		//
-//		// Gdx.gl.glClearColor(1, 0, 0, 1);
-//		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//		// batch.begin();
-//		// int xi = 0;
-//		// int yi = 0;
-//		// for (int i = 0; i < 15; i++) {
-//		// batch.draw(img.getTexture(), xi, yi, 20, 20);
-//		// xi += 20;
-//		// yi += 20;
-//		// }
-//		// batch.end();
-//
-//
-//	}
+	// public void render() {
+	// // W = new World(new Vector2(0, -10), true);
+	// //
+	// // Gdx.gl.glClearColor(1, 0, 0, 1);
+	// // Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	// // batch.begin();
+	// // int xi = 0;
+	// // int yi = 0;
+	// // for (int i = 0; i < 15; i++) {
+	// // batch.draw(img.getTexture(), xi, yi, 20, 20);
+	// // xi += 20;
+	// // yi += 20;
+	// // }
+	// // batch.end();
+	//
+	//
+	// }
 
 	public SpriteBatch getBatch() {
 		return batch;

@@ -9,12 +9,16 @@ public class Player {
 	int pontuacao;
 	int tacadasJogada;
 	int tacadaTotal;
+	boolean over;
+	boolean won;
 
 	Player() {
 		ball = new Ball();
 		pontuacao = 0;
 		tacadasJogada = 0;
 		tacadaTotal = 0;
+		over = false;
+		won = false;
 	}
 
 	Player(Ball b) {
@@ -22,6 +26,8 @@ public class Player {
 		pontuacao = 0;
 		tacadasJogada = 0;
 		tacadaTotal = 0;
+		over = false;
+		won = false;
 	}
 
 	public Ball getBall() {
