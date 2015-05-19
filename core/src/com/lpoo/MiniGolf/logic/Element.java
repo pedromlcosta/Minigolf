@@ -8,11 +8,11 @@ public class Element {
 	Vector2 oldPos;
 	int height;
 	int width;
-
 	public Element() {
 		oldPos = new Vector2();
 		height = 0;
 		width = 0;
+		
 	}
 
 	public Element(Vector2 pos, int height, int width) {

@@ -3,20 +3,10 @@ package com.lpoo.MiniGolf.logic;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.lpoo.MiniGolf.screens.*;
+import com.lpoo.MiniGolf.screens.Splash;
 
 public class MiniGolf extends Game {
 	SpriteBatch batch;
@@ -31,6 +21,16 @@ public class MiniGolf extends Game {
 	World W;
 	int courseHeight;
 	int courseWidth;
+
+	public static final String TITLE = "Game Project";
+	public static int WIDTH = 480; // used later to set
+									// window size
+	public static int HEIGHT = 800;
+
+	public enum obstacleType {
+		normalSquareWall, normalTriangularWall,bonceWall, speedWall,teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
+	};
+
 	public ArrayList<Player> getPlayers() {
 		return players;
 	}
@@ -63,15 +63,6 @@ public class MiniGolf extends Game {
 		this.courseWidth = courseWidth;
 	}
 
-	public static final String TITLE = "Game Project";
-	public static int WIDTH = 480; // used later to set
-									// window size
-	public static int HEIGHT = 800;
-
-	public enum obstacleType {
-		normalSquareWall, normalTriangularWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
-	};
-
 	public MiniGolf() {
 
 	}
@@ -79,6 +70,7 @@ public class MiniGolf extends Game {
 	public void create() {
 		// batch = new SpriteBatch();
 		// img = new Sprite(new Texture("hero.png"));
+		System.out.println("Teste\n");
 		setScreen(new Splash());
 	}
 
