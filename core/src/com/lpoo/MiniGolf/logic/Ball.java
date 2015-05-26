@@ -15,7 +15,7 @@ public class Ball extends Element {
 	}
 
 	public Ball(Vector2 pos, int height, int width, World w, float radius) {
-		super(pos, height, width);
+		super(pos, height, width, Element.elementType.ball);
 
 		CircleShape circle = new CircleShape();
 		circle.setPosition(pos);

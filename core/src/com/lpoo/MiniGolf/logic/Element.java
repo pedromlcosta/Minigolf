@@ -3,17 +3,26 @@ package com.lpoo.MiniGolf.logic;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
 
-public class Element    {
+public class Element {
 	Body body;
 	Vector2 oldPos;
 	int height;
 	int width;
 	Texture image;
+	elementType type;
+
+	public enum elementType {
+		ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
+	};
+
+	public Element(elementType ele) {
+		oldPos = new Vector2();
+		height = 0;
+		width = 0;
+	 
+
+	}
 
 	public Element() {
 		oldPos = new Vector2();
@@ -30,10 +39,11 @@ public class Element    {
 		this.image = image;
 	}
 
-	public Element(Vector2 pos, int height, int width) {
+	public Element(Vector2 pos, int height, int width,elementType ele) {
 		this.oldPos = pos;
 		this.height = height;
 		this.width = width;
+		type = ele;
 	}
 
 	public float getPosX() {
@@ -91,7 +101,5 @@ public class Element    {
 	public void setWidth(int width) {
 		this.width = width;
 	}
-
-
 
 }

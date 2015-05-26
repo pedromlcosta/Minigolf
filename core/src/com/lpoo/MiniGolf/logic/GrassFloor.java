@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 public class GrassFloor extends Floor {
 	public GrassFloor(Vector2 pos, int height, int width, World w) {
 
-		super(pos, height, width, MiniGolf.obstacleType.regularFloor, w);
+		super(pos, height, width, Element.elementType.regularFloor, w);
 
 		PolygonShape square = new PolygonShape();
 		square.setAsBox(width, height);

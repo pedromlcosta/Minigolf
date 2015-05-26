@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class GlueWall extends Wall {
 	public GlueWall(Vector2 pos, int height, int width, World w) {
-		super(pos, height, width,MiniGolf.obstacleType.glueWall,w);
+		super(pos, height, width, Element.elementType.glueWall,w);
 
 	}
 }

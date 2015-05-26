@@ -41,9 +41,7 @@ public class MiniGolf extends Game {
 	public static int HEIGHT = 400;
 	OrthographicCamera cam;
 
-	public enum obstacleType {
-		glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
-	};
+
 
 	public ArrayList<Player> getPlayers() {
 		return players;
