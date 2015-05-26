@@ -1,5 +1,8 @@
 package com.lpoo.MiniGolf.logic;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -8,11 +11,19 @@ public class Element {
 	Vector2 oldPos;
 	int height;
 	int width;
+	SpriteBatch batch;
+	Texture image;
+
 	public Element() {
 		oldPos = new Vector2();
 		height = 0;
 		width = 0;
-		
+	 
+
+	}
+
+	public void draw() {
+	this.batch.draw(image,0,0,0,0);
 	}
 
 	public Element(Vector2 pos, int height, int width) {
