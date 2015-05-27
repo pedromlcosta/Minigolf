@@ -10,7 +10,6 @@ public class Element {
 	int height;
 	int width;
 	Texture image;
-	elementType type;
 
 	public enum elementType {
 		ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
@@ -20,7 +19,6 @@ public class Element {
 		oldPos = new Vector2();
 		height = 0;
 		width = 0;
-	 
 
 	}
 
@@ -39,11 +37,11 @@ public class Element {
 		this.image = image;
 	}
 
-	public Element(Vector2 pos, int height, int width,elementType ele) {
+	public Element(Vector2 pos, int height, int width, elementType ele) {
 		this.oldPos = pos;
 		this.height = height;
 		this.width = width;
-		type = ele;
+		body.setUserData(ele);
 	}
 
 	public float getPosX() {

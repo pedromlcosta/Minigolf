@@ -19,6 +19,7 @@ public class Obstacle extends Element {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		this.body = w.createBody(bodyDef);
+		
 	}
 
 	public boolean isMudaPos() {
