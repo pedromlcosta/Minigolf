@@ -19,9 +19,12 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class MiniGolf extends Game {
-	SpriteBatch batch;
-	Sprite img;
-	Sprite grass;
+	
+	private static SpriteBatch batch;	
+	private static OrthographicCamera cam;
+	private static World W;
+	
+
 	static int ballN = 0;
 	ArrayList<Player> players;
 
@@ -30,18 +33,38 @@ public class MiniGolf extends Game {
 	Point startPoint;
 	int tacadasMax;
 	int tempoMax;
-	World W;
 	int courseHeight;
 	int courseWidth;
-	Matrix4 debugMatrix;
-	Box2DDebugRenderer debugRenderer;
+	
 	static final int PIXEL_METER = 100;
 	public static final String TITLE = "Game Project";
 	public static int WIDTH = 400;
 	public static int HEIGHT = 400;
-	OrthographicCamera cam;
+	
 
+	public static World getW() {
+		return W;
+	}
 
+	public static void setW(World w) {
+		W = w;
+	}
+	
+	public static SpriteBatch getBatch() {
+		return batch;
+	}
+
+	public static void setBatch(SpriteBatch batch) {
+		MiniGolf.batch = batch;
+	}
+	
+	public static OrthographicCamera getCam() {
+		return cam;
+	}
+
+	public static void setCam(OrthographicCamera cam) {
+		MiniGolf.cam = cam;
+	}
 
 	public ArrayList<Player> getPlayers() {
 		return players;
@@ -49,14 +72,6 @@ public class MiniGolf extends Game {
 
 	public void setPlayers(ArrayList<Player> players) {
 		this.players = players;
-	}
-
-	public World getW() {
-		return W;
-	}
-
-	public void setW(World w) {
-		W = w;
 	}
 
 	public int getCourseHeight() {
@@ -102,18 +117,12 @@ public class MiniGolf extends Game {
 			ele.add(new GrassFloor(new Vector2(10 + i * 10, 10 - i * 10), 10, 10, W));
 
 		batch = new SpriteBatch();
-		grass = new Sprite(new Texture("grass.png"));
-		img = new Sprite(new Texture("bola0.png"));
-		img.setPosition(0, 0);
-		img.setSize(5, 5);
 
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
 		cam.update();
 		// cam.translate(new Vector2(0, 0));
 		System.out.println(cam.position);
-		debugMatrix = new Matrix4(cam.combined);
-		debugMatrix.scale(100f, 100f, 0f);
-		debugRenderer = new Box2DDebugRenderer();
+		
 		players = new ArrayList<Player>();
 
 		initGame(1);
@@ -128,7 +137,6 @@ public class MiniGolf extends Game {
 		for (int i = 0; i < nPlayers; i++) {
 			Vector2 n = new Vector2(10, 10);
 			Ball ball = new Ball(n, 20, 20, this.W, 10);
-			ball.image = img.getTexture();
 			players.add(new Player(ball));
 
 		}
@@ -139,33 +147,8 @@ public class MiniGolf extends Game {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		batch.begin();
-		int xi = 200;
-		int yi = 200;
-		batch.draw(players.get(0).getBall().getImage(), xi, yi, 50, 50);
-		batch.end();
-
-		debugRenderer.render(W, cam.combined);
-		W.step(1f / 60, 6, 2);
-		debugMatrix = batch.getProjectionMatrix().cpy().scale(100, 100, 0);
-
 	}
 
-	public SpriteBatch getBatch() {
-		return batch;
-	}
-
-	public void setBatch(SpriteBatch batch) {
-		this.batch = batch;
-	}
-
-	public Sprite getImg() {
-		return img;
-	}
-
-	public void setImg(Sprite img) {
-		this.img = img;
-	}
 
 	public ArrayList<Player> getBalls() {
 		return players;
@@ -227,19 +210,19 @@ public class MiniGolf extends Game {
 		MiniGolf.ballN = ballN;
 	}
 
-	public int getHeight() {
+	public static int getHeight() {
 		return HEIGHT;
 	}
 
-	public void setHeight(int height) {
-		this.HEIGHT = height;
+	public static void setHeight(int height) {
+		HEIGHT = height;
 	}
 
-	public int getWidth() {
+	public static int getWidth() {
 		return WIDTH;
 	}
 
-	public void setWidth(int width) {
-		this.WIDTH = width;
+	public static void setWidth(int width) {
+		WIDTH = width;
 	}
 }

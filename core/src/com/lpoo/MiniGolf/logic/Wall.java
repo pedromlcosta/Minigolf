@@ -8,8 +8,8 @@ public class Wall extends Obstacle {
 		super();
 	}
 
-	public Wall(Vector2 pos, int height, int width, elementType type, World w) {
-		super(pos, height, width, type, w);
+	public Wall(Vector2 pos, int height, int width, World w) {
+		super(pos, height, width, w);
 
 	}
 

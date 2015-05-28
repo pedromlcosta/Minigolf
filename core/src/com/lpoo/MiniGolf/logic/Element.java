@@ -5,22 +5,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 public class Element {
+	
+	public enum elementType {
+		ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
+	};
+	
 	Body body;
 	Vector2 oldPos;
 	int height;
 	int width;
-	Texture image;
-
-	public enum elementType {
-		ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
-	};
-
-	public Element(elementType ele) {
-		oldPos = new Vector2();
-		height = 0;
-		width = 0;
-
-	}
 
 	public Element() {
 		oldPos = new Vector2();
@@ -29,19 +22,11 @@ public class Element {
 
 	}
 
-	public Texture getImage() {
-		return image;
-	}
 
-	public void setImage(Texture image) {
-		this.image = image;
-	}
-
-	public Element(Vector2 pos, int height, int width, elementType ele) {
+	public Element(Vector2 pos, int height, int width) {
 		this.oldPos = pos;
 		this.height = height;
 		this.width = width;
-		body.setUserData(ele);
 	}
 
 	public float getPosX() {

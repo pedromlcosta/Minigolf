@@ -7,18 +7,18 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Obstacle extends Element {
 	boolean mudaPos;
-	elementType type;
 
 	public Obstacle() {
 		super();
 	}
 
-	public Obstacle(Vector2 pos, int height, int width, elementType type, World w) {
-		super(pos, height, width, type);
-
+	public Obstacle(Vector2 pos, int height, int width, World w) {
+		super(pos, height, width);
+		/*
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		this.body = w.createBody(bodyDef);
+		*/
 		
 	}
 
@@ -30,12 +30,5 @@ public class Obstacle extends Element {
 		this.mudaPos = mudaPos;
 	}
 
-	public elementType getType() {
-		return type;
-	}
-
-	public void setType(elementType type) {
-		this.type = type;
-	}
 
 }

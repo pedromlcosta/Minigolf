@@ -15,20 +15,21 @@ public class Ball extends Element {
 	}
 
 	public Ball(Vector2 pos, int height, int width, World w, float radius) {
-		super(pos, height, width, Element.elementType.ball);
+		super(pos, height, width);
 
 		CircleShape circle = new CircleShape();
 		circle.setPosition(pos);
 		circle.setRadius(radius);
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = circle;
-		fixDef.isSensor = true;
+		fixDef.isSensor = false;
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(pos);
 		body = w.createBody(bodyDef);
 		this.body.createFixture(fixDef);
+		this.body.setUserData(elementType.ball);
 		this.body.setLinearVelocity(new Vector2(10, -10));
 	}
 

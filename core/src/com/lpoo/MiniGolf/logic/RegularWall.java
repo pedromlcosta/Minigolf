@@ -7,8 +7,9 @@ public class RegularWall extends Wall {
 
 	RegularWall() {
 	}
+	
 	public RegularWall(Vector2 pos, int height, int width, World w) {
-		super(pos, height,width, Element.elementType.regularWall ,w);
+		super(pos, height,width,w);
 		
 	}
 }

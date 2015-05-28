@@ -7,11 +7,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class GrassFloor extends Floor {
+public class GrassFloor extends Obstacle {
 	public GrassFloor(Vector2 pos, int height, int width, World w) {
 
-		super(pos, height, width, Element.elementType.regularFloor, w);
-
+		super(pos, height, width, w);
 		PolygonShape square = new PolygonShape();
 		square.setAsBox(width, height);
 		FixtureDef fixDef = new FixtureDef();
@@ -22,6 +21,7 @@ public class GrassFloor extends Floor {
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(pos);
 		body = w.createBody(bodyDef);
+		this.body.setUserData(elementType.regularFloor);
 		this.body.createFixture(fixDef);
 
 	}

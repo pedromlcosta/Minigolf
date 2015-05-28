@@ -9,7 +9,7 @@ public class Floor extends Obstacle {
 		super();
 	}
 
-	public Floor(Vector2 pos, int height, int width, elementType type, World w) {
-		super(pos, height, width, type, w);
+	public Floor(Vector2 pos, int height, int width, World w) {
+		super(pos, height, width, w);
 	}
 }
