@@ -1,5 +1,7 @@
 package com.lpoo.MiniGolf.logic;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -12,17 +14,27 @@ public class GrassFloor extends Obstacle {
 
 		super(pos, height, width, w);
 		PolygonShape square = new PolygonShape();
-		square.setAsBox(width, height);
+		square.setAsBox(width/2f, height/2f);
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = square;
 		fixDef.isSensor = true;
-
+		
+		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(pos);
+		
 		body = w.createBody(bodyDef);
-		this.body.setUserData(elementType.regularFloor);
-		this.body.createFixture(fixDef);
-
+		body.setUserData(elementType.regularFloor);
+		body.createFixture(fixDef);
+		
+		image = new Sprite(new Texture("grass.png"));
+		image.setPosition(pos.x, pos.y);
+		image.setSize(width, height);
+	}
+	
+	public void draw(){
+		//System.out.println(body.getPosition().x* MiniGolf.BOX_TO_WORLD + " " + body.getPosition().y* MiniGolf.BOX_TO_WORLD + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD);
+		MiniGolf.batch.draw(image, (body.getPosition().x - width/2f) * MiniGolf.BOX_TO_WORLD , (body.getPosition().y- height/2f)* MiniGolf.BOX_TO_WORLD, width* MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD);
 	}
 }

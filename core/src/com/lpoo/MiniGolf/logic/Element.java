@@ -1,6 +1,7 @@
 package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -14,6 +15,7 @@ public class Element {
 	Vector2 oldPos;
 	int height;
 	int width;
+	Sprite image;
 
 	public Element() {
 		oldPos = new Vector2();
@@ -21,8 +23,21 @@ public class Element {
 		width = 0;
 
 	}
+	
+	public void draw(){
+		System.out.println("Walrus");
+		System.out.println(body.getPosition().x + " " + body.getPosition().y + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD);
+		MiniGolf.batch.draw(image, body.getPosition().x, body.getPosition().y, width*MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD );
+	}
+	
+	public Sprite getImage() {
+		return image;
+	}
 
-
+	public void setImage(Sprite image) {
+		this.image = image;
+	}
+	
 	public Element(Vector2 pos, int height, int width) {
 		this.oldPos = pos;
 		this.height = height;
