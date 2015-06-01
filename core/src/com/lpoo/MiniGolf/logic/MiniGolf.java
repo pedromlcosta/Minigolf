@@ -18,15 +18,15 @@ import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.screens.GameScreen;
 
 public class MiniGolf extends Game {
-	
-	public static SpriteBatch batch;	
+
+	public static SpriteBatch batch;
 	private static OrthographicCamera cam;
 	private static World W;
-	
+
 	static int ballN = 0;
-	private ArrayList<Player> players;
-	
-	//FOR TEST PURPOSES
+	private static ArrayList<Player> players;
+
+	// FOR TEST PURPOSES
 	private static ArrayList<Element> ele;
 
 	Course c;
@@ -36,12 +36,11 @@ public class MiniGolf extends Game {
 	int tempoMax;
 	int courseHeight;
 	int courseWidth;
-	
+
 	public static final int BOX_TO_WORLD = 100;
 	public static final String TITLE = "Game Project";
 	public static int WIDTH = 1000;
 	public static int HEIGHT = 1000;
-	
 
 	public static ArrayList<Element> getEle() {
 		return ele;
@@ -50,7 +49,7 @@ public class MiniGolf extends Game {
 	public static void setEle(ArrayList<Element> ele) {
 		MiniGolf.ele = ele;
 	}
-	
+
 	public static World getW() {
 		return W;
 	}
@@ -58,7 +57,7 @@ public class MiniGolf extends Game {
 	public static void setW(World w) {
 		W = w;
 	}
-	
+
 	public static SpriteBatch getBatch() {
 		return batch;
 	}
@@ -66,7 +65,7 @@ public class MiniGolf extends Game {
 	public static void setBatch(SpriteBatch batch) {
 		MiniGolf.batch = batch;
 	}
-	
+
 	public static OrthographicCamera getCam() {
 		return cam;
 	}
@@ -75,12 +74,12 @@ public class MiniGolf extends Game {
 		MiniGolf.cam = cam;
 	}
 
-	public ArrayList<Player> getPlayers() {
+	public static ArrayList<Player> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(ArrayList<Player> players) {
-		this.players = players;
+	public static void setPlayers(ArrayList<Player> player) {
+		players = player;
 	}
 
 	public int getCourseHeight() {
@@ -103,62 +102,34 @@ public class MiniGolf extends Game {
 	}
 
 	public void create() {
-		
+
 		Assets.queueLoading();
 
 		// INITIALIZING SINGLETONS
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
 		W = new World(new Vector2(0, 0), false);
-		
-		W.setContactListener(new ContactListener() {
 
-			public void beginContact(Contact arg0) {
-				Body bodyA = arg0.getFixtureA().getBody();
-                Body bodyB = arg0.getFixtureB().getBody();
-                
-                if((bodyA.getUserData() == Element.elementType.ball && bodyB.getUserData() == Element.elementType.regularFloor)){
-                	bodyA.applyForceToCenter(-4 * (bodyA.getLinearVelocity().x/bodyA.getLinearVelocity().len2()), -4 * (bodyA.getLinearVelocity().y/bodyA.getLinearVelocity().len2()), false);
-                	System.out.println(bodyA.getLinearVelocity().x +"" + bodyA.getLinearVelocity().y);
-                }
-                if((bodyA.getUserData() == Element.elementType.regularFloor && bodyB.getUserData() == Element.elementType.ball)){
-                	bodyB.applyForceToCenter(-4 * (bodyB.getLinearVelocity().x/bodyB.getLinearVelocity().len2()), -4 * (bodyB.getLinearVelocity().y/bodyB.getLinearVelocity().len2()), false);
-                	System.out.println(bodyB.getLinearVelocity().x +"" + bodyB.getLinearVelocity().y);
-                }
-                
-			}
-
-			public void endContact(Contact arg0) {
-				Fixture fixtureA = arg0.getFixtureA();
-                Fixture fixtureB = arg0.getFixtureB();
-                //Gdx.app.log("endContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
-			}
-
-			public void postSolve(Contact arg0, ContactImpulse arg1) {
-			}
-
-			public void preSolve(Contact arg0, Manifold arg1) {
-			}
-
-		});
 		ele = new ArrayList<Element>();
 		int count = 0;
-		//Grass to Test
-		for (int j = 0; j < 10; j++){
-			for(int i = 0; i < 10; i++){
-			ele.add(new GrassFloor(new Vector2(i+0.5f , j+0.5f ), 1, 1, W));
-			count++;
-			}
-		}
-		
-		
+		// Grass to Test
+		// for (int j = 0; j < 1; j++){
+		// for(int i = 0; i < 2; i++){
+		// ele.add(new GrassFloor(new Vector2(i*10 , j*10 ), 10, 10, W));
+		// count++;
+		// }
+		// }
+		// ele.add(new GrassFloor(new Vector2( WIDTH/2/BOX_TO_WORLD,
+		// HEIGHT/2/BOX_TO_WORLD), WIDTH/2/BOX_TO_WORLD, HEIGHT/2/BOX_TO_WORLD,
+		// W));
+		ele.add(new GrassFloor(new Vector2(3 * (WIDTH / 2f / BOX_TO_WORLD) / 2f, 3 * (HEIGHT / 2f / BOX_TO_WORLD) / 2f), WIDTH / 2 / BOX_TO_WORLD, HEIGHT / 2 / BOX_TO_WORLD, W));
 		cam.update();
 		cam.translate(new Vector2(WIDTH / 2, HEIGHT / 2));
 		System.out.println(count++);
 		System.out.println(cam.position);
-		
+
 		players = new ArrayList<Player>();
-				
+
 		initGame(1);
 		System.out.println("Before setScreen");
 		this.setScreen(new GameScreen());
@@ -172,8 +143,7 @@ public class MiniGolf extends Game {
 
 	public void initGame(int nPlayers) {
 		for (int i = 0; i < nPlayers; i++) {
-			Ball ball = new Ball(new Vector2(0.5f, 0.5f), W, 1);
-			ele.add(ball);
+			Ball ball = new Ball(new Vector2(0, 0), W, 1);
 			players.add(new Player(ball));
 			System.out.println("initGame");
 

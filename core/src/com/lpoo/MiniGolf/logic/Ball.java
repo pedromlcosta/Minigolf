@@ -8,15 +8,18 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.lpoo.MiniGolf.logic.Element.elementType;
 
 public class Ball extends Element {
-	int number;
-
+	int number; //will no longer be necessary, the body has an id already for this
+	public elementType steppingOn = elementType.nothing; // By default, the ball is on nothing
+	public float previousVelX = 0f;
+	
 	public Ball() {
 		super();
 	}
 
-	public Ball(Vector2 pos, World w, int radius) {
+	public Ball(Vector2 pos, World w, float radius) {
 		super(pos, radius*2, radius*2);
 
 		CircleShape circle = new CircleShape();
@@ -32,12 +35,11 @@ public class Ball extends Element {
 		bodyDef.position.set(pos);
 		body = w.createBody(bodyDef);
 		this.body.createFixture(fixDef);
-		this.body.setUserData(elementType.ball);
-		this.body.setLinearVelocity(new Vector2(1, 1));
+		this.body.setUserData(new ElementType(elementType.ball, 0));
+		this.body.setLinearVelocity(new Vector2(2, 2));
 		
 		image = new Sprite(new Texture("bola0.png"));
-		image.setPosition(pos.x, pos.y);
-		image.setSize(radius,radius);
+
 	}
 
 	public int getNumber() {
@@ -50,7 +52,10 @@ public class Ball extends Element {
 	
 	public void draw(){
 		//System.out.println(body.getPosition().x + " " + body.getPosition().y + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD+ " "+ body.getFixtureList().get(0).getShape().getRadius());
-		MiniGolf.batch.draw(image, (body.getPosition().x-width/4f)*MiniGolf.BOX_TO_WORLD, (body.getPosition().y-width/4f)*MiniGolf.BOX_TO_WORLD, width*MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD );
+		MiniGolf.batch.draw(image, (body.getPosition().x-width/2f)*MiniGolf.BOX_TO_WORLD, (body.getPosition().y-width/2f)*MiniGolf.BOX_TO_WORLD, width*MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD );
+		//image.setPosition(body.getPosition().x*MiniGolf.BOX_TO_WORLD, body.getPosition().y*MiniGolf.BOX_TO_WORLD);
+		//image.setSize(width*MiniGolf.BOX_TO_WORLD, height*MiniGolf.BOX_TO_WORLD);
+		//image.draw(MiniGolf.batch);
 	}
 
 }

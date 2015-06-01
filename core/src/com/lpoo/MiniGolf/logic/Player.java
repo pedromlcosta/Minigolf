@@ -102,7 +102,7 @@ public class Player {
 		this.ball.oldPos = oldPos;
 	}
 
-	public int getBallHeight() {
+	public float getBallHeight() {
 		return ball.height;
 	}
 
@@ -110,7 +110,7 @@ public class Player {
 		this.ball.height = height;
 	}
 
-	public int getBallWidth() {
+	public float getBallWidth() {
 		return ball.width;
 	}
 

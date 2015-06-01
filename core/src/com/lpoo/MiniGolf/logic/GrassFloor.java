@@ -25,16 +25,17 @@ public class GrassFloor extends Obstacle {
 		bodyDef.position.set(pos);
 		
 		body = w.createBody(bodyDef);
-		body.setUserData(elementType.regularFloor);
+		body.setUserData(new ElementType(elementType.regularFloor, 40, 0));
 		body.createFixture(fixDef);
 		
 		image = new Sprite(new Texture("grass.png"));
-		image.setPosition(pos.x, pos.y);
-		image.setSize(width, height);
+		//image.setPosition(pos.x, pos.y);
+		//image.setSize(width, height);
 	}
 	
 	public void draw(){
-		//System.out.println(body.getPosition().x* MiniGolf.BOX_TO_WORLD + " " + body.getPosition().y* MiniGolf.BOX_TO_WORLD + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD);
+		//System.out.println((body.getPosition().x - width/2f) * MiniGolf.BOX_TO_WORLD + " " + (body.getPosition().y- height/2f)* MiniGolf.BOX_TO_WORLD + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD);
+		//image.setCenter(x, y);
 		MiniGolf.batch.draw(image, (body.getPosition().x - width/2f) * MiniGolf.BOX_TO_WORLD , (body.getPosition().y- height/2f)* MiniGolf.BOX_TO_WORLD, width* MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD);
 	}
 }

@@ -8,13 +8,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 public class Element {
 	
 	public enum elementType {
-		ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
+		nothing, ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
 	};
 	
 	Body body;
 	Vector2 oldPos;
-	int height;
-	int width;
+	float height;
+	float width;
 	Sprite image;
 
 	public Element() {
@@ -25,9 +25,9 @@ public class Element {
 	}
 	
 	public void draw(){
-		System.out.println("Walrus");
-		System.out.println(body.getPosition().x + " " + body.getPosition().y + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD);
-		MiniGolf.batch.draw(image, body.getPosition().x, body.getPosition().y, width*MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD );
+		//System.out.println("Walrus");
+		//System.out.println(body.getPosition().x + " " + body.getPosition().y + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD);
+		//MiniGolf.batch.draw(image, body.getPosition().x, body.getPosition().y, width*MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD );
 	}
 	
 	public Sprite getImage() {
@@ -38,7 +38,7 @@ public class Element {
 		this.image = image;
 	}
 	
-	public Element(Vector2 pos, int height, int width) {
+	public Element(Vector2 pos, float height, float width) {
 		this.oldPos = pos;
 		this.height = height;
 		this.width = width;
@@ -84,19 +84,19 @@ public class Element {
 		this.oldPos = oldPos;
 	}
 
-	public int getHeight() {
+	public float getHeight() {
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(float height) {
 		this.height = height;
 	}
 
-	public int getWidth() {
+	public float getWidth() {
 		return width;
 	}
 
-	public void setWidth(int width) {
+	public void setWidth(float width) {
 		this.width = width;
 	}
 
