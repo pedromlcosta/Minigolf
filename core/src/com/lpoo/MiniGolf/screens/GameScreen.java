@@ -27,7 +27,7 @@ import com.lpoo.MiniGolf.logic.Player;
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
 public class GameScreen implements Screen {
 
-	static final float GRASS_DRAG = 0.1f;
+	static final float GRASS_DRAG = 0.55f;
 	static final float SAND_DRAG = 0.5f;
 
 	public final float units = 1.0f / 32.0f;
@@ -89,6 +89,10 @@ public class GameScreen implements Screen {
 		// Draw Players' balls
 		for (int i = 0; i < players.size(); i++) {
 			Ball b = players.get(i).getBall();
+			System.out.print("Vel: " + b.getBody().getLinearVelocity().len());
+			System.out.print("Vel X: " + b.getBody().getLinearVelocity().x);
+			System.out.println("  Vel Y: " + b.getBody().getLinearVelocity().y);
+
 			b.draw();
 		}
 
@@ -104,10 +108,6 @@ public class GameScreen implements Screen {
 			Body ballBody = players.get(i).getBall().getBody();
 			ElementType elementA = (ElementType) ballBody.getUserData();
 
-			// if(ballBody.getLinearVelocity().len()> 0.001){
-			//ballBody.applyForceToCenter(-elementA.accel * (ballBody.getLinearVelocity().x / ballBody.getLinearVelocity().len()), -elementA.accel* (ballBody.getLinearVelocity().y / ballBody.getLinearVelocity().len()), true);
-			//Calculate speed after the force -> float newXSpeed = currXSpeed - 0.005f*currXSpeed-0.002f;
-			//0.005 may be the grass accell constant and 0.001 = 0.005/5;
 
 			// Deciding if there is something to change in force or velocity
 			if ((players.get(i).getBall().steppingOn != Element.elementType.nothing) && (ballBody.getLinearVelocity().len() != 0f)) {
@@ -121,14 +121,8 @@ public class GameScreen implements Screen {
 				//Transform velX and velY such that vel.len is unitary. Then multiply by the drag force intensity and get dragForceX and dragForceY
 				float dragForceX = (currXSpeed/speedIntensity)*(10*elementA.accel);
 				float dragForceY = (currYSpeed/speedIntensity)*(10*elementA.accel);
-				
-				
-				//System.out.println("Speed Intensity from len " + speedIntensity);
-				//System.out.println("Speed Intensity calculated " + Math.sqrt((currXSpeed * currXSpeed ) + (currYSpeed * currYSpeed)));
 
-				//System.out.println("X Speed Normalized " + (currXSpeed/speedIntensity));
-				//System.out.println("Y Speed Normalized "  + (currYSpeed/speedIntensity));
-				System.out.println("Drag Force Intensity: " + Math.sqrt((dragForceX * dragForceX ) + (dragForceY * dragForceY)));
+				//System.out.println("Drag Force Intensity: " + Math.sqrt((dragForceX * dragForceX ) + (dragForceY * dragForceY)));
 				
 				float newXSpeed = currXSpeed - (dragForceX/60f);  // Acceleration = Force, because mass = 1kg
 				float newYSpeed = currYSpeed - (dragForceY/60f); // a = delta v / delta t  <=>  delta v = a * delta t <=> delta v = force * (1/60) -> DELTA T SAME AS IN STEP
@@ -136,10 +130,12 @@ public class GameScreen implements Screen {
 				
 				if(currXSpeed * newXSpeed < 0){
 					newXSpeed = 0f;
+					System.out.println("newXSpeed is 0");
 				}
 				
 				if(currYSpeed * newYSpeed < 0){
 					newYSpeed = 0f;
+					System.out.println("newYSpeed is 0");
 				}
 				
 				ballBody.setLinearVelocity(newXSpeed,newYSpeed);
@@ -170,19 +166,26 @@ public class GameScreen implements Screen {
 				ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
 				ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
 
+				if(elementA == null || elementB == null){
+					return;
+				}
+				
+				
 				if ((elementA.type == Element.elementType.ball && elementB.type == Element.elementType.regularFloor)) {
 					System.out.println("elementA is a ball and elementB is the floor.");
-
+					if(arg0.getFixtureA().isSensor()){
 					// Sets ball as stepping on grassFloor -> id was needed to
 					// know what ball to change
 					players.get(elementA.id).getBall().steppingOn = Element.elementType.regularFloor;
 					elementA.accel = GRASS_DRAG;
+					}
 
 				} else if ((elementA.type == Element.elementType.regularFloor && elementB.type == Element.elementType.ball)) {
 					System.out.println("elementB is a ball and elementA is the floor.");
-
+					if(arg0.getFixtureB().isSensor()){
 					players.get(elementB.id).getBall().steppingOn = Element.elementType.regularFloor;
 					elementB.accel = GRASS_DRAG;
+					}
 				}
 
 			}
@@ -191,6 +194,10 @@ public class GameScreen implements Screen {
 				ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
 				ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
 
+				if(elementA == null || elementB == null){
+					return;
+				}
+				
 				if ((elementA.type == Element.elementType.ball && elementB.type == Element.elementType.regularFloor)) {
 					System.out.println("elementA is a ball and elementB is the floor.");
 

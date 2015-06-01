@@ -10,7 +10,7 @@ public class Obstacle extends Element {
 		super();
 	}
 
-	public Obstacle(Vector2 pos, int height, int width, World w) {
+	public Obstacle(Vector2 pos, float height, float width, World w) {
 		super(pos, height, width);
 		/*
 		BodyDef bodyDef = new BodyDef();
