@@ -23,7 +23,6 @@ public class Ball extends Element {
 		super(pos, radius*2, radius*2);
 
 		CircleShape circleOuter = new CircleShape();
-		circleOuter.setPosition(pos);
 		circleOuter.setRadius(radius);
 		FixtureDef fixDefOuter = new FixtureDef();
 		fixDefOuter.shape = circleOuter;
@@ -31,7 +30,7 @@ public class Ball extends Element {
 		
 		
 		CircleShape circleInner = new CircleShape();
-		circleInner.setPosition(pos);
+
 		circleInner.setRadius(radius/4);
 		FixtureDef fixDefInner = new FixtureDef();
 		fixDefInner.shape = circleInner;
@@ -44,11 +43,8 @@ public class Ball extends Element {
 		body = w.createBody(bodyDef);
 		Fixture fixtOuter = this.body.createFixture(fixDefOuter);
 		this.body.createFixture(fixDefInner);
-		fixtOuter.setRestitution(1.0f);
-		fixtOuter.setFriction(0.0f);
-		System.out.println("Friction " + fixtOuter.getFriction());
-		
-		
+		fixtOuter.setRestitution(0.8f);
+		fixtOuter.setFriction(0.0f);		
 		image = new Sprite(new Texture("bola0.png"));
 
 	}
@@ -62,7 +58,7 @@ public class Ball extends Element {
 	}
 	
 	public void draw(){
-		//System.out.println(body.getPosition().x + " " + body.getPosition().y + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD+ " "+ body.getFixtureList().get(0).getShape().getRadius());
+		//System.out.println((body.getPosition().x-width/2f)*MiniGolf.BOX_TO_WORLD + " " + (body.getPosition().y-width/2f)*MiniGolf.BOX_TO_WORLD + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD+ " "+ body.getFixtureList().get(0).getShape().getRadius());
 		MiniGolf.batch.draw(image, (body.getPosition().x-width/2f)*MiniGolf.BOX_TO_WORLD, (body.getPosition().y-width/2f)*MiniGolf.BOX_TO_WORLD, width*MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD );
 		//image.setPosition(body.getPosition().x*MiniGolf.BOX_TO_WORLD, body.getPosition().y*MiniGolf.BOX_TO_WORLD);
 		//image.setSize(width*MiniGolf.BOX_TO_WORLD, height*MiniGolf.BOX_TO_WORLD);
