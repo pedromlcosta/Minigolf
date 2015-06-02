@@ -4,16 +4,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.lpoo.MiniGolf.logic.Element.elementType;
 
 public class Ball extends Element {
 	int number; //will no longer be necessary, the body has an id already for this
-	public elementType steppingOn = elementType.nothing; // By default, the ball is on nothing
+	public elementType steppingOn = elementType.regularFloor; // By default, the ball is on nothing
 	
 	public Ball() {
 		super();
@@ -43,7 +42,7 @@ public class Ball extends Element {
 		body = w.createBody(bodyDef);
 		Fixture fixtOuter = this.body.createFixture(fixDefOuter);
 		this.body.createFixture(fixDefInner);
-		fixtOuter.setRestitution(0.65f);
+		fixtOuter.setRestitution(0.85f);
 		fixtOuter.setFriction(0.0f);		
 		image = new Sprite(new Texture("bola0.png"));
 

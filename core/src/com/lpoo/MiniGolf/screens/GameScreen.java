@@ -2,7 +2,6 @@ package com.lpoo.MiniGolf.screens;
 
 import java.util.ArrayList;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
@@ -22,21 +21,21 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.logic.Ball;
+import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
 import com.lpoo.MiniGolf.logic.ElementType;
+import com.lpoo.MiniGolf.logic.GrassFloor;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 import com.lpoo.MiniGolf.logic.Player;
 
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
 public class GameScreen implements Screen, InputProcessor {
 
-	static final float GRASS_DRAG = 0.3f;
-	static final float SAND_DRAG = 0.5f;
+	static final float GRASS_DRAG = 0.95f;
+	static final float SAND_DRAG = 2.0f;
 
 	static final float W_STEP = 1f/60f;
 	static final float FORCE_AUGMENT = 2f;
@@ -49,9 +48,10 @@ public class GameScreen implements Screen, InputProcessor {
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.getCam();
 
+	private Sprite sand = new Sprite(new Texture("sand.png"));
 	private Sprite grass = new Sprite(new Texture("grass.png"));
 	private Sprite ball = new Sprite(new Texture("bola0.png"));
-	private ArrayList<Element> ele = MiniGolf.getEle();
+	private ArrayList<Element> courseElements = MiniGolf.getCourseElements();
 	private ArrayList<Player> players = MiniGolf.getPlayers();
 	private Player currentPlayer = players.get(0);
 
@@ -93,10 +93,12 @@ public class GameScreen implements Screen, InputProcessor {
 		// BATCH FOR DRAWING
 		MiniGolf.batch.begin();
 		// Draw Course Elements
-		for (int i = 0; i < ele.size(); i++) {
-			Element e = ele.get(i);
+		
+		for (int i = 0; i < MiniGolf.getCourseElements().size(); i++) {
+			Element e = courseElements.get(i);
 			e.draw();
 		}
+		
 		// Draw Players' balls
 		for (int i = 0; i < players.size(); i++) {
 			Ball b = players.get(i).getBall();
@@ -115,6 +117,8 @@ public class GameScreen implements Screen, InputProcessor {
 			shapeRenderer.end();
 		}
 
+		debugRenderer.render(w, debugMatrix);
+		
 		// PHYSICS UPDATE
 		dragHandler();
 		w.step(W_STEP, 6, 2);
@@ -135,7 +139,8 @@ public class GameScreen implements Screen, InputProcessor {
 		MiniGolf.getW().setContactListener(new ContactListener() {
 
 			public void beginContact(Contact arg0) {
-
+				
+				
 				ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
 				ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
 
@@ -146,7 +151,10 @@ public class GameScreen implements Screen, InputProcessor {
 				if ((elementA.type == Element.elementType.ball && elementB.type == Element.elementType.regularFloor)) {
 
 					if (arg0.getFixtureA().isSensor()) {
+						System.out.println("Begin Contact");
+						System.out.println("Grass number " + elementB.id);
 						// Inner part of the ball stepping on the grass
+						//if começa a pisar algo, adiciona isso ao Array Enum
 						players.get(elementA.id).getBall().steppingOn = Element.elementType.regularFloor;
 						elementA.accel = GRASS_DRAG; // Ball gets the drag from
 														// the grass
@@ -155,6 +163,8 @@ public class GameScreen implements Screen, InputProcessor {
 				} else if ((elementA.type == Element.elementType.regularFloor && elementB.type == Element.elementType.ball)) {
 					// System.out.println("elementB is a ball and elementA is the floor.");
 					if (arg0.getFixtureB().isSensor()) {
+						System.out.println("Begin Contact");
+						System.out.println("Grass number " + elementA.id);
 						players.get(elementB.id).getBall().steppingOn = Element.elementType.regularFloor;
 						elementB.accel = GRASS_DRAG;
 					}
@@ -170,16 +180,14 @@ public class GameScreen implements Screen, InputProcessor {
 					return;
 				}
 
-				if ((elementA.type == Element.elementType.ball && elementB.type == Element.elementType.regularFloor)) {
-					// System.out.println("elementA is a ball and elementB is the floor. Ball id = "
-					// + elementB.id );
-
-					// Sets ball as not in any kind of floor
+				if (elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball ) {
+					//if array de Enums = vazio
 					players.get(elementA.id).getBall().steppingOn = Element.elementType.nothing;
-				} else if ((elementA.type == Element.elementType.regularFloor && elementB.type == Element.elementType.ball)) {
-					// System.out.println("elementB is a ball and elementA is the floor.");
-
+					//else, steppingOn = ultimo do array, porque foi o ultimo a ser adicionado
+					
+				} else if (elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball) {
 					players.get(elementB.id).getBall().steppingOn = Element.elementType.nothing;
+					
 				}
 			}
 
@@ -213,15 +221,15 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	private void dragHandler() {
+				
 		for (int i = 0; i < players.size(); i++) {
-
+			
 			// Getting Ball Data
 			Body ballBody = players.get(i).getBallBody();
 			ElementType elementA = (ElementType) ballBody.getUserData();
-
 			// Deciding if there is something to change in force or velocity
-			if ((players.get(i).getBall().steppingOn != Element.elementType.nothing) && (ballBody.getLinearVelocity().len() != 0f)) {
-
+			if ((players.get(i).getBall().steppingOn != Element.elementType.nothing) && (players.get(i).getBall().getBody().getLinearVelocity().len() != 0f)) {
+				
 				// Calculate new speed
 				float currXSpeed = ballBody.getLinearVelocity().x;
 				float currYSpeed = ballBody.getLinearVelocity().y;
@@ -238,8 +246,7 @@ public class GameScreen implements Screen, InputProcessor {
 				// F = delta v / delta t <=> DELTA V = F * DELTA T         
 				// FINAL VEL = INITIAL VEL - DELTA V  <=> FINAL VEL = INITIAL VEL - F * DELTA T
 				float newXSpeed = currXSpeed - (dragForceX * W_STEP); 
-				float newYSpeed = currYSpeed - (dragForceY * W_STEP); 
-				
+				float newYSpeed = currYSpeed - (dragForceY * W_STEP);
 				
 				if (currXSpeed * newXSpeed < 0) {
 					newXSpeed = 0f;

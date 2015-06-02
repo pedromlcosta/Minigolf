@@ -3,9 +3,12 @@ package com.lpoo.MiniGolf.logic;
 import java.util.ArrayList;
 
 public class Course {
-	ArrayList<Element> elementos;
+	
+	private ArrayList<Element> elementos;
+	private String nome;
 
 	public Course() {
+		elementos = new ArrayList<Element>();
 	}
 
 	public Course(ArrayList<Element> elementos) {
@@ -29,6 +32,14 @@ public class Course {
 
 	public void setElementos(ArrayList<Element> elementos) {
 		this.elementos = elementos;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 }
