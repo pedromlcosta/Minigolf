@@ -5,12 +5,15 @@ import com.badlogic.gdx.physics.box2d.Body;
 
 public class Player {
 
-	Ball ball;
-	int pontuacao;
-	int tacadasJogada;
-	int tacadaTotal;
-	boolean over;
-	boolean won;
+	private Ball ball;
+	private int pontuacao;
+	private int tacadasJogada;
+	private int tacadaTotal;
+	private boolean over;
+	private boolean won;
+	private Vector2 clubMovement;
+
+
 
 	Player() {
 		ball = new Ball();
@@ -62,6 +65,14 @@ public class Player {
 		this.tacadaTotal = tacadaTotal;
 	}
 
+	public Vector2 getClubMovement() {
+		return clubMovement;
+	}
+
+	public void setClubMovement(Vector2 clubMovement) {
+		this.clubMovement = clubMovement;
+	}
+	
 	public float getBallPosX() {
 		return ball.body.getPosition().x;
 	}
@@ -72,6 +83,18 @@ public class Player {
 
 	public void setBallBody(Body body) {
 		this.ball.body = body;
+	}
+	
+	public Vector2 getBallSpeed() {
+		return ball.body.getLinearVelocity();
+	}
+
+	public void setBallSpeed(float vX, float vY) {
+		this.ball.body.setLinearVelocity(vX, vY);
+	}
+	
+	public float getBallSpeedLen() {
+		return ball.body.getLinearVelocity().len();
 	}
 
 	public float getBallPosY() {

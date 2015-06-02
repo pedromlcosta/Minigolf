@@ -46,7 +46,7 @@ public class MiniGolf extends Game {
 	int courseHeight;
 	int courseWidth;
 
-	public static final int BOX_TO_WORLD = 100;
+	public static final float BOX_TO_WORLD = 100f;
 	public static final String TITLE = "Game Project";
 	public static float WIDTH = 1000;
 	public static float HEIGHT = 1000;
@@ -170,18 +170,11 @@ public class MiniGolf extends Game {
 			float radius = 2.5f;
 			
 			
-			Ball ball = new Ball(new Vector2(5f, 5f), W, 0.25f);
+			Ball ball = new Ball(new Vector2(1f, 1f), W, 0.25f);
 			ball.getBody().setUserData(new ElementType(elementType.ball, 0));
-			ball.getBody().setLinearVelocity(new Vector2(3, 3));
+			//ball.getBody().setLinearVelocity(new Vector2(3, 3));
 			players.add(new Player(ball));
-			
-			
-			Ball ball2 = new Ball(new Vector2(1f, 1f), W, 0.25f);
-			ball2.getBody().setUserData(new ElementType(elementType.ball, 1));
-			ball2.getBody().setLinearVelocity(new Vector2(3, 3));
-			players.add(new Player(ball2));
-			System.out.println("initGame");
-			
+						
 		}
 	}
 

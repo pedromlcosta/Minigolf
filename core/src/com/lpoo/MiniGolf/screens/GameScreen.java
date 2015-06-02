@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -36,10 +38,14 @@ public class GameScreen implements Screen, InputProcessor {
 	static final float GRASS_DRAG = 0.3f;
 	static final float SAND_DRAG = 0.5f;
 
+	static final float W_STEP = 1f/60f;
+	static final float FORCE_AUGMENT = 2f;
+
 	public final float units = 1.0f / 32.0f;
 
 	private Matrix4 debugMatrix;
 	private Box2DDebugRenderer debugRenderer;
+	private ShapeRenderer shapeRenderer;
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.getCam();
 
@@ -75,7 +81,7 @@ public class GameScreen implements Screen, InputProcessor {
 	// ///////////////////////////////////////////
 
 	@Override
- 	public void render(float delta) {
+	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -83,8 +89,8 @@ public class GameScreen implements Screen, InputProcessor {
 		MiniGolf.batch.setProjectionMatrix(cam.combined);
 		debugMatrix = MiniGolf.batch.getProjectionMatrix().cpy().scale(MiniGolf.BOX_TO_WORLD, MiniGolf.BOX_TO_WORLD, 0);
 		debugRenderer.render(w, debugMatrix);
-		 
-		//BATCH FOR DRAWING
+
+		// BATCH FOR DRAWING
 		MiniGolf.batch.begin();
 		// Draw Course Elements
 		for (int i = 0; i < ele.size(); i++) {
@@ -99,10 +105,19 @@ public class GameScreen implements Screen, InputProcessor {
 		// MiniGolf.batch.draw(grass,5*MiniGolf.BOX_TO_WORLD,5*MiniGolf.BOX_TO_WORLD,5*MiniGolf.BOX_TO_WORLD,5*MiniGolf.BOX_TO_WORLD);
 		MiniGolf.batch.end();
 
+		// RENDER A LINE BETWEEN MOUSE POSITION AND BALL
+		if (currentPlayer.getBallSpeedLen() == 0f) {
+			shapeRenderer.setColor(Color.BLACK);
+			shapeRenderer.setProjectionMatrix(cam.combined);
 
-		//PHYSICS UPDATE
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.rectLine(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD, currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD, Gdx.input.getX(), MiniGolf.HEIGHT - Gdx.input.getY(), 5);
+			shapeRenderer.end();
+		}
+
+		// PHYSICS UPDATE
 		dragHandler();
-		w.step(1f / 60, 6, 2);
+		w.step(W_STEP, 6, 2);
 
 	}
 
@@ -112,10 +127,11 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public void show() {
-		
-		debugRenderer = new Box2DDebugRenderer();
 
-		//Setting body contact handling functions
+		debugRenderer = new Box2DDebugRenderer();
+		shapeRenderer = new ShapeRenderer();
+
+		// Setting body contact handling functions
 		MiniGolf.getW().setContactListener(new ContactListener() {
 
 			public void beginContact(Contact arg0) {
@@ -128,14 +144,12 @@ public class GameScreen implements Screen, InputProcessor {
 				}
 
 				if ((elementA.type == Element.elementType.ball && elementB.type == Element.elementType.regularFloor)) {
-					// System.out.println("elementA is a ball and elementB is the floor. Ball id = "
-					// + elementA.id );
+
 					if (arg0.getFixtureA().isSensor()) {
-						// Sets ball as stepping on grassFloor -> id was needed
-						// to
-						// know what ball to change
+						// Inner part of the ball stepping on the grass
 						players.get(elementA.id).getBall().steppingOn = Element.elementType.regularFloor;
-						elementA.accel = GRASS_DRAG;
+						elementA.accel = GRASS_DRAG; // Ball gets the drag from
+														// the grass
 					}
 
 				} else if ((elementA.type == Element.elementType.regularFloor && elementB.type == Element.elementType.ball)) {
@@ -197,12 +211,12 @@ public class GameScreen implements Screen, InputProcessor {
 		// texture.dispose();
 		// stage.dispose();
 	}
-	
+
 	private void dragHandler() {
 		for (int i = 0; i < players.size(); i++) {
 
 			// Getting Ball Data
-			Body ballBody = players.get(i).getBall().getBody();
+			Body ballBody = players.get(i).getBallBody();
 			ElementType elementA = (ElementType) ballBody.getUserData();
 
 			// Deciding if there is something to change in force or velocity
@@ -214,34 +228,19 @@ public class GameScreen implements Screen, InputProcessor {
 				float speedIntensity = ballBody.getLinearVelocity().len();
 
 				// Drag Force intensity = 10 * SURFACE_DRAG
-				// Transform velX and velY such that vel.len is unitary. Then
-				// multiply by the drag force intensity and get dragForceX and
-				// dragForceY
+				// -> Divide velX and velY by vel. length, such that vel.len is unitary. 
+				// -> Then multiply by the drag force intensity and get dragForceX and dragForceY
 				float dragForceX = (currXSpeed / speedIntensity) * (10 * elementA.accel);
 				float dragForceY = (currYSpeed / speedIntensity) * (10 * elementA.accel);
 
-				// System.out.println("Drag Force Intensity: " +
-				// Math.sqrt((dragForceX * dragForceX ) + (dragForceY *
-				// dragForceY)));
-
-				float newXSpeed = currXSpeed - (dragForceX / 60f); // Acceleration
-																	// = Force,
-																	// because
-																	// mass =
-																	// 1kg
-				float newYSpeed = currYSpeed - (dragForceY / 60f); // a = delta
-																	// v / delta
-																	// t <=>
-																	// delta v =
-																	// a * delta
-																	// t <=>
-																	// delta v =
-																	// force *
-																	// (1/60) ->
-																	// DELTA T
-																	// SAME AS
-																	// IN STEP
-
+				
+				// Acceleration = Force, because mass = 1kg
+				// F = delta v / delta t <=> DELTA V = F * DELTA T         
+				// FINAL VEL = INITIAL VEL - DELTA V  <=> FINAL VEL = INITIAL VEL - F * DELTA T
+				float newXSpeed = currXSpeed - (dragForceX * W_STEP); 
+				float newYSpeed = currYSpeed - (dragForceY * W_STEP); 
+				
+				
 				if (currXSpeed * newXSpeed < 0) {
 					newXSpeed = 0f;
 					// System.out.println("newXSpeed is 0");
@@ -260,14 +259,14 @@ public class GameScreen implements Screen, InputProcessor {
 	// ///////////////////////////////////////////
 	// InputProcessor Functions //
 	// ///////////////////////////////////////////
-	
+
 	@Override
 	public boolean keyDown(int keycode) {
 
-		if(keycode == Keys.LEFT)
-            System.out.println("Derp Left");
-        if(keycode == Keys.RIGHT)
-            System.out.println("Derp Right");
+		if (keycode == Keys.LEFT)
+			System.out.println("Derp Left");
+		if (keycode == Keys.RIGHT)
+			System.out.println("Derp Right");
 		return false;
 	}
 
@@ -297,9 +296,27 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(button == Buttons.LEFT)
-			System.out.println("Left Button Down");
-		
+		if (button == Buttons.LEFT)
+			if (currentPlayer.getBallSpeedLen() == 0) {
+
+				// Vector Ball->Mouse = Vector Mouse - Vector Ball
+				// forceX = Box_scale_mouse_X - Box_scale_ball_X   -> everything must be scaled to the box size first
+				// forceY =	Box_scale_mouse_Y - Box_scale_ball_Y
+
+				float forceX = ((float)Gdx.input.getX() / MiniGolf.BOX_TO_WORLD) - currentPlayer.getBallPosX();
+				float forceY = ((MiniGolf.HEIGHT - Gdx.input.getY())/MiniGolf.BOX_TO_WORLD) - currentPlayer.getBallPosY();
+
+				System.out.println("Box_scale_mouse_x: " + (float)(Gdx.input.getX() / (float)MiniGolf.BOX_TO_WORLD));
+				System.out.println("Box_scale_ball_x: " + currentPlayer.getBallPosX());
+				System.out.println("Box_scale_mouse_y: " +  ((MiniGolf.HEIGHT - Gdx.input.getY())/MiniGolf.BOX_TO_WORLD));
+				System.out.println("Box_scale_ball_y: " + currentPlayer.getBallPosY());
+				
+				System.out.println("Force X: " + forceX);
+				System.out.println("Force Y: " + forceY);
+				
+				// forceX/W_STEP is as if the force where applied during 1 second instead of 1/60 seconds
+				currentPlayer.getBallBody().applyForceToCenter((forceX /W_STEP)*FORCE_AUGMENT  , (forceY / W_STEP)*FORCE_AUGMENT , true);
+			}
 		return false;
 	}
 
@@ -314,7 +331,5 @@ public class GameScreen implements Screen, InputProcessor {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-
 
 }

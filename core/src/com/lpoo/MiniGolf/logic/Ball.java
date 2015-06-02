@@ -43,7 +43,7 @@ public class Ball extends Element {
 		body = w.createBody(bodyDef);
 		Fixture fixtOuter = this.body.createFixture(fixDefOuter);
 		this.body.createFixture(fixDefInner);
-		fixtOuter.setRestitution(0.8f);
+		fixtOuter.setRestitution(0.65f);
 		fixtOuter.setFriction(0.0f);		
 		image = new Sprite(new Texture("bola0.png"));
 
