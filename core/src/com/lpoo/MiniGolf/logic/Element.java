@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 public class Element {
 	
 	public enum elementType {
-		nothing, ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, regularFloor, accFloor, accWall, startSquareWall, startTriangularWall,
+		nothing, ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, grassFloor, accFloor, accWall, startSquareWall, startTriangularWall,
 	};
 	
 	Body body;

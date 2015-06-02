@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Ball extends Element {
 	int number; //will no longer be necessary, the body has an id already for this
-	public elementType steppingOn = elementType.regularFloor; // By default, the ball is on nothing
+	public elementType steppingOn = elementType.grassFloor; // By default, the ball is on the grass
 	
 	public Ball() {
 		super();

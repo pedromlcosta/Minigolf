@@ -61,7 +61,7 @@ public class MiniGolf extends Game {
 		// Grass to Test
 		
 		setCurrentCourse(new Course());
-		GrassFloor grass1 = new GrassFloor(new Vector2( (WIDTH / 2f / BOX_TO_WORLD) , (HEIGHT /2f/ BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, W);
+		Floor grass1 = new Floor(new Vector2( (WIDTH / 2f / BOX_TO_WORLD) , (HEIGHT /2f/ BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, W, elementType.grassFloor);
 		ElementType element1 = (ElementType) grass1.getBody().getUserData();
 		element1.id = 1;
 		addCourseElement(grass1);

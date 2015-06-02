@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -24,10 +23,8 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.logic.Ball;
-import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
 import com.lpoo.MiniGolf.logic.ElementType;
-import com.lpoo.MiniGolf.logic.GrassFloor;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 import com.lpoo.MiniGolf.logic.Player;
 
@@ -48,9 +45,6 @@ public class GameScreen implements Screen, InputProcessor {
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.getCam();
 
-	private Sprite sand = new Sprite(new Texture("sand.png"));
-	private Sprite grass = new Sprite(new Texture("grass.png"));
-	private Sprite ball = new Sprite(new Texture("bola0.png"));
 	private ArrayList<Element> courseElements = MiniGolf.getCourseElements();
 	private ArrayList<Player> players = MiniGolf.getPlayers();
 	private Player currentPlayer = players.get(0);
@@ -148,24 +142,24 @@ public class GameScreen implements Screen, InputProcessor {
 					return;
 				}
 
-				if ((elementA.type == Element.elementType.ball && elementB.type == Element.elementType.regularFloor)) {
+				if ((elementA.type == Element.elementType.ball && elementB.type == Element.elementType.grassFloor)) {
 
 					if (arg0.getFixtureA().isSensor()) {
 						System.out.println("Begin Contact");
 						System.out.println("Grass number " + elementB.id);
 						// Inner part of the ball stepping on the grass
 						//if começa a pisar algo, adiciona isso ao Array Enum
-						players.get(elementA.id).getBall().steppingOn = Element.elementType.regularFloor;
+						players.get(elementA.id).getBall().steppingOn = Element.elementType.grassFloor;
 						elementA.accel = GRASS_DRAG; // Ball gets the drag from
 														// the grass
 					}
 
-				} else if ((elementA.type == Element.elementType.regularFloor && elementB.type == Element.elementType.ball)) {
+				} else if ((elementA.type == Element.elementType.grassFloor && elementB.type == Element.elementType.ball)) {
 					// System.out.println("elementB is a ball and elementA is the floor.");
 					if (arg0.getFixtureB().isSensor()) {
 						System.out.println("Begin Contact");
 						System.out.println("Grass number " + elementA.id);
-						players.get(elementB.id).getBall().steppingOn = Element.elementType.regularFloor;
+						players.get(elementB.id).getBall().steppingOn = Element.elementType.grassFloor;
 						elementB.accel = GRASS_DRAG;
 					}
 				}
