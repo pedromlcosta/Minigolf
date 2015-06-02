@@ -18,7 +18,7 @@
 		<link>
 			<name>assets</name>
 			<type>2</type>
-			<locationURI>copy_PARENT/core/assets</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/core/assets</locationURI>
 		</link>
 	</linkedResources>
 	<variableList>
