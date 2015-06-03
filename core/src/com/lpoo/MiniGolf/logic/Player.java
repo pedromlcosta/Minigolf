@@ -2,21 +2,25 @@ package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class Player {
 
+	public String test;
 	private Ball ball;
 	private int pontuacao;
 	private int tacadasJogada;
 	private int tacadaTotal;
+	private boolean justPlayed;
 	private boolean over;
 	private boolean won;
 	private Vector2 clubMovement;
 
 
 
-	Player() {
-		ball = new Ball();
+	Player(String test) {
+		this.test = test;
+		setJustPlayed(false);
 		pontuacao = 0;
 		tacadasJogada = 0;
 		tacadaTotal = 0;
@@ -25,12 +29,17 @@ public class Player {
 	}
 
 	Player(Ball b) {
+		setJustPlayed(false);
 		ball = b;
 		pontuacao = 0;
 		tacadasJogada = 0;
 		tacadaTotal = 0;
 		setOver(false);
 		setWon(false);
+	}
+	
+	public void createBall(Vector2 pos, World w, float radius){
+		ball = new Ball(pos, w, radius, this);
 	}
 
 	public Ball getBall() {
@@ -155,6 +164,14 @@ public class Player {
 
 	public void setWon(boolean won) {
 		this.won = won;
+	}
+
+	public boolean isJustPlayed() {
+		return justPlayed;
+	}
+
+	public void setJustPlayed(boolean justPlayed) {
+		this.justPlayed = justPlayed;
 	}
 
 }

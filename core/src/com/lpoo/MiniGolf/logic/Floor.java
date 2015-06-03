@@ -30,10 +30,10 @@ public class Floor extends Obstacle {
 		
 		switch(type){
 		case grassFloor:
-			body.setUserData(new ElementType(type, GameScreen.GRASS_DRAG, 0));
+			body.setUserData(new ElementType(type, GameScreen.GRASS_DRAG));
 			break;
 		case sandFloor:
-			body.setUserData(new ElementType(type,GameScreen.SAND_DRAG, 0));
+			body.setUserData(new ElementType(type,GameScreen.SAND_DRAG));
 			break;
 		case iceFloor:
 			System.out.println("Ice");

@@ -15,14 +15,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.SplitPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
 public class OptionsScreen implements Screen {
@@ -30,20 +30,21 @@ public class OptionsScreen implements Screen {
 	private Skin skin;
 	private Stage stage;
 	private Slider maxTimeSlider;
+	private Label maxTimeLabel;
 	private Slider maxTacadasSlider;
+	private Label maxTacadasLabel;
 	private Sprite background;
 	private CheckBox userPicksCheck;
 	private Label userPicksLabel;
 	private TextField numberOfPlayers;
 	private TextField numberOfCourses;
 	private TextButton goBackButton;
-	private SelectBox selectGame;
-	private SplitPane pane;
-	
+	private SelectBox<String> selectGame;
+	private Table gameOptionsTable;
+	private Table pickCourseTable;
 	private MiniGolf game;
+
 	private final float DELTA_WIDTH = 200f;
-	private final float SLIDER_WIDTH = 200f;
-	private final float SLIDER_HEIGHT = 20f;
 	private static final float BUTTON_WIDTH = 200f;
 	private static final float BUTTON_HEIGHT = 50f;
 
@@ -71,50 +72,87 @@ public class OptionsScreen implements Screen {
 
 	// Create template
 	private void createMenuElements() {
+
 		maxTimeSlider = new Slider(10f, 60f, 1f, false, skin);
-		maxTimeSlider.setWidth(SLIDER_WIDTH);
-		maxTimeSlider.setHeight(SLIDER_HEIGHT);
-		maxTimeSlider.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 - 50f);
-
 		maxTacadasSlider = new Slider(1f, 30f, 1f, false, skin);
-		maxTacadasSlider.setWidth(SLIDER_WIDTH);
-		maxTacadasSlider.setHeight(SLIDER_HEIGHT);
-		maxTacadasSlider.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 - 10f);
-
-		userPicksCheck = new CheckBox("", skin, "default");
-		userPicksCheck.setWidth(SLIDER_WIDTH);
-		userPicksCheck.setHeight(SLIDER_HEIGHT);
-		userPicksCheck.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 50f);
-
-		userPicksLabel = new Label("Pick Maps", skin);
-		userPicksLabel.setWidth(SLIDER_WIDTH);
-		userPicksLabel.setHeight(SLIDER_HEIGHT);
-		userPicksLabel.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 50f);
-
 		numberOfPlayers = new TextField("Number of Players", skin);
-		numberOfPlayers.setWidth(SLIDER_WIDTH);
-		numberOfPlayers.setHeight(SLIDER_HEIGHT);
-		numberOfPlayers.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 80f);
+		numberOfCourses = new TextField("Number of Courses", skin);
+		userPicksCheck = new CheckBox("", skin, "default");
+		userPicksLabel = new Label("Pick Map", skin);
 
-		goBackButton = new TextButton("Exit", skin, "default");
+		String[] newItems;
+		newItems = new String[MiniGolf.getSelectedCourses().size()];
+
+		int i = 0;
+		for (Course c : MiniGolf.getSelectedCourses()) {
+			newItems[i] = c.getNome();
+			i++;
+		}
+
+		selectGame = new SelectBox<String>(skin);
+		selectGame.setItems(newItems);
+		selectGame.setMaxListCount(0);
+
+		goBackButton = new TextButton("Back", skin, "default");
 		goBackButton.setWidth(BUTTON_WIDTH);
 		goBackButton.setHeight(BUTTON_HEIGHT);
-		goBackButton.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 - 100f);
-
-		numberOfCourses = new TextField("Number of Courses", skin);
-		numberOfCourses.setWidth(SLIDER_WIDTH);
-		numberOfCourses.setHeight(SLIDER_HEIGHT);
-		numberOfCourses.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 60f);
-
+	
 		addListeners();
+		createTable();
 
-		stage.addActor(maxTimeSlider);
-		stage.addActor(maxTacadasSlider);
-		stage.addActor(userPicksLabel);
-		stage.addActor(userPicksCheck);
-		stage.addActor(numberOfPlayers);
-		stage.addActor(goBackButton);
-		stage.addActor(numberOfCourses);
+	}
+
+	/**
+	 * creates the tables that mantain the Menu
+	 */
+	// TODO ver funções sem numero de argumentos;
+	private void createTable() {
+		gameOptionsTable = new Table();
+		pickCourseTable = new Table();
+
+		stage.addActor(pickCourseTable);
+
+		Label maxNameTimeLabel = new Label("Max Time:", skin);
+		maxTimeLabel = new Label("Time: 0", skin);
+		Label maxNameTacadasLabel = new Label("Max Tacadas: ", skin);
+		maxTacadasLabel = new Label(" Tacadas Max: ", skin);
+
+		Label numberOfPlayersLabel = new Label(" Number Of Players: ", skin);
+		Label numberOfCoursesLabel = new Label(" Number Of Courses: ", skin);
+		Label spaceLabel = new Label("", skin);
+
+		gameOptionsTable.defaults().width(200);
+
+		gameOptionsTable.add(maxNameTimeLabel);
+		gameOptionsTable.add(maxTimeSlider);
+		gameOptionsTable.add(maxTimeLabel);
+		gameOptionsTable.add(spaceLabel);
+		gameOptionsTable.add(maxNameTacadasLabel);
+		gameOptionsTable.add(maxTacadasSlider);
+		gameOptionsTable.add(maxTacadasLabel);
+		gameOptionsTable.row();
+
+		gameOptionsTable.add(numberOfPlayersLabel);
+		gameOptionsTable.add(numberOfPlayers);
+		gameOptionsTable.add(spaceLabel);
+		gameOptionsTable.add(spaceLabel);
+		gameOptionsTable.add(numberOfCoursesLabel);
+		gameOptionsTable.add(numberOfCourses);
+		gameOptionsTable.row();
+		gameOptionsTable.add(userPicksLabel);
+		gameOptionsTable.add(userPicksCheck).left();
+
+		gameOptionsTable.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH + 100f, Gdx.graphics.getHeight() / 2 + 60f);
+
+		pickCourseTable.defaults().width(200f);
+		pickCourseTable.add(selectGame);
+		pickCourseTable.row();
+		stage.addActor(gameOptionsTable);
+
+		selectGame.setVisible(false);
+		pickCourseTable.setPosition(Gdx.graphics.getWidth() / 2 - DELTA_WIDTH + 100f, Gdx.graphics.getHeight() / 2);
+
+		// General table
 
 	}
 
@@ -144,6 +182,7 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
+
 		numberOfPlayers.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -157,7 +196,6 @@ public class OptionsScreen implements Screen {
 		});
 
 		numberOfCourses.setTextFieldFilter(new TextFieldFilter() {
-
 			@Override
 			public boolean acceptChar(TextField textField, char c) {
 				int valor;
@@ -170,13 +208,12 @@ public class OptionsScreen implements Screen {
 					numberOfCourses.setText("");
 					return false;
 				}
-
+				// TODO change for MAX_COURSES
 				if (valor > MiniGolf.MAX_PLAYERS || valor <= 0)
 					return false;
 				else {
 					MiniGolf.setNrCourses(valor);
 					return true;
-
 				}
 			}
 		});
@@ -189,7 +226,6 @@ public class OptionsScreen implements Screen {
 				} catch (NumberFormatException e) {
 					numberOfCourses.setText("");
 				}
-
 			}
 		});
 
@@ -197,12 +233,15 @@ public class OptionsScreen implements Screen {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				game.setTempoMax((int) maxTimeSlider.getValue());
+				maxTimeLabel.setText(new StringBuilder(" Time Max: " + (int) maxTimeSlider.getValue()));
 			}
 		});
+
 		maxTacadasSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
-				game.setTacadasMax((int) maxTimeSlider.getValue());
+				game.setTacadasMax((int) maxTacadasSlider.getValue());
+				maxTacadasLabel.setText(new StringBuilder(" Tacadas Max: " + (int) maxTacadasSlider.getValue()));
 			}
 		});
 
@@ -211,8 +250,12 @@ public class OptionsScreen implements Screen {
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				if (userPicksCheck.isChecked()) {
 					MiniGolf.setRandomCourse(false);
+					MiniGolf.setCurrentCourse(MiniGolf.getSelectedCourses().get(selectGame.getSelectedIndex()));
+					selectGame.setVisible(true);
 				} else {
 					MiniGolf.setRandomCourse(true);
+					selectGame.setVisible(false);
+					MiniGolf.setCurrentCourse(new Course());
 				}
 			}
 		});
@@ -221,6 +264,13 @@ public class OptionsScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				game.setScreen(new MenuScreen(game));
+			}
+		});
+
+		selectGame.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent arg0, Actor arg1) {
+				MiniGolf.setCurrentCourse(MiniGolf.getSelectedCourses().get(selectGame.getSelectedIndex()));
 			}
 		});
 	}
@@ -248,18 +298,20 @@ public class OptionsScreen implements Screen {
 		batch.begin();
 		background.draw(batch);
 		batch.end();
+
 		stage.act(delta);
 		stage.draw();
+		System.out.println(MiniGolf.getCurrentCourse().getNome());
+
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		// Gdx.gl.glViewport(arg0, arg1, arg2, arg3);
+
 	}
 
 	@Override
 	public void resume() {
 	}
-
 }

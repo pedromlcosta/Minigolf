@@ -4,19 +4,19 @@ package com.lpoo.MiniGolf.logic;
 public class ElementType {
 
 	public Element.elementType type;
-	public float accel = 1 ;
-	public int id;
+	public float accel = 0;
+	public Player player;
 	
 	
-	ElementType( Element.elementType type, int id){
-		this.type = type;
-		this.id = id;
-	}
-	
-	ElementType( Element.elementType type, float acceleration, int id){
+	ElementType( Element.elementType type, float acceleration){
 		this.type = type;
 		accel = acceleration;
-		this.id = id;
+	}
+	
+	ElementType( Element.elementType type, float acceleration, Player player){
+		this.type = type;
+		accel = acceleration;
+		this.player = player;
 	}
 	
 }

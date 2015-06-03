@@ -102,7 +102,7 @@ public class MiniGolf extends Game {
 		System.out.println("Cam Y: " + cam.position.y);
 
 		//
-		initGame(2);
+		initGame(3);
 
 	//	GameScreen game = new GameScreen();
 		this.setScreen(new MenuScreen(this));
@@ -110,16 +110,21 @@ public class MiniGolf extends Game {
 
 	}
 
+	//TODO PASSAR ISTO PARA O SHOW DO GAMESCREEN
 	public void initGame(int nPlayers) {
 		for (int i = 0; i < nPlayers; i++) {
 
 			// Vector2 ballPos = courseBallPos.get(i);
-			Ball ball = new Ball(new Vector2(i + 1, i + 1), W, 0.25f);
-			ball.getBody().setUserData(new ElementType(elementType.ball, i));
-			Player player = new Player(ball);
+			String str = "" + i;
+			Player player = new Player(str);
+			player.createBall(new Vector2(i + 1, i + 1), W, 0.25f);
 			players.add(player);
-
+			ElementType element =  (ElementType)player.getBall().getBody().getUserData();
 		}
+		
+		players.get(0).setJustPlayed(true);
+		
+		
 	}
 
 	public static ArrayList<Element> getEle() {

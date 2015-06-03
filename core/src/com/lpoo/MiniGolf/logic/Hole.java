@@ -29,7 +29,7 @@ public class Hole extends Element{
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(pos);
 		body = w.createBody(bodyDef);
-		body.setUserData(new ElementType(elementType.hole, 0, 0));
+		body.setUserData(new ElementType(elementType.hole, 0));
 		Fixture fixt = this.body.createFixture(fixDef);
 		image = new Sprite(new Texture("hole.png"));
 
