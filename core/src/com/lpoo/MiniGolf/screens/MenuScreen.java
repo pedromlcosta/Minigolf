@@ -32,6 +32,7 @@ public class MenuScreen implements Screen {
 	private MiniGolf game;
 	private Sprite background;
 
+	private final float DELTA_WIDTH = 200f;
 	private final static Logger LOGGER = Logger.getLogger(MenuScreen.class.getName());
 
 	public MenuScreen(MiniGolf game) {
@@ -87,25 +88,23 @@ public class MenuScreen implements Screen {
 		editorButton.setWidth(BUTTON_WIDTH);
 		editorButton.setHeight(BUTTON_HEIGHT);
 
-		playButton.setPosition(Gdx.graphics.getWidth() / 2 - 100f, Gdx.graphics.getHeight() / 2 + 100f);
-		editorButton.setPosition(Gdx.graphics.getWidth() / 2 - 100f, Gdx.graphics.getHeight() / 2 - 100f);
-		OptionsButton.setPosition(Gdx.graphics.getWidth() / 2 - 100f, Gdx.graphics.getHeight() / 2);
-		exitButton.setPosition(Gdx.graphics.getWidth() / 2 - 100f, Gdx.graphics.getHeight() / 2 - 200f);
+		playButton.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 300f);
+		editorButton.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 200f);
+		OptionsButton.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 100f);
+		exitButton.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2);
 
 		addListener();
 	}
 
 	/**
-	 * itÂ´s responsible for defining the behaviors of all the buttons that will
+	 * it ´s responsible for defining the behaviors of all the buttons that will
 	 * on the stage
 	 */
 	private void addListener() {
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-
 				game.setScreen(new GameScreen());
-
 			}
 		});
 
@@ -131,20 +130,13 @@ public class MenuScreen implements Screen {
 		});
 	}
 
-	@Override
-	public void dispose() {
-		batch.dispose();
-		skin.dispose();
-		stage.dispose();
-		background.getTexture().dispose();
-	}
-
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		background.draw(batch);
 		batch.end();
+		stage.act(delta);
 		stage.draw();
 	}
 
@@ -165,6 +157,14 @@ public class MenuScreen implements Screen {
 	public void hide() {
 		dispose();
 
+	}
+
+	@Override
+	public void dispose() {
+		batch.dispose();
+		skin.dispose();
+		stage.dispose();
+		background.getTexture().dispose();
 	}
 
 }

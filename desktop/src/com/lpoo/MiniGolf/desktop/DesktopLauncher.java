@@ -9,14 +9,13 @@ public class DesktopLauncher {
 	public static void main(String[] arg) {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-
+		
 		config.addIcon("golfWindowsLinux.png", FileType.Local);
 		config.addIcon("golfMac.png", FileType.Local);
-		config.addIcon("golfWindowsLinux.png", FileType.Local);
-		config.addIcon("golfWindowsLinux.png", FileType.Local);
-
-		config.width = (int) MiniGolf.WIDTH; // sets window width
-		config.height = (int) MiniGolf.HEIGHT; // sets window height
+		config.addIcon("golfWindows.png", FileType.Local);
+	
+		config.width = (int)MiniGolf.WIDTH; // sets window width
+		config.height = (int)MiniGolf.HEIGHT; // sets window height
 
 		new LwjglApplication(new MiniGolf(), config);
 	}

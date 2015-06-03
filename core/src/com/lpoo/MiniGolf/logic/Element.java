@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 public class Element {
 	
 	public enum elementType {
-		nothing, ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, grassFloor, accFloor, accWall, startSquareWall, startTriangularWall,
+		nothing, hole,  ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, grassFloor, accFloor, accWall, startSquareWall, startTriangularWall,
 	};
 	
 	Body body;
@@ -37,10 +37,11 @@ public class Element {
 		this.image = image;
 	}
 	
-	public Element(Vector2 pos, float height, float width) {
+	public Element(Vector2 pos, float width, float height) {
 		this.oldPos = pos;
-		this.height = height;
 		this.width = width;
+		this.height = height;
+		
 	}
 
 	public float getPosX() {

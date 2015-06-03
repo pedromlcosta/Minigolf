@@ -12,24 +12,32 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.logic.Element.elementType;
-import com.lpoo.MiniGolf.logic.ElementType;
 import com.lpoo.MiniGolf.screens.GameScreen;
+import com.lpoo.MiniGolf.screens.MenuScreen;
 
 public class MiniGolf extends Game {
 
 	public static SpriteBatch batch;
-	private static OrthographicCamera cam;
+	public static OrthographicCamera cam;
+	public static Viewport viewport;
 	private static World W;
-	
 
 	private static int nrPlayers = 2;
+	public static boolean allBallsStopped = false;
 	private static ArrayList<Player> players = new ArrayList<Player>();
 	private static Course currentCourse = new Course();
 	private static ArrayList<Course> selectedCourses = new ArrayList<Course>();
 	// FOR TEST PURPOSES
 	private static ArrayList<Element> ele;
+
+	// Acrescentei
+	private static int nrCourses = 1;
+	//private ou public??
+	public static final int MAX_PLAYERS = 4;
 
 	private static boolean randomCourse;
 	private Point endPoint;
@@ -41,82 +49,79 @@ public class MiniGolf extends Game {
 
 	public static final float BOX_TO_WORLD = 100f;
 	public static final String TITLE = "Game Project";
-	public static float WIDTH = 1000;
-	public static float HEIGHT = 1000;
-	
+	public static float WIDTH = 1920;
+	public static float HEIGHT = 1080;
+
 	public MiniGolf() {
 	}
 
 	public void create() {
 
 		Assets.queueLoading();
-		
-		
+
 		// INITIALIZING SINGLETONS
-		
+
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera(WIDTH, HEIGHT);
+		viewport = new FitViewport(WIDTH, HEIGHT, cam);
 		W = new World(new Vector2(0, 0), false);
 
-		// Grass to Test
-		
+		// ///////////////////////////////////////////////////////////////////
+		// /// TEST COURSE /////
+		// ///////////////////////////////////////////////////////////////////
+
 		setCurrentCourse(new Course());
-		Floor grass1 = new Floor(new Vector2( (WIDTH / 2f / BOX_TO_WORLD) , (HEIGHT /2f/ BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, W, elementType.grassFloor);
-		ElementType element1 = (ElementType) grass1.getBody().getUserData();
-		element1.id = 1;
+
+		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
+				(HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT
+				/ BOX_TO_WORLD, W, elementType.grassFloor);
 		addCourseElement(grass1);
-//		GrassFloor grass2 = new GrassFloor(new Vector2( (WIDTH / 2f / BOX_TO_WORLD) , (HEIGHT /2f/ BOX_TO_WORLD)), WIDTH / 2f/ BOX_TO_WORLD, HEIGHT / 2f/ BOX_TO_WORLD, W);
-//		ElementType element2 = (ElementType) grass2.getBody().getUserData();
-//		element2.id = 2;
-//		GrassFloor grass3 = new GrassFloor(new Vector2( (WIDTH / 2f / BOX_TO_WORLD) , (HEIGHT /2f/ BOX_TO_WORLD)), WIDTH / 2f/ BOX_TO_WORLD, HEIGHT / 2f/ BOX_TO_WORLD, W);
-//		ElementType element3 = (ElementType) grass3.getBody().getUserData();
-//		element3.id = 3;
-//		
-//		addCourseElement(grass2);
-//		addCourseElement(grass3);
-		
-		//ele.add(new GrassFloor(new Vector2( 3*(WIDTH / 4f / BOX_TO_WORLD) , 3*(WIDTH / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, W));
-		//System.out.println("Grass X: " + ele.get(0).body.getPosition().x);
-		//System.out.println("Grass Y: " + ele.get(0).body.getPosition().y);
-		//ele.add(new GrassFloor(new Vector2(5 * (WIDTH / 8f / BOX_TO_WORLD) , 5 * (WIDTH / 8f / BOX_TO_WORLD)), WIDTH / 4f / BOX_TO_WORLD, HEIGHT / 4f / BOX_TO_WORLD, W));
-		//ele.add(new GrassFloor(new Vector2(5 * (WIDTH / 8f / BOX_TO_WORLD) , 7 * (HEIGHT / 8f / BOX_TO_WORLD)), WIDTH / 4f / BOX_TO_WORLD, HEIGHT / 4f / BOX_TO_WORLD, W));
-		//ele.add(new GrassFloor(new Vector2(7 * (WIDTH / 8f / BOX_TO_WORLD) , 5 * (HEIGHT / 8f / BOX_TO_WORLD)), WIDTH / 4f / BOX_TO_WORLD, HEIGHT / 4f / BOX_TO_WORLD, W));
-		//ele.add(new GrassFloor(new Vector2(7 * (WIDTH / 8f / BOX_TO_WORLD) , 7 * (HEIGHT / 8f / BOX_TO_WORLD)), WIDTH / 4f / BOX_TO_WORLD, HEIGHT / 4f / BOX_TO_WORLD, W));
-		
-		createEdge(0.0f, 0.0f, WIDTH/BOX_TO_WORLD,0.0f);
-		createEdge( WIDTH/BOX_TO_WORLD,0.0f, WIDTH/BOX_TO_WORLD, HEIGHT/BOX_TO_WORLD);
-		createEdge(WIDTH/BOX_TO_WORLD, HEIGHT/BOX_TO_WORLD, 0.0f, HEIGHT/BOX_TO_WORLD);
-		createEdge(0.0f, HEIGHT/BOX_TO_WORLD, 0.0f, 0.0f);
-				  		
-		
+
+		Floor sand2 = new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
+				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+				HEIGHT / 2f / BOX_TO_WORLD, W, elementType.sandFloor);
+		addCourseElement(sand2);
+
+		Hole hole1 = new Hole(new Vector2(5f, 5f), W, 0.3f);
+		addCourseElement(hole1);
+
+		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
+		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT
+				/ BOX_TO_WORLD);
+		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT
+				/ BOX_TO_WORLD);
+		createEdge(0.0f, HEIGHT / BOX_TO_WORLD, 0.0f, 0.0f);
+
+		// ///////////////////////////////////////////////////////////////////
+		// /// END OF TEST COURSE /////
+		// ///////////////////////////////////////////////////////////////////
+
 		cam.update();
 		cam.translate(new Vector2(WIDTH / 2, HEIGHT / 2));
-		System.out.println("Cam X: " + cam.position.x/BOX_TO_WORLD);
-		System.out.println("Cam Y: " + cam.position.y/BOX_TO_WORLD);
+		System.out.println("Cam X: " + cam.position.x);
+		System.out.println("Cam Y: " + cam.position.y);
 
 		//
 		initGame(2);
-		
-		GameScreen game = new GameScreen();
-		this.setScreen(new GameScreen());
-		Gdx.input.setInputProcessor(game);
+
+	//	GameScreen game = new GameScreen();
+		this.setScreen(new MenuScreen(this));
+	//	Gdx.input.setInputProcessor(game);
 
 	}
 
 	public void initGame(int nPlayers) {
 		for (int i = 0; i < nPlayers; i++) {
-			Vector2 pos = new Vector2(5f, 5f);
-			float radius = 2.5f;
-			
-			//Vector2 ballPos = courseBallPos.get(i);
-			Ball ball = new Ball(new Vector2(i+1, i+1), W, 0.5f);
+
+			// Vector2 ballPos = courseBallPos.get(i);
+			Ball ball = new Ball(new Vector2(i + 1, i + 1), W, 0.25f);
 			ball.getBody().setUserData(new ElementType(elementType.ball, i));
 			Player player = new Player(ball);
 			players.add(player);
-						
+
 		}
 	}
-	
+
 	public static ArrayList<Element> getEle() {
 		return ele;
 	}
@@ -156,27 +161,26 @@ public class MiniGolf extends Game {
 	public static void setCurrentCourse(Course course) {
 		currentCourse = course;
 	}
-	
-	public static ArrayList<Element> getCourseElements(){
+
+	public static ArrayList<Element> getCourseElements() {
 		return currentCourse.getElementos();
 	}
-	
+
 	/*
 	 * Adds element to the Element array in the selected course
 	 */
-	public static  void addCourseElement(Element e){
-		System.out.println("Derp2");
+	public static void addCourseElement(Element e) {
 		currentCourse.getElementos().add(e);
 	}
-	
+
 	public static ArrayList<Course> getSelectedCourses() {
 		return selectedCourses;
 	}
 
-	public static  void setSelectedCourses(ArrayList<Course> courses) {
+	public static void setSelectedCourses(ArrayList<Course> courses) {
 		selectedCourses = courses;
 	}
-	
+
 	public static ArrayList<Player> getPlayers() {
 		return players;
 	}
@@ -202,14 +206,14 @@ public class MiniGolf extends Game {
 	}
 
 	void createEdge(float x1, float y1, float x2, float y2) {
-		  BodyDef bodyDef = new BodyDef();
-		  bodyDef.type = BodyDef.BodyType.StaticBody;
-		  EdgeShape shape = new EdgeShape();
-		  shape.set(new Vector2(x1,y1) , new Vector2(x2,y2)  );
-		  FixtureDef fixtureDef = new FixtureDef();
-		  fixtureDef.shape = shape;
-		  Body body = W.createBody(bodyDef);
-		  body.createFixture(fixtureDef);
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyDef.BodyType.StaticBody;
+		EdgeShape shape = new EdgeShape();
+		shape.set(new Vector2(x1, y1), new Vector2(x2, y2));
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = shape;
+		Body body = W.createBody(bodyDef);
+		body.createFixture(fixtureDef);
 	}
 
 	public Player getPlayer(int i) {
@@ -282,6 +286,14 @@ public class MiniGolf extends Game {
 
 	public static void setNrPlayers(int nrPlayers) {
 		MiniGolf.nrPlayers = nrPlayers;
+	}
+
+	public static int getNrCourses() {
+		return nrCourses;
+	}
+
+	public static void setNrCourses(int nrCourses) {
+		MiniGolf.nrCourses = nrCourses;
 	}
 
 }

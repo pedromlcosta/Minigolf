@@ -10,8 +10,8 @@ public class Obstacle extends Element {
 		super();
 	}
 
-	public Obstacle(Vector2 pos, float height, float width, World w) {
-		super(pos, height, width);
+	public Obstacle(Vector2 pos, float width, float height, World w) {
+		super(pos, width, height);
 		/*
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;

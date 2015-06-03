@@ -20,8 +20,8 @@ public class Player {
 		pontuacao = 0;
 		tacadasJogada = 0;
 		tacadaTotal = 0;
-		over = false;
-		won = false;
+		setOver(false);
+		setWon(false);
 	}
 
 	Player(Ball b) {
@@ -29,8 +29,8 @@ public class Player {
 		pontuacao = 0;
 		tacadasJogada = 0;
 		tacadaTotal = 0;
-		over = false;
-		won = false;
+		setOver(false);
+		setWon(false);
 	}
 
 	public Ball getBall() {
@@ -139,6 +139,22 @@ public class Player {
 
 	public void setBallWidth(int width) {
 		this.ball.width = width;
+	}
+
+	public boolean isOver() {
+		return over;
+	}
+
+	public void setOver(boolean over) {
+		this.over = over;
+	}
+
+	public boolean isWon() {
+		return won;
+	}
+
+	public void setWon(boolean won) {
+		this.won = won;
 	}
 
 }
