@@ -25,7 +25,6 @@ public class MiniGolf extends Game {
 	private static World W;
 
 	private int nrPlayers = 2;
-	private ArrayList<Player> players = new ArrayList<Player>();
 	private ArrayList<Course> selectedCourses = new ArrayList<Course>();
 	private ArrayList<Course> allCourses = new ArrayList<Course>();
 
@@ -132,14 +131,6 @@ public class MiniGolf extends Game {
 		MiniGolf.cam = cam;
 	}
 
-	public ArrayList<Player> getPlayers() {
-		return players;
-	}
-
-	public void setPlayers(ArrayList<Player> players) {
-		this.players = players;
-	}
-
 	public int getCourseHeight() {
 		return courseHeight;
 	}
@@ -165,14 +156,6 @@ public class MiniGolf extends Game {
 		fixtureDef.shape = shape;
 		Body body = W.createBody(bodyDef);
 		body.createFixture(fixtureDef);
-	}
-
-	public Player getPlayer(int i) {
-
-		if (i < players.size())
-			return players.get(i);
-		else
-			return null;
 	}
 
 	public Point getEndPoint() {

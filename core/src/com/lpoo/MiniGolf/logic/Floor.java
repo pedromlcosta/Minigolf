@@ -65,6 +65,7 @@ public class Floor extends Element {
 			body.destroyFixture(body.getFixtureList().get(i));
 		}
 		body.getWorld().destroyBody(body);
+		System.out.println("Destroyed floor");
 	}
 
 	public void draw() {

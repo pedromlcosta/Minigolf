@@ -61,20 +61,23 @@ public class GameScreen implements Screen, InputProcessor {
 	static boolean allBallsStopped = true;
 	float mouseX, mouseY;
 
-	// ///////////////////////////////////////////
-	// Screen Functions //
-	// ///////////////////////////////////////////
-
 	public GameScreen(MiniGolf game) {
 		this.game = game;
 	}
+	
+	/////////////////////////////////////////////
+	// 			  SCREEN FUNCTIONS   		   //
+	/////////////////////////////////////////////
 
+	
 	@Override
 	public void render(float delta) {
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		System.out.println("Nr. Players is " + players.size());
+		
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 			// CURRENT COURSE RENDER CYCLE
@@ -109,15 +112,19 @@ public class GameScreen implements Screen, InputProcessor {
 		} else {
 			
 			// END OF COURSE
-			resetPlayers();
-			resetCourse(selectedCourses.get(courseIndex-1));
 			System.out.println("Reseting Course nr. " + (courseIndex-1));
 			
 			if (courseIndex == selectedCourses.size()) {
 				//WAS THE LAST COURSE - ENDING GAME
+				//resetPlayers();
+				resetCourse(selectedCourses.get(courseIndex-1));
 				game.setScreen(new MenuScreen(game));
+				this.dispose();
 			} else {
 				// CHANGING COURSE
+				resetPlayers();
+				resetCourse(selectedCourses.get(courseIndex-1));
+				
 				initializeCourse(selectedCourses.get(courseIndex));
 				System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
@@ -136,7 +143,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public void show() {
-		System.out.println("Derp");
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 
@@ -342,7 +348,7 @@ public class GameScreen implements Screen, InputProcessor {
 		ArrayList<Player> playerDecisionList = new ArrayList<Player>();
 
 		for (int i = 0; i < players.size(); i++) {
-			System.out.println("Ball nr. " + i + " Over = " + players.get(i).isOver());
+			//System.out.println("Ball nr. " + i + " Over = " + players.get(i).isOver());
 
 			if ((players.get(i).isOver() == false) || (players.get(i).isOver() && players.get(i).isJustPlayed())) {
 				playerDecisionList.add(players.get(i));
@@ -367,22 +373,9 @@ public class GameScreen implements Screen, InputProcessor {
 
 		}
 		allBallsStopped = true;
-		System.out.println("BOOM");
 	}
 
 	public void removeBalls() {
-
-		// System.out.println("BEFORE");
-		//
-		// for (int i = 0; i < players.size(); i++) {
-		// System.out.println("Players: player nr. " + players.get(i).test);
-		// }
-		//
-		// for (int i = 0; i < actualPlayers.size(); i++) {
-		// System.out.println("Players: player nr. " +
-		// actualPlayers.get(i).test);
-		// }
-
 		for (int i = 0; i < playerRemovalList.size(); i++) {
 			// Destroys ball and removes player from the course
 			playerRemovalList.get(i).getBall().destroyBody();
@@ -391,26 +384,23 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 
 		playerRemovalList.clear();
-
-		// System.out.println("AFTER");
-		//
-		// for (int i = 0; i < players.size(); i++) {
-		// System.out.println("Players: player nr. " + players.get(i).test);
-		// }
-		//
-		// for (int i = 0; i < actualPlayers.size(); i++) {
-		// System.out.println("Players: player nr. " +
-		// actualPlayers.get(i).test);
-		// }
-		// System.out.println("END");
 	}
 
+	/////////////////////////////////////////////
+	//   INITIALIZATION AND RESET FUNCTIONS	   //
+	/////////////////////////////////////////////
+	
 	/*
 	 * Called when the show() method is called, initializing the player
 	 * variables for the first time
 	 */
 	public void initializePlayers() {
 		// INITIALIZE PLAYERS
+		
+		 players = new ArrayList<Player>();
+		 
+		System.out.println("Initialize - Nr. Players is " + players.size());
+		
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 
 			// Vector2 ballPos = courseBallPos.get(i);

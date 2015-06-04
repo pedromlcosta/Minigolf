@@ -99,6 +99,7 @@ public class Ball extends Element {
 			body.destroyFixture(body.getFixtureList().get(i));
 		}
 		body.getWorld().destroyBody(body);
+		System.out.println("Destroyed ball");
 		
 	}
 
