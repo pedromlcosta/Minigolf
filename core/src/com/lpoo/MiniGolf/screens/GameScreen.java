@@ -34,6 +34,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	public static final float GRASS_DRAG = 1.5f;
 	public static final float SAND_DRAG = 6.0f;
+	public static final float ICE_DRAG = 0.3f;
 
 	static final float W_STEP = 1f / 60f;
 	static final float FORCE_AUGMENT = 3.0f;
@@ -58,7 +59,8 @@ public class GameScreen implements Screen, InputProcessor {
 	private static ArrayList<Player> playerRemovalList = new ArrayList<Player>();
 	private static Player currentPlayer;
 	private long turnStart = System.currentTimeMillis();
-
+	
+	private int ballsInsideIllusion = 0;
 	static boolean allBallsStopped = true;
 	float mouseX, mouseY;
 
@@ -166,19 +168,17 @@ public class GameScreen implements Screen, InputProcessor {
 				ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
 				ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
 
-				
-				//we fucked conflitos... 
+				// Check if the body has no user data
 				if (elementA == null || elementB == null) {
 					return;
 				}
-				
+
+				// Collisions between ball and something else
 				if ((elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball)) {
-					System.out.println("Begin contact: " + elementA.type + " and " + elementB.type);
+
+					// Collisions with the INSIDE SENSOR of the ball
 					if (arg0.getFixtureA().isSensor()) {
 
-						
-						// accesses players because it is a ball that has the id
-						// refferent to a index of that array
 						elementA.player.getBall().steppingOn = elementB.type;
 						elementA.accel = elementB.accel;
 
@@ -188,18 +188,20 @@ public class GameScreen implements Screen, InputProcessor {
 							elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
 
 						}
-					} else if (elementB.type == Element.elementType.glueWall) {
+					} 
+					//Collisions with the OUTSIDE SENSOR
+					else if (elementB.type == Element.elementType.glueWall) {
 						elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
-						//System.out.println("Begin contact: " + elementA.type + " and " + elementB.type);
+					} else if (elementB.type == Element.elementType.illusionWall) {
+						elementB.element.getImage().setAlpha(0.75f);
+						ballsInsideIllusion++;
 					}
 
 				} else if ((elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball)) {
 
-					System.out.println("Begin contact: " + elementA.type + " and " + elementB.type);
-
+					// Collisions with the INSIDE SENSOR of the ball
 					if (arg0.getFixtureB().isSensor()) {
-						// accesses players because it is a ball that has the id
-						// refferent to a index of that array
+
 						elementB.player.getBall().steppingOn = elementA.type;
 						elementB.accel = elementA.accel;
 
@@ -210,9 +212,14 @@ public class GameScreen implements Screen, InputProcessor {
 
 						}
 
-					} else if (elementA.type == Element.elementType.glueWall) {
+					} 
+					//Collisions with the OUTSIDE SENSOR
+					else if (elementA.type == Element.elementType.glueWall) {
 						elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
-						//System.out.println("Begin contact: " + elementB.type + " and " + elementA.type);
+
+					} else if (elementA.type == Element.elementType.illusionWall) {
+						elementA.element.getImage().setAlpha(0.75f);
+						ballsInsideIllusion++;
 					}
 
 				}
@@ -230,10 +237,30 @@ public class GameScreen implements Screen, InputProcessor {
 				if (elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball) {
 					elementA.player.getBall().steppingOn = Element.elementType.grassFloor;
 					elementA.accel = GRASS_DRAG; // Always goes to grass after
-													// ending a contact
+					
+					//For the BALL/ILLUSIONWALL collision, we want it to happen with the outside fixture of the ball
+					if (!arg0.getFixtureA().isSensor()) {
+						
+						if (elementB.type == Element.elementType.illusionWall) {
+							ballsInsideIllusion--;
+							if(ballsInsideIllusion == 0)
+							elementB.element.getImage().setAlpha(1.0f);
+						}
+					}
+
 				} else if (elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball) {
 					elementB.player.getBall().steppingOn = Element.elementType.grassFloor;
 					elementB.accel = GRASS_DRAG;
+
+					//For the BALL/ILLUSIONWALL collision, we want it to happen with the outside fixture of the ball
+					if (!arg0.getFixtureB().isSensor()) {
+						
+						if (elementA.type == Element.elementType.illusionWall) {
+							ballsInsideIllusion--;
+							if(ballsInsideIllusion == 0)
+							elementA.element.getImage().setAlpha(1.0f);
+						}
+					}
 				}
 			}
 

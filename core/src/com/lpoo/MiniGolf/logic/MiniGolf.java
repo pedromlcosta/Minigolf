@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -68,15 +69,21 @@ public class MiniGolf extends Game {
 		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
 				(HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT
 				/ BOX_TO_WORLD, elementType.grassFloor);
-		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
-				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-				HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
+//		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
+//				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+//				HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
 		Hole hole1 = new Hole(new Vector2(5f, 5f), W, 0.3f);
 		
 		Wall wall1 =new Wall(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
 				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
 				HEIGHT / 2f / BOX_TO_WORLD, elementType.glueWall);
+		
+		Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
+				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+				HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
+		
 		Course1.addEle(grass1);
+		Course1.addEle(illusion1);
 		Course1.addEle(wall1);
 		Course1.addEle(hole1);
 
@@ -167,7 +174,9 @@ public class MiniGolf extends Game {
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		Body body = W.createBody(bodyDef);
-		body.createFixture(fixtureDef);
+		Fixture fixt = body.createFixture(fixtureDef);
+		fixt.setRestitution(1.0f);
+		fixt.setFriction(1.0f);
 	}
 
 	public Point getEndPoint() {

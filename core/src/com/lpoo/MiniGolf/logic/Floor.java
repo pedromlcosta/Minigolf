@@ -1,6 +1,7 @@
 package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -17,8 +18,9 @@ public class Floor extends Element {
 		super(pos, width, height, type);
 
 		image = new Sprite(new Texture(type.toString() + ".png"));
-		// image.setPosition(pos.x, pos.y);
-		// image.setSize(width, height);
+		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		image.setPosition((pos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (pos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
+		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 	}
 
 	public Floor(elementType type) {
@@ -46,15 +48,16 @@ public class Floor extends Element {
 
 		switch (type) {
 		case grassFloor:
-			body.setUserData(new ElementType(type, GameScreen.GRASS_DRAG));
+		case illusionWall:
+			body.setUserData(new ElementType(type, GameScreen.GRASS_DRAG, this));
 			break;
 		case sandFloor:
-			body.setUserData(new ElementType(type, GameScreen.SAND_DRAG));
+			body.setUserData(new ElementType(type, GameScreen.SAND_DRAG, this));
 			break;
 		case iceFloor:
-			System.out.println("Ice"); // body.setUserData(new ElementType(type,
-										// 0, 0));
+			body.setUserData(new ElementType(type, GameScreen.ICE_DRAG, this));
 			break;
+
 		default:
 			break;
 		}
@@ -68,20 +71,14 @@ public class Floor extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
+	public void draw() {
+		image.draw(MiniGolf.batch);
+	}
+	
 	@Override
 	public void draw(Batch batch, float parentAlfa) {
-		// System.out.println((body.getPosition().x - width/2f) *
-		// MiniGolf.BOX_TO_WORLD + " " + (body.getPosition().y- height/2f)*
-		// MiniGolf.BOX_TO_WORLD + " " + width*MiniGolf.BOX_TO_WORLD + " " +
-		// height*MiniGolf.BOX_TO_WORLD);
-		// image.setCenter(x, y);
-		// System.out.println("IN PosX: " + (body.getPosition().x - width / 2f)
-		// * MiniGolf.BOX_TO_WORLD + " PosY: " + (body.getPosition().y - height
-		// / 2f) * MiniGolf.BOX_TO_WORLD + " Width: " + width
-		// * MiniGolf.BOX_TO_WORLD + " Height: " + height *
-		// MiniGolf.BOX_TO_WORLD);
-		batch.draw(image, (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2f) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-				* MiniGolf.BOX_TO_WORLD);
+		System.out.println("D");
+		image.draw(MiniGolf.batch);
 	}
 
 }

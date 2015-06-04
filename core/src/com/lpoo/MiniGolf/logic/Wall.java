@@ -19,9 +19,9 @@ public class Wall extends Element {
 		super(pos, width, height, type);
 
 		image = new Sprite(new Texture(type.toString() + ".png"));
-		//image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		// image.setPosition(pos.x, pos.y);
-		// image.setSize(width, height);
+		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		image.setPosition((pos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (pos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
+		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 	}
 
 	public Wall(elementType type) {
@@ -62,15 +62,15 @@ public class Wall extends Element {
 		switch (type) {
 		case regularWall:
 			fixt.setRestitution(1.0f);
-			body.setUserData(new ElementType(elementType.regularWall, 0));
+			body.setUserData(new ElementType(elementType.regularWall, 0, this));
 			break;
 		case glueWall:
 			fixt.setRestitution(0.1f);
-			body.setUserData(new ElementType(elementType.glueWall, 0));
+			body.setUserData(new ElementType(elementType.glueWall, 0, this));
 			break;
-		case bonceWall:
+		case bouncyWall:
 			fixt.setRestitution(2.0f);
-			body.setUserData(new ElementType(elementType.bonceWall, 0));
+			body.setUserData(new ElementType(elementType.bouncyWall, 0, this));
 			break;
 		default:
 			break;
@@ -86,8 +86,7 @@ public class Wall extends Element {
 	}
 
 	public void draw() {
-		image.setPosition((body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2f) * MiniGolf.BOX_TO_WORLD);
-		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
+		
 		image.draw(MiniGolf.batch);
 
 	}

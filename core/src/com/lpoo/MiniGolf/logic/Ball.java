@@ -40,6 +40,7 @@ public class Ball extends Element {
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.bullet = true;
 		bodyDef.position.set(pos);
 		this.body = w.createBody(bodyDef);
 		Fixture fixtOuter = this.body.createFixture(fixDefOuter);
