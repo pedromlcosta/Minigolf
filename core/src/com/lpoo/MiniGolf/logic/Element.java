@@ -133,7 +133,7 @@ public class Element {
 		this.type = type;
 	}
 	
-	public void initializeElement(World w){
+	public void createBody(World w){
 		
 	}
 

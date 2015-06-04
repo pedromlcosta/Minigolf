@@ -81,10 +81,10 @@ public class OptionsScreen implements Screen {
 		userPicksLabel = new Label("Pick Map", skin);
 
 		String[] newItems;
-		newItems = new String[MiniGolf.getSelectedCourses().size()];
+		newItems = new String[game.getSelectedCourses().size()];
 
 		int i = 0;
-		for (Course c : MiniGolf.getSelectedCourses()) {
+		for (Course c : game.getSelectedCourses()) {
 			newItems[i] = c.getNome();
 			i++;
 		}
@@ -210,7 +210,7 @@ public class OptionsScreen implements Screen {
 					return false;
 				}
 				// TODO change for MAX_COURSES
-				if (valor > MiniGolf.getSelectedCourses().size() || valor <= 0)
+				if (valor > game.getSelectedCourses().size() || valor <= 0)
 					return false;
 				else {
 					MiniGolf.setNrCourses(valor);
@@ -251,15 +251,15 @@ public class OptionsScreen implements Screen {
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				if (userPicksCheck.isChecked()) {
 					MiniGolf.setRandomCourse(false);
-					Course temp = MiniGolf.getSelectedCourses().get(selectGame.getSelectedIndex());
+					Course temp = game.getSelectedCourses().get(selectGame.getSelectedIndex());
 					if (temp != null)
-						 MiniGolf.getSelectedCourses().set(0, temp);
+						 game.getSelectedCourses().set(0, temp);
 					
 					selectGame.setVisible(true);
 				} else {
 					MiniGolf.setRandomCourse(true);
 					selectGame.setVisible(false);
-					MiniGolf.getSelectedCourses().set(0, new Course());
+					game.getSelectedCourses().set(0, new Course());
 				}
 			}
 		});
@@ -274,7 +274,7 @@ public class OptionsScreen implements Screen {
 		selectGame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
-				MiniGolf.getSelectedCourses().set(0, MiniGolf.getSelectedCourses().get(selectGame.getSelectedIndex()));
+				game.getSelectedCourses().set(0, game.getSelectedCourses().get(selectGame.getSelectedIndex()));
 			}
 		});
 	}

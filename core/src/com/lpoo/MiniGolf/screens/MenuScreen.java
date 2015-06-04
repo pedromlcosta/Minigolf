@@ -1,7 +1,5 @@
 package com.lpoo.MiniGolf.screens;
 
-import java.util.logging.Logger;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;

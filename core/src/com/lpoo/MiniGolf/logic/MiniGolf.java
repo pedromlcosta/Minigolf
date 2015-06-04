@@ -3,7 +3,6 @@ package com.lpoo.MiniGolf.logic;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -16,7 +15,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.logic.Element.elementType;
-import com.lpoo.MiniGolf.screens.GameScreen;
 import com.lpoo.MiniGolf.screens.MenuScreen;
 
 public class MiniGolf extends Game {
@@ -27,11 +25,9 @@ public class MiniGolf extends Game {
 	private static World W;
 
 	private int nrPlayers = 2;
-	public static boolean allBallsStopped = false;
-	private static ArrayList<Player> players = new ArrayList<Player>();
-	private static ArrayList<Course> selectedCourses = new ArrayList<Course>();
-	private static ArrayList<Course> allCourses = new ArrayList<Course>();
-
+	private ArrayList<Player> players = new ArrayList<Player>();
+	private ArrayList<Course> selectedCourses = new ArrayList<Course>();
+	private ArrayList<Course> allCourses = new ArrayList<Course>();
 
 	private static int nrCourses = 2;
 	public static final int MAX_PLAYERS = 4;
@@ -67,21 +63,32 @@ public class MiniGolf extends Game {
 		// /// TEST COURSE /////
 		// ///////////////////////////////////////////////////////////////////
 
-		//setCurrentCourse(new Course());
 		
-		//Course 1
+
+		// Course 1
+		Course Course1 = new Course();
+		
 		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
 		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD), 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
 		Hole hole1 = new Hole(new Vector2(5f, 5f), W, 0.3f);
-		//addCourseElement(grass1);
-		//addCourseElement(sand1);
-		//addCourseElement(hole1);
-		
-		//Course 2
+		Course1.addEle(grass1);
+		Course1.addEle(sand1);
+		Course1.addEle(hole1);
+
+		// Course 2
+		Course Course2 = new Course();
 		Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
 		Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD), 1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
 		Hole hole2 = new Hole(new Vector2(7f, 7f), W, 0.3f);
+		Course2.addEle(grass2);
+		Course2.addEle(sand2);
+		Course2.addEle(hole2);
 		
+		//Adding to all and selected
+		addToAllCourses(Course1);
+		addToAllCourses(Course2);
+		addToSelectedCourses(Course1);
+		addToSelectedCourses(Course2);
 
 		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
 		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
@@ -94,7 +101,7 @@ public class MiniGolf extends Game {
 
 		cam.update();
 		cam.translate(new Vector2(WIDTH / 2, HEIGHT / 2));
-		
+
 		this.setScreen(new MenuScreen(this));
 
 	}
@@ -125,20 +132,12 @@ public class MiniGolf extends Game {
 		MiniGolf.cam = cam;
 	}
 
-	public static ArrayList<Course> getSelectedCourses() {
-		return selectedCourses;
-	}
-
-	public static void setSelectedCourses(ArrayList<Course> courses) {
-		selectedCourses = courses;
-	}
-
-	public static ArrayList<Player> getPlayers() {
+	public ArrayList<Player> getPlayers() {
 		return players;
 	}
 
-	public static void setPlayers(ArrayList<Player> player) {
-		players = player;
+	public void setPlayers(ArrayList<Player> players) {
+		this.players = players;
 	}
 
 	public int getCourseHeight() {
@@ -240,14 +239,36 @@ public class MiniGolf extends Game {
 		MiniGolf.nrCourses = nrCourses;
 	}
 
-	
-public int getNrPlayers() {
+	public int getNrPlayers() {
 		return nrPlayers;
 	}
 
-	
-public void setNrPlayers(int nrPlayers) {
+	public void setNrPlayers(int nrPlayers) {
 		this.nrPlayers = nrPlayers;
+	}
+
+	public ArrayList<Course> getSelectedCourses() {
+		return selectedCourses;
+	}
+
+	public void setSelectedCourses(ArrayList<Course> selectedCourses) {
+		this.selectedCourses = selectedCourses;
+	}
+	
+	public void addToSelectedCourses(Course course){
+		selectedCourses.add(course);
+	}
+
+	public ArrayList<Course> getAllCourses() {
+		return allCourses;
+	}
+
+	public void setAllCourses(ArrayList<Course> allCourses) {
+		this.allCourses = allCourses;
+	}
+	
+	public void addToAllCourses(Course course){
+		allCourses.add(course);
 	}
 
 }

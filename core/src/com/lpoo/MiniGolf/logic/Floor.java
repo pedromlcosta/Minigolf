@@ -28,7 +28,7 @@ public class Floor extends Element {
 
 	}
 
-	public void initializeElement(World w) {
+	public void createBody(World w) {
 
 		PolygonShape square = new PolygonShape();
 		square.setAsBox(width / 2f, height / 2f);

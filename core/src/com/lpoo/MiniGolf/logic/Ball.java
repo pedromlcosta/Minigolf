@@ -9,18 +9,19 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.lpoo.MiniGolf.logic.Element.elementType;
 
 public class Ball extends Element {
 	
 	public elementType steppingOn = elementType.nothing;
-
+	public float radius;
+	
 	public Ball() {
 		super();
 	}
 
 	public Ball(Vector2 pos, World w, float radius, Player player) {
 		super(pos, radius*2, radius*2);
+		this.radius = radius;
 
 		CircleShape circleOuter = new CircleShape();
 		circleOuter.setRadius(radius);
@@ -46,9 +47,40 @@ public class Ball extends Element {
 		body.setUserData(new ElementType(elementType.ball, 0, player));
 		
 		fixtOuter.setRestitution(0.85f);
-		fixtOuter.setFriction(0.0f);		
+		fixtOuter.setFriction(0.0f);
+		
 		image = new Sprite(new Texture("bola0.png"));
 
+	}
+	
+	public void createBody(World w, Player player){
+		
+		CircleShape circleOuter = new CircleShape();
+		circleOuter.setRadius(radius);
+		FixtureDef fixDefOuter = new FixtureDef();
+		fixDefOuter.shape = circleOuter;
+		fixDefOuter.isSensor = false;
+		
+		
+		CircleShape circleInner = new CircleShape();
+
+		circleInner.setRadius(radius/8);
+		FixtureDef fixDefInner = new FixtureDef();
+		fixDefInner.shape = circleInner;
+		fixDefInner.isSensor = true;
+		
+
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.position.set(oldPos);
+		this.body = w.createBody(bodyDef);
+		Fixture fixtOuter = this.body.createFixture(fixDefOuter);
+		body.createFixture(fixDefInner);
+		body.setUserData(new ElementType(elementType.ball, 0, player));
+		
+		fixtOuter.setRestitution(0.85f);
+		fixtOuter.setFriction(0.0f);
+		
 	}
 
 	public void draw(){

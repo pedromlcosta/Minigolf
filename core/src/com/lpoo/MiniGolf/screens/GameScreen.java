@@ -47,19 +47,19 @@ public class GameScreen implements Screen, InputProcessor {
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.cam;
 
-	private ArrayList<Course> selectedCoursesCloned = new ArrayList<Course>();
-	private Course currentCourse = new Course();
+	// TODO eliminate bodies after a game
+	private ArrayList<Course> selectedCourses;
+	private Course currentCourse;
 	ArrayList<Element> currentCourseElements;
 	private int courseIndex = 0;
-	
+
 	private static ArrayList<Player> players = new ArrayList<Player>();
 	private static ArrayList<Player> actualPlayers = new ArrayList<Player>();
 	private static ArrayList<Player> playerRemovalList = new ArrayList<Player>();
 	private static Player currentPlayer;
-	
-	static boolean allBallsStopped = true;
-	 float mouseX, mouseY;
 
+	static boolean allBallsStopped = true;
+	float mouseX, mouseY;
 
 	// ///////////////////////////////////////////
 	// Screen Functions //
@@ -71,28 +71,13 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public void render(float delta) {
+
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-//		mouseX = Gdx.input.getX();
-//		mouseY = Gdx.input.getY();
-//		
-//		 Vector3 vec = cam.unproject(new Vector3(mouseX, mouseY, 0));
-//		   float tempX = vec.x;
-//		   float tempY = vec.y;
-//		   Vector3 vec1 = cam.project(vec);
-//		
-//		  
-//		
-//		System.out.println("Mouse Direct Input: " + Gdx.input.getX() + "  " + Gdx.input.getY()); 
-//		System.out.println("Mouse Input Unprojected to World: " + tempX + "  " + tempY);
-//		System.out.println("Mouse Input Pojected to World: " + vec1.x + "  " + vec1.y);
-//		System.out.println((body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD + " " + (body.getPosition().y - width / 2f) * MiniGolf.BOX_TO_WORLD + " " + width * MiniGolf.BOX_TO_WORLD + " "
-//				+ height * MiniGolf.BOX_TO_WORLD + " " + body.getFixtureList().get(0).getShape().getRadius());
-
-		System.out.println("Rendering");
-		
-		if (!actualPlayers.isEmpty()) {
+		if (!actualPlayers.isEmpty()) { // no players on a course means it is
+										// over
+			// CURRENT COURSE RENDER CYCLE
 
 			cam.update();
 
@@ -122,28 +107,40 @@ public class GameScreen implements Screen, InputProcessor {
 			if (!playerRemovalList.isEmpty())
 				removeBalls();
 		} else {
-			game.setScreen(new MenuScreen(game));
+			// END OF COURSE
+			if (courseIndex == selectedCourses.size()) {
+				// LAST COURSE - ENDING GAME
+				game.setScreen(new MenuScreen(game));
+			} else {
+				// CHANGING COURSE
+				resetPlayers();
+				initializeCourse(selectedCourses.get(courseIndex));
+				courseIndex++;
+			}
 		}
 
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		
-		game.viewport.update(width, height);
+
+		MiniGolf.viewport.update(width, height);
 		cam.update();
 
 	}
 
 	@Override
 	public void show() {
-
+		System.out.println("Derp");
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 
-		
 		initializePlayers();
-		
+		selectedCourses = game.getSelectedCourses();
+		initializeCourse(selectedCourses.get(courseIndex)); // At this point,
+															// courseIndex is 0
+		courseIndex++;
+
 		Gdx.input.setInputProcessor(this);
 		// Setting body contact handling functions
 		MiniGolf.getW().setContactListener(new ContactListener() {
@@ -242,7 +239,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private void courseDraw() {
 		ArrayList<Element> courseElements = currentCourse.getElementos();
-		
+
 		for (int i = 0; i < courseElements.size(); i++) {
 			Element e = courseElements.get(i);
 			e.draw();
@@ -256,7 +253,6 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	private void renderLine() {
-		int counter = 0;
 		for (int i = 0; i < actualPlayers.size(); i++) {
 
 			if (actualPlayers.get(i).getBallSpeedLen() != 0) {
@@ -271,8 +267,6 @@ public class GameScreen implements Screen, InputProcessor {
 				}
 			}
 		}
-
-		counter++;
 
 		// RENDER A LINE BETWEEN MOUSE POSITION AND BALL
 		if (allBallsStopped) {
@@ -406,8 +400,12 @@ public class GameScreen implements Screen, InputProcessor {
 		// System.out.println("END");
 	}
 
+	/*
+	 * Called when the show() method is called, initializing the player
+	 * variables for the first time
+	 */
 	public void initializePlayers() {
-		//INITIALIZE PLAYERS
+		// INITIALIZE PLAYERS
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 
 			// Vector2 ballPos = courseBallPos.get(i);
@@ -415,25 +413,48 @@ public class GameScreen implements Screen, InputProcessor {
 			Player player = new Player(str);
 			player.createBall(new Vector2(i + 1, i + 1), w, 0.25f);
 			players.add(player);
-			actualPlayers.add(player);
 		}
-		
-		currentPlayer = players.get(0);
+
 		players.get(0).setJustPlayed(true);
-	
+		currentPlayer = players.get(0);
+		actualPlayers = players;
+
 	}
 
-	public void initializeCourse(){
-		
-		currentCourseElements = currentCourse.getElementos();
-		
-		for(int i = 0; i < currentCourseElements.size(); i++){
-			currentCourseElements.get(i).initializeElement(w);
+	public void resetPlayers() {
+
+		// Restoring booleans and the body to each ball
+		for (int i = 0; i < game.getNrPlayers(); i++) {
+			players.get(i).setOver(false);
+			players.get(i).setJustPlayed(false);
+			players.get(i).getBall().createBody(w, players.get(i));
 		}
-		
-		
+		players.get(0).setJustPlayed(true);
+
+		// Reseting the actual an current players
+		currentPlayer = players.get(0);
+		actualPlayers = players;
 	}
-	
+
+	public void initializeCourse(Course course) {
+
+		// Sets current course
+		currentCourse = course;
+
+		// Sets current course elements and initializes them
+		currentCourseElements = course.getElementos();
+
+		for (int i = 0; i < currentCourseElements.size(); i++) {
+			// Creates this elements body -> gives form to it
+			currentCourseElements.get(i).createBody(w);
+		}
+
+		// Clone the actualPlayers array. This way it was empty before this
+		// function was called
+		actualPlayers = (ArrayList<Player>) players.clone();
+
+	}
+
 	public void resetWorld() {
 
 	}

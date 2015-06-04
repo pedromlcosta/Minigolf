@@ -17,15 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
-import com.lpoo.MiniGolf.logic.Floor;
 import com.lpoo.MiniGolf.logic.Element.elementType;
+import com.lpoo.MiniGolf.logic.Floor;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
 public class EditorScreen implements Screen, InputProcessor {
