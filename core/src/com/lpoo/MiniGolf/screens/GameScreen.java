@@ -23,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.logic.Ball;
+import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
 import com.lpoo.MiniGolf.logic.ElementType;
 import com.lpoo.MiniGolf.logic.MiniGolf;
@@ -46,7 +47,9 @@ public class GameScreen implements Screen, InputProcessor {
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.cam;
 
-	
+	private ArrayList<Course> selectedCoursesCloned = new ArrayList<Course>();
+	private Course currentCourse = new Course();
+	private int courseIndex = 0;
 	private ArrayList<Element> courseElements = MiniGolf.getCourseElements();
 	
 	private static ArrayList<Player> players = new ArrayList<Player>();
@@ -423,6 +426,15 @@ public class GameScreen implements Screen, InputProcessor {
 		
 	}
 
+	public void initializeCourse(){
+		ArrayList<Element> courseElements = currentCourse.getElementos();
+		
+		for(int i = 0; i < courseElements.size(); i++){
+			courseElements.get(i).initializeElement(w);
+		}
+		
+	}
+	
 	public void resetWorld() {
 
 	}

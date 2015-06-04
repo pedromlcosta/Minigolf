@@ -3,6 +3,7 @@ package com.lpoo.MiniGolf.logic;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class Element {
 
@@ -15,6 +16,8 @@ public class Element {
 	protected float width;
 	protected float height;
 	protected elementType type;
+	
+
 	protected Sprite image;
 
 	public Element() {
@@ -120,6 +123,18 @@ public class Element {
 
 	public void setWidth(float width) {
 		this.width = width;
+	}
+	
+	public elementType getType() {
+		return type;
+	}
+
+	public void setType(elementType type) {
+		this.type = type;
+	}
+	
+	public void initializeElement(World w){
+		
 	}
 
 }

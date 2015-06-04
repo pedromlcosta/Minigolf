@@ -14,23 +14,6 @@ public class Floor extends Element {
 	public Floor(Vector2 pos, float width, float height, elementType type) {
 
 		super(pos, width, height, type);
-		/*
-		 * PolygonShape square = new PolygonShape(); square.setAsBox(width/2f,
-		 * height/2f); FixtureDef fixDef = new FixtureDef(); fixDef.shape =
-		 * square; fixDef.isSensor = true;
-		 * 
-		 * 
-		 * BodyDef bodyDef = new BodyDef(); bodyDef.type = BodyType.StaticBody;
-		 * bodyDef.position.set(pos);
-		 * 
-		 * body = w.createBody(bodyDef); body.createFixture(fixDef);
-		 * 
-		 * switch(type){ case grassFloor: body.setUserData(new ElementType(type,
-		 * GameScreen.GRASS_DRAG)); break; case sandFloor: body.setUserData(new
-		 * ElementType(type,GameScreen.SAND_DRAG)); break; case iceFloor:
-		 * System.out.println("Ice"); //body.setUserData(new ElementType(type,
-		 * 0, 0)); break; default: break; }
-		 */
 
 		image = new Sprite(new Texture(type.toString() + ".png"));
 		// image.setPosition(pos.x, pos.y);
@@ -45,6 +28,38 @@ public class Floor extends Element {
 
 	}
 
+	public void initializeElement(World w) {
+
+		PolygonShape square = new PolygonShape();
+		square.setAsBox(width / 2f, height / 2f);
+		FixtureDef fixDef = new FixtureDef();
+		fixDef.shape = square;
+		fixDef.isSensor = true;
+
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.StaticBody;
+		bodyDef.position.set(oldPos);
+
+		body = w.createBody(bodyDef);
+		body.createFixture(fixDef);
+
+		switch (type) {
+		case grassFloor:
+			body.setUserData(new ElementType(type, GameScreen.GRASS_DRAG));
+			break;
+		case sandFloor:
+			body.setUserData(new ElementType(type, GameScreen.SAND_DRAG));
+			break;
+		case iceFloor:
+			System.out.println("Ice"); // body.setUserData(new ElementType(type,
+										// 0, 0));
+			break;
+		default:
+			break;
+		}
+
+	}
+
 	public void draw() {
 		// System.out.println((body.getPosition().x - width/2f) *
 		// MiniGolf.BOX_TO_WORLD + " " + (body.getPosition().y- height/2f)*
@@ -52,9 +67,7 @@ public class Floor extends Element {
 		// height*MiniGolf.BOX_TO_WORLD);
 		// image.setCenter(x, y);
 
-		MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f)
-				* MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2f)
-				* MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
+		MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2f) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
 				* MiniGolf.BOX_TO_WORLD);
 	}
 }
