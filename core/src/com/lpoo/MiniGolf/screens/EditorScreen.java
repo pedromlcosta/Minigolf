@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -39,7 +40,7 @@ public class EditorScreen implements Screen, InputProcessor {
 	private SelectBox<String> selectElement;
 	private Table scene;
 	private Sprite background;
-	private TextButton goBackButton;
+	private TextButton goBackButton, doneButton;
 	private static final float BUTTON_WIDTH = 200f;
 	private static final float BUTTON_HEIGHT = 50f;
 	private MiniGolf game;
@@ -144,19 +145,23 @@ public class EditorScreen implements Screen, InputProcessor {
 		createElements();
 		addListeners();
 
-		// stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
-		// OrthographicCamera secondaryCamera = new
-		// OrthographicCamera(Gdx.graphics.getWidth(),
-		// Gdx.graphics.getHeight());
-		// secondaryCamera.translate(Gdx.graphics.getWidth(),
-		// Gdx.graphics.getHeight() + 300f);
-		// stage.getViewport().setCamera(secondaryCamera);
+		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
+		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
+		stage.getViewport().setCamera(secondaryCamera);
 
 		stage.addActor(scene);
-		stage.addActor(goBackButton);
-		Gdx.input.setInputProcessor(this);
+		Gdx.input.setInputProcessor(stage);
 
 		shapeRenderer.setColor(Color.RED);
+
+		// stage.addListener(new InputListener() {
+		//
+		// public boolean mouseMoved(int posX, int posY ) {
+		//
+		// return false;
+		//
+		// }});
 
 	}
 
@@ -194,24 +199,34 @@ public class EditorScreen implements Screen, InputProcessor {
 
 		Label tableLabel = new Label("Editor", skin);
 
-		selectElement = new SelectBox<String>(skin);
-		selectElement.setItems(new String[] { "SandFloor", "hole", "ball" });
-		selectElement.setMaxListCount(0);
-		scene = new Table();
-		scene.defaults().width(200f);
-		scene.add(tableLabel);
-		scene.add(selectElement);
-		scene.row();
-		scene.setPosition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
+		Label spaceLabel = new Label("", skin);
+		doneButton = new TextButton("Done", skin);
+		doneButton.setWidth(BUTTON_WIDTH);
+		doneButton.setHeight(BUTTON_HEIGHT);
 
 		goBackButton = new TextButton("Back", skin);
 		goBackButton.setWidth(BUTTON_WIDTH);
 		goBackButton.setHeight(BUTTON_HEIGHT);
-		goBackButton.setPosition(Gdx.graphics.getWidth() - 500f, Gdx.graphics.getHeight() + 285f);
 
-		Floor grass1 = new Floor(new Vector2(0, 0), 2 * MiniGolf.getWidth() / MiniGolf.BOX_TO_WORLD, 2 * MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
-		grass1.createBody(MiniGolf.getW());
-		created.addCourseElement(grass1);
+		selectElement = new SelectBox<String>(skin);
+		selectElement.setItems(new String[] { "SandFloor", "hole", "ball" });
+		selectElement.setMaxListCount(0);
+		scene = new Table();
+		scene.add(doneButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+		scene.add(spaceLabel).width(50f);
+		scene.add(goBackButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+		scene.add(spaceLabel).width(50);
+		scene.add(tableLabel);
+		scene.add(selectElement).width(200f);
+		scene.row();
+		scene.setPosition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
+
+		 
+		// Floor grass1 = new Floor(new Vector2(0, 0), MiniGolf.getWidth() /
+		// MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD,
+		// elementType.grassFloor); grass1.createBody(MiniGolf.getW());
+		// created.addCourseElement(grass1);
+		 
 
 		//
 		// Floor sand2 = new Floor(new Vector2(3 * (MiniGolf.WIDTH / 4f /
@@ -241,17 +256,21 @@ public class EditorScreen implements Screen, InputProcessor {
 				width *= -1;
 			} else
 				posInicialX = leftX;
+
 			if (mouseY - leftY < 0) {
 				posInicialY = mouseY;
 				height *= -1;
 			} else
 				posInicialY = leftY;
+
 			System.out.println("In add Height: " + height + "   Width: " + width + "  PosEX: " + posInicialX + " PosEY: " + posInicialY);
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
 
-			//será que tenho que voltar a projectar para o screen
-//			System.out.println("mouseX: " + mouseX + "  mouseY: " + mouseY + " PosX: " + leftX + "  PosY: " + leftY + " Width: " + width + "  Height: " + height);
+			// será que tenho que voltar a projectar para o screen
+			// System.out.println("mouseX: " + mouseX + "  mouseY: " + mouseY +
+			// " PosX: " + leftX + "  PosY: " + leftY + " Width: " + width +
+			// "  Height: " + height);
 			elementToAdd.setOldPos(new Vector2(posInicialX, posInicialY));
 			elementToAdd.setHeight(height);
 			elementToAdd.setWidth(width);
