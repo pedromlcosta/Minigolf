@@ -3,7 +3,7 @@ package com.lpoo.MiniGolf.logic;
 import java.util.ArrayList;
 
 public class Course {
-	
+
 	private ArrayList<Element> elementos;
 	private String nome;
 
@@ -40,6 +40,10 @@ public class Course {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public void addCourseElement(Element ele) {
+		elementos.add(ele);
 	}
 
 }

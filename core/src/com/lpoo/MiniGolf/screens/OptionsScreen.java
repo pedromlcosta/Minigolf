@@ -93,10 +93,11 @@ public class OptionsScreen implements Screen {
 		selectGame.setItems(newItems);
 		selectGame.setMaxListCount(0);
 
-		goBackButton = new TextButton("Back", skin, "default");
+		goBackButton = new TextButton("Back", skin);
 		goBackButton.setWidth(BUTTON_WIDTH);
 		goBackButton.setHeight(BUTTON_HEIGHT);
-	
+		goBackButton.setPosition(Gdx.graphics.getWidth() / 2 - DELTA_WIDTH + 350f, Gdx.graphics.getHeight() / 2 - 100f);
+		stage.addActor(goBackButton);
 		addListeners();
 		createTable();
 
@@ -209,7 +210,7 @@ public class OptionsScreen implements Screen {
 					return false;
 				}
 				// TODO change for MAX_COURSES
-				if (valor > MiniGolf.MAX_PLAYERS || valor <= 0)
+				if (valor > MiniGolf.getSelectedCourses().size() || valor <= 0)
 					return false;
 				else {
 					MiniGolf.setNrCourses(valor);
@@ -250,7 +251,10 @@ public class OptionsScreen implements Screen {
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				if (userPicksCheck.isChecked()) {
 					MiniGolf.setRandomCourse(false);
-					MiniGolf.setCurrentCourse(MiniGolf.getSelectedCourses().get(selectGame.getSelectedIndex()));
+					Course temp = MiniGolf.getSelectedCourses().get(selectGame.getSelectedIndex());
+					if (temp != null)
+						MiniGolf.setCurrentCourse(temp);
+					
 					selectGame.setVisible(true);
 				} else {
 					MiniGolf.setRandomCourse(true);
@@ -301,7 +305,6 @@ public class OptionsScreen implements Screen {
 
 		stage.act(delta);
 		stage.draw();
-		System.out.println(MiniGolf.getCurrentCourse().getNome());
 
 	}
 

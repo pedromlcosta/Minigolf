@@ -33,7 +33,7 @@ public class MenuScreen implements Screen {
 	private Sprite background;
 
 	private final float DELTA_WIDTH = 200f;
-	private final static Logger LOGGER = Logger.getLogger(MenuScreen.class.getName());
+	//private final static Logger LOGGER = Logger.getLogger(MenuScreen.class.getName());
 
 	public MenuScreen(MiniGolf game) {
 		this.game = game;
@@ -71,10 +71,10 @@ public class MenuScreen implements Screen {
 	 * the stage
 	 */
 	private void createButtons() {
-		playButton = new TextButton("Play", skin, "default");
-		OptionsButton = new TextButton("Options", skin, "default");
-		exitButton = new TextButton("Exit", skin, "default");
-		editorButton = new TextButton("Edit", skin, "default");
+		playButton = new TextButton("Play", skin);
+		OptionsButton = new TextButton("Options", skin);
+		exitButton = new TextButton("Exit", skin);
+		editorButton = new TextButton("Edit", skin);
 
 		playButton.setWidth(BUTTON_WIDTH);
 		playButton.setHeight(BUTTON_HEIGHT);
@@ -125,7 +125,7 @@ public class MenuScreen implements Screen {
 		editorButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				editorButton.setText("You clicked the button");
+				game.setScreen(new EditorScreen(game));
 			}
 		});
 	}
