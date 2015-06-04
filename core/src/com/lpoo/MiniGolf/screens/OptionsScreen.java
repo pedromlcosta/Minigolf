@@ -253,13 +253,13 @@ public class OptionsScreen implements Screen {
 					MiniGolf.setRandomCourse(false);
 					Course temp = MiniGolf.getSelectedCourses().get(selectGame.getSelectedIndex());
 					if (temp != null)
-						MiniGolf.setCurrentCourse(temp);
+						 MiniGolf.getSelectedCourses().set(0, temp);
 					
 					selectGame.setVisible(true);
 				} else {
 					MiniGolf.setRandomCourse(true);
 					selectGame.setVisible(false);
-					MiniGolf.setCurrentCourse(new Course());
+					MiniGolf.getSelectedCourses().set(0, new Course());
 				}
 			}
 		});
@@ -274,7 +274,7 @@ public class OptionsScreen implements Screen {
 		selectGame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
-				MiniGolf.setCurrentCourse(MiniGolf.getSelectedCourses().get(selectGame.getSelectedIndex()));
+				MiniGolf.getSelectedCourses().set(0, MiniGolf.getSelectedCourses().get(selectGame.getSelectedIndex()));
 			}
 		});
 	}

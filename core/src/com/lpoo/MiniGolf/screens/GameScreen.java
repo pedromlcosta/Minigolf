@@ -49,8 +49,8 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private ArrayList<Course> selectedCoursesCloned = new ArrayList<Course>();
 	private Course currentCourse = new Course();
+	ArrayList<Element> currentCourseElements;
 	private int courseIndex = 0;
-	private ArrayList<Element> courseElements = MiniGolf.getCourseElements();
 	
 	private static ArrayList<Player> players = new ArrayList<Player>();
 	private static ArrayList<Player> actualPlayers = new ArrayList<Player>();
@@ -141,6 +141,7 @@ public class GameScreen implements Screen, InputProcessor {
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 
+		
 		initializePlayers();
 		
 		Gdx.input.setInputProcessor(this);
@@ -240,7 +241,9 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	private void courseDraw() {
-		for (int i = 0; i < MiniGolf.getCourseElements().size(); i++) {
+		ArrayList<Element> courseElements = currentCourse.getElementos();
+		
+		for (int i = 0; i < courseElements.size(); i++) {
 			Element e = courseElements.get(i);
 			e.draw();
 		}
@@ -416,22 +419,18 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 		
 		currentPlayer = players.get(0);
-		
-		System.out.println("Initialized");
 		players.get(0).setJustPlayed(true);
-		System.out.println(players.get(0).isJustPlayed());
-		System.out.println(actualPlayers.get(0).isJustPlayed());
-		
-		
-		
+	
 	}
 
 	public void initializeCourse(){
-		ArrayList<Element> courseElements = currentCourse.getElementos();
 		
-		for(int i = 0; i < courseElements.size(); i++){
-			courseElements.get(i).initializeElement(w);
+		currentCourseElements = currentCourse.getElementos();
+		
+		for(int i = 0; i < currentCourseElements.size(); i++){
+			currentCourseElements.get(i).initializeElement(w);
 		}
+		
 		
 	}
 	
