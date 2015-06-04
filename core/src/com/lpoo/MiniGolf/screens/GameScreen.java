@@ -527,6 +527,7 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 		allBallsStopped = true;
 	}
+	
 
 	// ///////////////////////////////////////////
 	// InputProcessor Functions //
