@@ -13,10 +13,7 @@ import com.lpoo.MiniGolf.logic.Element.elementType;
 
 public class Ball extends Element {
 	
-	public elementType steppingOn = elementType.nothing; // By default, the ball is on the grass
-	boolean deleted = false;
-	
-	
+	public elementType steppingOn = elementType.nothing;
 
 	public Ball() {
 		super();
@@ -43,7 +40,7 @@ public class Ball extends Element {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
 		bodyDef.position.set(pos);
-		body = w.createBody(bodyDef);
+		this.body = w.createBody(bodyDef);
 		Fixture fixtOuter = this.body.createFixture(fixDefOuter);
 		body.createFixture(fixDefInner);
 		body.setUserData(new ElementType(elementType.ball, 0, player));
@@ -54,14 +51,6 @@ public class Ball extends Element {
 
 	}
 
-	public boolean isDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
-	}
-	
 	public void draw(){
 		//System.out.println((body.getPosition().x-width/2f)*MiniGolf.BOX_TO_WORLD + " " + (body.getPosition().y-width/2f)*MiniGolf.BOX_TO_WORLD + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD+ " "+ body.getFixtureList().get(0).getShape().getRadius());
 		MiniGolf.batch.draw(image, (body.getPosition().x-width/2f)*MiniGolf.BOX_TO_WORLD, (body.getPosition().y-width/2f)*MiniGolf.BOX_TO_WORLD, width*MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD );
@@ -78,7 +67,7 @@ public class Ball extends Element {
 			body.destroyFixture(body.getFixtureList().get(i));
 		}
 		body.getWorld().destroyBody(body);
-		deleted = true;
+		
 	}
 
 }

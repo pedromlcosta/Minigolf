@@ -176,7 +176,7 @@ public class OptionsScreen implements Screen {
 				if (valor > MiniGolf.MAX_PLAYERS || valor <= 0)
 					return false;
 				else {
-					MiniGolf.setNrPlayers(valor);
+					game.setNrPlayers(valor);
 					return true;
 
 				}

@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -45,35 +46,17 @@ public class GameScreen implements Screen, InputProcessor {
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.cam;
 
+	
 	private ArrayList<Element> courseElements = MiniGolf.getCourseElements();
-	private static ArrayList<Player> players = MiniGolf.getPlayers();
-	private static ArrayList<Player> actualPlayers = (ArrayList<Player>) MiniGolf.getPlayers().clone();
+	
+	private static ArrayList<Player> players = new ArrayList<Player>();
+	private static ArrayList<Player> actualPlayers = new ArrayList<Player>();
 	private static ArrayList<Player> playerRemovalList = new ArrayList<Player>();
-	private static Player currentPlayer = players.get(0);
+	private static Player currentPlayer;
+	
 	static boolean allBallsStopped = true;
 	 float mouseX, mouseY;
-	// static boolean allBallsStopped2 = true;
 
-	/*
-	 * TESTING SKIN STUFF private void createBasicSkin(){ //Create a font
-	 * BitmapFont font = new BitmapFont(); Skin skin = new Skin();
-	 * skin.add("default", font);
-	 * 
-	 * //Create a texture Pixmap pixmap = new
-	 * Pixmap((int)Gdx.graphics.getWidth()/4,(int)Gdx.graphics.getHeight()/10,
-	 * Pixmap.Format.RGB888); pixmap.setColor(Color.WHITE); pixmap.fill();
-	 * skin.add("background",new Texture(pixmap));
-	 * 
-	 * //Create a button style TextButton.TextButtonStyle textButtonStyle = new
-	 * TextButton.TextButtonStyle(); textButtonStyle.up =
-	 * skin.newDrawable("background", Color.GRAY); textButtonStyle.down =
-	 * skin.newDrawable("background", Color.DARK_GRAY); textButtonStyle.checked
-	 * = skin.newDrawable("background", Color.DARK_GRAY); textButtonStyle.over =
-	 * skin.newDrawable("background", Color.LIGHT_GRAY); textButtonStyle.font =
-	 * skin.getFont("default"); skin.add("default", textButtonStyle);
-	 * 
-	 * }
-	 */
 
 	// ///////////////////////////////////////////
 	// Screen Functions //
@@ -104,6 +87,8 @@ public class GameScreen implements Screen, InputProcessor {
 //		System.out.println((body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD + " " + (body.getPosition().y - width / 2f) * MiniGolf.BOX_TO_WORLD + " " + width * MiniGolf.BOX_TO_WORLD + " "
 //				+ height * MiniGolf.BOX_TO_WORLD + " " + body.getFixtureList().get(0).getShape().getRadius());
 
+		System.out.println("Rendering");
+		
 		if (!actualPlayers.isEmpty()) {
 
 			cam.update();
@@ -141,20 +126,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public void resize(int width, int height) {
-		// Gdx.gl.glViewport(height, height, width, height);
-
-		// float oldRatio = MiniGolf.WIDTH/MiniGolf.HEIGHT;
-		// float newRatio = width/height;
-		// float viewWidth = width;
-		// float viewHeight = height;
-		//
-		// if(width < height){
-		//
-		// }else{
-		//
-		// }
-		//
-		// cam.setToOrtho(false, viewportWidth, viewportHeight);
+		
 		game.viewport.update(width, height);
 		cam.update();
 
@@ -166,6 +138,8 @@ public class GameScreen implements Screen, InputProcessor {
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 
+		initializePlayers();
+		
 		Gdx.input.setInputProcessor(this);
 		// Setting body contact handling functions
 		MiniGolf.getW().setContactListener(new ContactListener() {
@@ -426,8 +400,27 @@ public class GameScreen implements Screen, InputProcessor {
 		// System.out.println("END");
 	}
 
-	public void initialize() {
+	public void initializePlayers() {
+		//INITIALIZE PLAYERS
+		for (int i = 0; i < game.getNrPlayers(); i++) {
 
+			// Vector2 ballPos = courseBallPos.get(i);
+			String str = "Player " + i;
+			Player player = new Player(str);
+			player.createBall(new Vector2(i + 1, i + 1), w, 0.25f);
+			players.add(player);
+			actualPlayers.add(player);
+		}
+		
+		currentPlayer = players.get(0);
+		
+		System.out.println("Initialized");
+		players.get(0).setJustPlayed(true);
+		System.out.println(players.get(0).isJustPlayed());
+		System.out.println(actualPlayers.get(0).isJustPlayed());
+		
+		
+		
 	}
 
 	public void resetWorld() {

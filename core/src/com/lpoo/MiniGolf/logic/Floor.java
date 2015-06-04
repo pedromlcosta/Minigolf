@@ -10,10 +10,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.screens.GameScreen;
 
-public class Floor extends Obstacle {
-	public Floor(Vector2 pos, float width, float height, World w, elementType type) {
+public class Floor extends Element {
+	public Floor(Vector2 pos, float width, float height, elementType type) {
 
-		super(pos, width, height, w);
+		super(pos, width, height, type);
+		/*
 		PolygonShape square = new PolygonShape();
 		square.setAsBox(width/2f, height/2f);
 		FixtureDef fixDef = new FixtureDef();
@@ -41,7 +42,7 @@ public class Floor extends Obstacle {
 			break;
 		default:
 			break;
-		}
+		}*/
 
 		image = new Sprite(new Texture(type.toString() + ".png"));
 		//image.setPosition(pos.x, pos.y);

@@ -16,9 +16,7 @@ public class Player {
 	private boolean won;
 	private Vector2 clubMovement;
 
-
-
-	Player(String test) {
+	public Player(String test) {
 		this.test = test;
 		setJustPlayed(false);
 		pontuacao = 0;
@@ -28,7 +26,7 @@ public class Player {
 		setWon(false);
 	}
 
-	Player(Ball b) {
+	public Player(Ball b) {
 		setJustPlayed(false);
 		ball = b;
 		pontuacao = 0;

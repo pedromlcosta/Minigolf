@@ -10,17 +10,31 @@ public class Element {
 		nothing, hole,  ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, grassFloor, accFloor, accWall, startSquareWall, startTriangularWall,
 	};
 	
-	Body body;
-	Vector2 oldPos;
-	float height;
-	float width;
-	Sprite image;
+	protected Body body;
+	protected Vector2 oldPos;
+	protected float width;
+	protected float height;
+	protected elementType type;
+	protected Sprite image;
 
 	public Element() {
 		oldPos = new Vector2();
 		height = 0;
 		width = 0;
 
+	}
+	
+	public Element(Vector2 pos, float width, float height) {
+		this.oldPos = pos;
+		this.width = width;
+		this.height = height;
+	}
+	
+	public Element(Vector2 pos, float width, float height, elementType type) {
+		this.oldPos = pos;
+		this.width = width;
+		this.height = height;
+		this.type = type;
 	}
 	
 	public void draw(){
@@ -35,13 +49,6 @@ public class Element {
 
 	public void setImage(Sprite image) {
 		this.image = image;
-	}
-	
-	public Element(Vector2 pos, float width, float height) {
-		this.oldPos = pos;
-		this.width = width;
-		this.height = height;
-		
 	}
 
 	public float getPosX() {

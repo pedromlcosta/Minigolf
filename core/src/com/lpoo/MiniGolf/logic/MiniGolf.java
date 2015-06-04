@@ -26,7 +26,7 @@ public class MiniGolf extends Game {
 	public static Viewport viewport;
 	private static World W;
 
-	private static int nrPlayers = 2;
+	private int nrPlayers = 2;
 	public static boolean allBallsStopped = false;
 	private static ArrayList<Player> players = new ArrayList<Player>();
 	private static Course currentCourse = new Course();
@@ -36,7 +36,7 @@ public class MiniGolf extends Game {
 
 	// Acrescentei
 	private static int nrCourses = 1;
-	//private ou public??
+	// private ou public??
 	public static final int MAX_PLAYERS = 4;
 
 	private static boolean randomCourse;
@@ -72,24 +72,18 @@ public class MiniGolf extends Game {
 
 		setCurrentCourse(new Course());
 
-		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
-				(HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT
-				/ BOX_TO_WORLD, W, elementType.grassFloor);
+		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
 		addCourseElement(grass1);
 
-		Floor sand2 = new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
-				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-				HEIGHT / 2f / BOX_TO_WORLD, W, elementType.sandFloor);
+		Floor sand2 = new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD), 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
 		addCourseElement(sand2);
 
 		Hole hole1 = new Hole(new Vector2(5f, 5f), W, 0.3f);
 		addCourseElement(hole1);
 
 		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
-		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT
-				/ BOX_TO_WORLD);
-		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT
-				/ BOX_TO_WORLD);
+		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
+		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT / BOX_TO_WORLD);
 		createEdge(0.0f, HEIGHT / BOX_TO_WORLD, 0.0f, 0.0f);
 
 		// ///////////////////////////////////////////////////////////////////
@@ -102,30 +96,14 @@ public class MiniGolf extends Game {
 		System.out.println("Cam Y: " + cam.position.y);
 
 		//
-		initGame(3);
 
-	//	GameScreen game = new GameScreen();
+		// GameScreen game = new GameScreen();
 		this.setScreen(new MenuScreen(this));
-	//	Gdx.input.setInputProcessor(game);
+		// Gdx.input.setInputProcessor(game);
 
 	}
 
-	//TODO PASSAR ISTO PARA O SHOW DO GAMESCREEN
-	public void initGame(int nPlayers) {
-		for (int i = 0; i < nPlayers; i++) {
-
-			// Vector2 ballPos = courseBallPos.get(i);
-			String str = "" + i;
-			Player player = new Player(str);
-			player.createBall(new Vector2(i + 1, i + 1), W, 0.25f);
-			players.add(player);
-			ElementType element =  (ElementType)player.getBall().getBody().getUserData();
-		}
-		
-		players.get(0).setJustPlayed(true);
-		
-		
-	}
+	// TODO PASSAR ISTO PARA O SHOW DO GAMESCREEN
 
 	public static ArrayList<Element> getEle() {
 		return ele;
@@ -285,20 +263,20 @@ public class MiniGolf extends Game {
 		MiniGolf.randomCourse = randomCourse;
 	}
 
-	public static int getNrPlayers() {
-		return nrPlayers;
-	}
-
-	public static void setNrPlayers(int nrPlayers) {
-		MiniGolf.nrPlayers = nrPlayers;
-	}
-
 	public static int getNrCourses() {
 		return nrCourses;
 	}
 
 	public static void setNrCourses(int nrCourses) {
 		MiniGolf.nrCourses = nrCourses;
+	}
+
+	public int getNrPlayers() {
+		return nrPlayers;
+	}
+
+	public void setNrPlayers(int nrPlayers) {
+		this.nrPlayers = nrPlayers;
 	}
 
 }
