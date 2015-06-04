@@ -136,5 +136,9 @@ public class Element {
 	public void createBody(World w){
 		
 	}
+	
+	public void destroyBody(){
+		
+	}
 
 }

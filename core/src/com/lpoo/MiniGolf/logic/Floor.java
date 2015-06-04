@@ -60,6 +60,13 @@ public class Floor extends Element {
 
 	}
 
+	public void destroyBody(){
+		for(int i = 0; i < body.getFixtureList().size; i++){
+			body.destroyFixture(body.getFixtureList().get(i));
+		}
+		body.getWorld().destroyBody(body);
+	}
+
 	public void draw() {
 		// System.out.println((body.getPosition().x - width/2f) *
 		// MiniGolf.BOX_TO_WORLD + " " + (body.getPosition().y- height/2f)*

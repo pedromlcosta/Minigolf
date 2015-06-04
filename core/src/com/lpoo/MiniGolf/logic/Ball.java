@@ -94,7 +94,7 @@ public class Ball extends Element {
 	/*
 	 * Destroys the Fixtures and Body of a ball
 	 */
-	public void destroy(){
+	public void destroyBody(){
 		for(int i = 0; i < body.getFixtureList().size; i++){
 			body.destroyFixture(body.getFixtureList().get(i));
 		}

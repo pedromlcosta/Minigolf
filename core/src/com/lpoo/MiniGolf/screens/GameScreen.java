@@ -107,14 +107,19 @@ public class GameScreen implements Screen, InputProcessor {
 			if (!playerRemovalList.isEmpty())
 				removeBalls();
 		} else {
+			
 			// END OF COURSE
+			resetPlayers();
+			resetCourse(selectedCourses.get(courseIndex-1));
+			System.out.println("Reseting Course nr. " + (courseIndex-1));
+			
 			if (courseIndex == selectedCourses.size()) {
-				// LAST COURSE - ENDING GAME
+				//WAS THE LAST COURSE - ENDING GAME
 				game.setScreen(new MenuScreen(game));
 			} else {
 				// CHANGING COURSE
-				resetPlayers();
 				initializeCourse(selectedCourses.get(courseIndex));
+				System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
 			}
 		}
@@ -380,7 +385,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		for (int i = 0; i < playerRemovalList.size(); i++) {
 			// Destroys ball and removes player from the course
-			playerRemovalList.get(i).getBall().destroy();
+			playerRemovalList.get(i).getBall().destroyBody();
 
 			actualPlayers.remove(playerRemovalList.get(i));
 		}
@@ -453,6 +458,15 @@ public class GameScreen implements Screen, InputProcessor {
 		// function was called
 		actualPlayers = (ArrayList<Player>) players.clone();
 
+	}
+	
+	public void resetCourse(Course course){
+		
+		for (int i = 0; i < currentCourseElements.size(); i++) {
+			// Creates this elements body -> gives form to it
+			currentCourseElements.get(i).destroyBody();
+		}
+		
 	}
 
 	public void resetWorld() {

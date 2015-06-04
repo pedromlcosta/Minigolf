@@ -11,9 +11,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Hole extends Element {
-	
+
 	private float radius;
-	
+
 	public Hole() {
 		super();
 	}
@@ -39,6 +39,15 @@ public class Hole extends Element {
 		body = w.createBody(bodyDef);
 		body.setUserData(new ElementType(elementType.hole, 0));
 		Fixture fixt = this.body.createFixture(fixDef);
+	}
+
+	public void destroyBody() {
+
+		for (int i = 0; i < body.getFixtureList().size; i++) {
+			body.destroyFixture(body.getFixtureList().get(i));
+		}
+		body.getWorld().destroyBody(body);
+		System.out.println("Destroyed hole");
 	}
 
 	public void draw() {
