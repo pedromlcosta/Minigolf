@@ -28,7 +28,7 @@ public class Hole extends Element {
 
 	public void createBody(World w) {
 		CircleShape circle = new CircleShape();
-		circle.setRadius(radius*0.50/f);
+		circle.setRadius(radius*0.50f);
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = circle;
 		fixDef.isSensor = true;
