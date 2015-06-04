@@ -32,7 +32,7 @@ import com.lpoo.MiniGolf.logic.Element.elementType;
 import com.lpoo.MiniGolf.logic.Floor;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
-public class EditorScreen implements Screen, InputProcessor {
+public class EditorScreen implements Screen {
 
 	private SpriteBatch batch;
 	private Skin skin;
@@ -50,8 +50,9 @@ public class EditorScreen implements Screen, InputProcessor {
 	Vector2 posInit;
 	private boolean drawElement, pressedLeftButton;
 	private ShapeRenderer shapeRenderer;
-	private OrthographicCamera cam = MiniGolf.cam;
-	private int cursorPosX, cursorPosY;
+	private OrthographicCamera cam;
+	private float cursorPosX;
+	float cursorPosY;
 	private float mouseX;
 	private float mouseY;
 	private float leftX, leftY;
@@ -70,19 +71,22 @@ public class EditorScreen implements Screen, InputProcessor {
 		batch.begin();
 		background.draw(batch);
 		batch.end();
-		MiniGolf.batch.begin();
-		for (int i = 0; i < created.getElementos().size(); i++) {
-			created.getElement(i).draw();
-			if (i == 1){
-				
-			}
-//				System.out.println("i: " + i + " Height: " + created.getElement(i).getHeight() + "  Width: " + created.getElement(i).getWidth() + "   PosX: " + created.getElement(i).getPosX()
-//						+ "   PosY: " + created.getElement(i).getPosY());
-		}
-		MiniGolf.batch.end();
+		/*
+		 * MiniGolf.batch.begin(); for (int i = 0; i <
+		 * created.getElementos().size(); i++) {
+		 * created.getElement(i).draw(MiniGolf.batch, 0); if (i == 1)
+		 * System.out.println("i: " + i + " Height: " +
+		 * created.getElement(i).getHeight() + "  Width: " +
+		 * created.getElement(i).getWidth() + "   PosX: " +
+		 * created.getElement(i).getPosX() + "   PosY: " +
+		 * created.getElement(i).getPosY()); } MiniGolf.batch.end();
+		 */
+		stage.act(delta);
+		stage.draw();
+
 		if (pressedLeftButton) {
-			Vector3 mouseVec = MiniGolf.viewport.unproject(new Vector3((float) cursorPosX, (float) cursorPosY, 0));
-			Vector3 leftButtonVec = MiniGolf.viewport.unproject(new Vector3((float) posInit.x, (float) posInit.y, 0));
+			Vector3 mouseVec = stage.getViewport().unproject(new Vector3((float) cursorPosX, (float) cursorPosY, 0));
+			Vector3 leftButtonVec = stage.getViewport().unproject(new Vector3((float) posInit.x, (float) posInit.y, 0));
 			mouseX = mouseVec.x;
 			mouseY = mouseVec.y;
 			leftX = leftButtonVec.x;
@@ -91,7 +95,7 @@ public class EditorScreen implements Screen, InputProcessor {
 			shapeRenderer.setProjectionMatrix(cam.combined);
 			shapeRenderer.begin(ShapeType.Filled);
 
-//			System.out.println(leftX + "   " + leftY + "   " + mouseX + "  " + mouseY);
+			System.out.println(leftX + "   " + leftY + "   " + mouseX + "  " + mouseY);
 
 			// Square of influence
 			/* 1 2 */
@@ -104,16 +108,12 @@ public class EditorScreen implements Screen, InputProcessor {
 			shapeRenderer.end();
 		}
 
-		stage.act(delta);
-		stage.draw();
-
 		cam.update();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		MiniGolf.viewport.update(width, height);
 		cam.update();
 
 	}
@@ -146,7 +146,7 @@ public class EditorScreen implements Screen, InputProcessor {
 		shapeRenderer = new ShapeRenderer();
 		createElements();
 		addListeners();
-
+		cam = (OrthographicCamera) stage.getCamera();
 		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
 		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
@@ -157,18 +157,31 @@ public class EditorScreen implements Screen, InputProcessor {
 
 		shapeRenderer.setColor(Color.RED);
 
-		 stage.addListener(new InputListener() {
-		
-		 public boolean mouseMoved(int posX, int posY ) {
-		
-		 return false;
-		
-		 }});
+		stage.addListener(new InputListener() {
+
+			@Override
+			public boolean mouseMoved(InputEvent Event, float posX, float posY) {
+				return false;
+
+			}
+		});
 
 	}
 
 	private void addListeners() {
+		doneButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
 
+				for (Element ele : created.getElementos()) {
+					ele.destroyBody();
+				}
+
+				game.addToSelectedCourses(created);
+				// add course to thingy
+				// game.setScreen(new MenuScreen(game));
+			}
+		});
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -186,7 +199,6 @@ public class EditorScreen implements Screen, InputProcessor {
 	}
 
 	public Element getElement(String selected) {
-
 		switch (selected) {
 		case "SandFloor":
 			return null;
@@ -198,7 +210,7 @@ public class EditorScreen implements Screen, InputProcessor {
 
 	private void createElements() {
 		created = new Course();
-
+		overrideStageListener();
 		Label tableLabel = new Label("Editor", skin);
 
 		Label spaceLabel = new Label("", skin);
@@ -223,21 +235,17 @@ public class EditorScreen implements Screen, InputProcessor {
 		scene.row();
 		scene.setPosition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
 
-		 
-		// Floor grass1 = new Floor(new Vector2(0, 0), MiniGolf.getWidth() /
-		// MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD,
-		// elementType.grassFloor); grass1.createBody(MiniGolf.getW());
-		// created.addCourseElement(grass1);
-		 
-
-		//
+		Floor grass1 = new Floor(new Vector2((MiniGolf.WIDTH / 2f / MiniGolf.BOX_TO_WORLD), (MiniGolf.HEIGHT / 2f / MiniGolf.BOX_TO_WORLD)), MiniGolf.WIDTH / MiniGolf.BOX_TO_WORLD, MiniGolf.HEIGHT
+				/ MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
+		grass1.createBody(MiniGolf.getW());
+		created.addCourseElement(grass1);
+		stage.addActor(grass1);
 		// Floor sand2 = new Floor(new Vector2(3 * (MiniGolf.WIDTH / 4f /
 		// MiniGolf.BOX_TO_WORLD), 3 * (MiniGolf.HEIGHT / 4f /
 		// MiniGolf.BOX_TO_WORLD)), MiniGolf.WIDTH / 2f / MiniGolf.BOX_TO_WORLD,
 		// MiniGolf.HEIGHT / 2f / MiniGolf.BOX_TO_WORLD, MiniGolf.getW(),
 		// elementType.sandFloor);
 		// created.addCourseElement(sand2);
-
 	}
 
 	private void addElement() {
@@ -265,7 +273,9 @@ public class EditorScreen implements Screen, InputProcessor {
 			} else
 				posInicialY = leftY;
 
-//			System.out.println("In add Height: " + height + "   Width: " + width + "  PosEX: " + posInicialX + " PosEY: " + posInicialY);
+			elementToAdd.setOldPos(new Vector2(posInicialX, posInicialY));
+			// System.out.println("In add Height: " + height + "   Width: " +
+			// width + "  PosEX: " + posInicialX + " PosEY: " + posInicialY);
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
 
@@ -280,80 +290,66 @@ public class EditorScreen implements Screen, InputProcessor {
 			this.created.addEle(elementToAdd);
 			pressedLeftButton = false;
 			drawElement = false;
-			System.out.println(created.getElementos().size());
+			// System.out.println(created.getElementos().size());
 		}
 
 	}
 
-	@Override
-	public boolean keyDown(int arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	public void overrideStageListener() {
 
-	@Override
-	public boolean keyTyped(char arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		stage.addListener(new InputListener() {
+			@Override
+			public boolean mouseMoved(InputEvent Event, float posX, float posY) {
+				cursorPosX = posX;
+				cursorPosY = posY;
+				if (!pressedLeftButton) {
+					posInit.x = posX;
+					posInit.y = posY;
+				}
 
-	@Override
-	public boolean keyUp(int arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+				return false;
+			}
+		});
 
-	@Override
-	public boolean mouseMoved(int posX, int posY) {
-		cursorPosX = posX;
-		cursorPosY = posY;
-		if (!pressedLeftButton) {
-			posInit.x = posX;
-			posInit.y = posY;
-		}
+		stage.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
 
-		return false;
-	}
+				if (button == Buttons.LEFT && !pressedLeftButton) {
+					System.out.println("Left pressed");
+					posInit.x = posX;
+					posInit.y = posY;
+					pressedLeftButton = true;
+					return true;
+				} else if (button == Buttons.RIGHT)
+					pressedLeftButton = false;
+				return false;
+			}
+		});
 
-	@Override
-	public boolean scrolled(int arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		stage.addListener(new InputListener() {
+			@Override
+			public void touchUp(InputEvent Event, float posX, float posY, int arg2, int button) {
+				if (button == Buttons.LEFT) {
+					drawElement = true;
+					System.out.println("Left released");
+					addElement();
+				}
+			}
+		});
 
-	@Override
-	public boolean touchDown(int posX, int posY, int arg2, int button) {
+		stage.addListener(new InputListener() {
+			@Override
+			public void touchDragged(InputEvent Event, float posX, float posY, int button) {
+				if (button == Buttons.LEFT) {
+					cursorPosX = posX;
+					cursorPosY = posY;
+					System.out.println("OUT");
+				}
 
-		if (button == Buttons.LEFT && !pressedLeftButton) {
-			System.out.println("Left pressed");
-			posInit.x = posX;
-			posInit.y = posY;
-			pressedLeftButton = true;
-			return true;
-		} else if (button == Buttons.RIGHT)
-			pressedLeftButton = false;
-		return false;
-	}
+			}
+		});
 
-	@Override
-	public boolean touchUp(int posX, int posY, int arg2, int button) {
-		if (button == Buttons.LEFT) {
-			drawElement = true;
-			System.out.println("Left released");
-			addElement();
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int posX, int posY, int button) {
-		if (button == Buttons.LEFT) {
-			cursorPosX = posX;
-			cursorPosY = posY;
-
-		}
-		return false;
 	}
 
 	@Override
@@ -361,6 +357,7 @@ public class EditorScreen implements Screen, InputProcessor {
 		batch.dispose();
 		skin.dispose();
 		stage.dispose();
+		background.getTexture().dispose();
 
 	}
 

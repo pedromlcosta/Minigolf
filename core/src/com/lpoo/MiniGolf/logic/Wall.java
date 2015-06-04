@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.lpoo.MiniGolf.logic.Element.elementType;
 import com.lpoo.MiniGolf.screens.GameScreen;
 
 public class Wall extends Element {
@@ -38,34 +39,45 @@ public class Wall extends Element {
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = square;
 		fixDef.isSensor = false;
+		
+		PolygonShape square2 = new PolygonShape();
+		square2.setAsBox(width / 2f, height / 2f);
+		FixtureDef fixDefSensor = new FixtureDef();
+		fixDefSensor.shape = square2;
+		fixDefSensor.isSensor = true;
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(oldPos);
 
-		switch (type) {
-		case regularWall:
-			fixDef.restitution = 1.0f;
-			break;
-		case glueWall:
-			fixDef.restitution = 0.1f;
-			break;
-		case bonceWall:
-			fixDef.restitution = 2.0f;
-			break;
-		default:
-			break;
-		}
-		
 		body = w.createBody(bodyDef);
-		Fixture fixt = body.createFixture(fixDef);
+		Fixture fixt = body.createFixture(fixDef);            //Wall physic fixture for contact
+		Fixture fixtSense = body.createFixture(fixDefSensor); //Wall sensor
+		
+
+		
 
 		fixt.setFriction(0.0f);
 
+		switch (type) {
+		case regularWall:
+			fixt.setRestitution(1.0f);
+			body.setUserData(new ElementType(elementType.regularWall, 0));
+			break;
+		case glueWall:
+			fixt.setRestitution(0.1f);
+			body.setUserData(new ElementType(elementType.glueWall, 0));
+			break;
+		case bonceWall:
+			fixt.setRestitution(2.0f);
+			body.setUserData(new ElementType(elementType.bonceWall, 0));
+			break;
+		default:
+			break;
 		
 
 	}
-
+}
 	public void destroyBody() {
 		for (int i = 0; i < body.getFixtureList().size; i++) {
 			body.destroyFixture(body.getFixtureList().get(i));

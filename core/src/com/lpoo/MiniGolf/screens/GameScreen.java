@@ -166,11 +166,14 @@ public class GameScreen implements Screen, InputProcessor {
 				ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
 				ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
 
+				
+				//we fucked conflitos... 
 				if (elementA == null || elementB == null) {
 					return;
 				}
-
+				
 				if ((elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball)) {
+					System.out.println("Begin contact: " + elementA.type + " and " + elementB.type);
 					if (arg0.getFixtureA().isSensor()) {
 
 						
@@ -187,12 +190,12 @@ public class GameScreen implements Screen, InputProcessor {
 						}
 					} else if (elementB.type == Element.elementType.glueWall) {
 						elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
-						System.out.println("Begin contact: " + elementA.type + " and " + elementB.type);
+						//System.out.println("Begin contact: " + elementA.type + " and " + elementB.type);
 					}
 
 				} else if ((elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball)) {
 
-					
+					System.out.println("Begin contact: " + elementA.type + " and " + elementB.type);
 
 					if (arg0.getFixtureB().isSensor()) {
 						// accesses players because it is a ball that has the id

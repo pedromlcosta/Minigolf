@@ -62,7 +62,6 @@ public class Element extends Actor {
 		// height*MiniGolf.BOX_TO_WORLD );
 	}
 
-	
 	@Override
 	public void draw(Batch batch, float parentAlfa) {
 		// System.out.println("Walrus");
