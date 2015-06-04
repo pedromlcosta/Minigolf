@@ -64,12 +64,11 @@ public class GameScreen implements Screen, InputProcessor {
 	public GameScreen(MiniGolf game) {
 		this.game = game;
 	}
-	
-	/////////////////////////////////////////////
-	// 			  SCREEN FUNCTIONS   		   //
-	/////////////////////////////////////////////
 
-	
+	// ///////////////////////////////////////////
+	// SCREEN FUNCTIONS //
+	// ///////////////////////////////////////////
+
 	@Override
 	public void render(float delta) {
 
@@ -77,7 +76,7 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		System.out.println("Nr. Players is " + players.size());
-		
+
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 			// CURRENT COURSE RENDER CYCLE
@@ -110,21 +109,21 @@ public class GameScreen implements Screen, InputProcessor {
 			if (!playerRemovalList.isEmpty())
 				removeBalls();
 		} else {
-			
+
 			// END OF COURSE
-			System.out.println("Reseting Course nr. " + (courseIndex-1));
-			
+			System.out.println("Reseting Course nr. " + (courseIndex - 1));
+
 			if (courseIndex == selectedCourses.size()) {
-				//WAS THE LAST COURSE - ENDING GAME
-				//resetPlayers();
-				resetCourse(selectedCourses.get(courseIndex-1));
+				// WAS THE LAST COURSE - ENDING GAME
+				// resetPlayers();
+				resetCourse(selectedCourses.get(courseIndex - 1));
 				game.setScreen(new MenuScreen(game));
 				this.dispose();
 			} else {
 				// CHANGING COURSE
 				resetPlayers();
-				resetCourse(selectedCourses.get(courseIndex-1));
-				
+				resetCourse(selectedCourses.get(courseIndex - 1));
+
 				initializeCourse(selectedCourses.get(courseIndex));
 				System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
@@ -293,7 +292,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 			float mouseX = vec.x;
 			float mouseY = vec.y;
-
+			System.out.println(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
 			shapeRenderer.rectLine(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD, currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD, mouseX, mouseY, 5);
 			shapeRenderer.end();
 		}
@@ -348,7 +347,8 @@ public class GameScreen implements Screen, InputProcessor {
 		ArrayList<Player> playerDecisionList = new ArrayList<Player>();
 
 		for (int i = 0; i < players.size(); i++) {
-			//System.out.println("Ball nr. " + i + " Over = " + players.get(i).isOver());
+			// System.out.println("Ball nr. " + i + " Over = " +
+			// players.get(i).isOver());
 
 			if ((players.get(i).isOver() == false) || (players.get(i).isOver() && players.get(i).isJustPlayed())) {
 				playerDecisionList.add(players.get(i));
@@ -386,21 +386,21 @@ public class GameScreen implements Screen, InputProcessor {
 		playerRemovalList.clear();
 	}
 
-	/////////////////////////////////////////////
-	//   INITIALIZATION AND RESET FUNCTIONS	   //
-	/////////////////////////////////////////////
-	
+	// ///////////////////////////////////////////
+	// INITIALIZATION AND RESET FUNCTIONS //
+	// ///////////////////////////////////////////
+
 	/*
 	 * Called when the show() method is called, initializing the player
 	 * variables for the first time
 	 */
 	public void initializePlayers() {
 		// INITIALIZE PLAYERS
-		
-		 players = new ArrayList<Player>();
-		 
+
+		players = new ArrayList<Player>();
+
 		System.out.println("Initialize - Nr. Players is " + players.size());
-		
+
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 
 			// Vector2 ballPos = courseBallPos.get(i);
@@ -449,14 +449,14 @@ public class GameScreen implements Screen, InputProcessor {
 		actualPlayers = (ArrayList<Player>) players.clone();
 
 	}
-	
-	public void resetCourse(Course course){
-		
+
+	public void resetCourse(Course course) {
+
 		for (int i = 0; i < currentCourseElements.size(); i++) {
 			// Creates this elements body -> gives form to it
 			currentCourseElements.get(i).destroyBody();
 		}
-		
+
 	}
 
 	public void resetWorld() {

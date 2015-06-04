@@ -62,13 +62,15 @@ public class MiniGolf extends Game {
 		// /// TEST COURSE /////
 		// ///////////////////////////////////////////////////////////////////
 
-		
-
 		// Course 1
 		Course Course1 = new Course();
-		
-		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
-		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD), 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
+		Course1.setNome("Course 1");
+		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
+				(HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT
+				/ BOX_TO_WORLD, elementType.grassFloor);
+		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
+				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+				HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
 		Hole hole1 = new Hole(new Vector2(5f, 5f), W, 0.3f);
 		Course1.addEle(grass1);
 		Course1.addEle(sand1);
@@ -76,21 +78,27 @@ public class MiniGolf extends Game {
 
 		// Course 2
 		Course Course2 = new Course();
-		Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
-		Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD), 1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
+		Course2.setNome("Course 2");
+		Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
+				(HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT
+				/ BOX_TO_WORLD, elementType.grassFloor);
+		Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
+				1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+				HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
 		Hole hole2 = new Hole(new Vector2(7f, 7f), W, 0.3f);
 		Course2.addEle(grass2);
 		Course2.addEle(sand2);
 		Course2.addEle(hole2);
-		
-		//Adding to all and selected
+
+		// Adding to all and selected
 		addToAllCourses(Course1);
 		addToAllCourses(Course2);
 		addToSelectedCourses(Course1);
 		addToSelectedCourses(Course2);
 
 		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
-		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
+		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT
+				/ BOX_TO_WORLD);
 		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT / BOX_TO_WORLD);
 		createEdge(0.0f, HEIGHT / BOX_TO_WORLD, 0.0f, 0.0f);
 
@@ -237,8 +245,8 @@ public class MiniGolf extends Game {
 	public void setSelectedCourses(ArrayList<Course> selectedCourses) {
 		this.selectedCourses = selectedCourses;
 	}
-	
-	public void addToSelectedCourses(Course course){
+
+	public void addToSelectedCourses(Course course) {
 		selectedCourses.add(course);
 	}
 
@@ -249,8 +257,8 @@ public class MiniGolf extends Game {
 	public void setAllCourses(ArrayList<Course> allCourses) {
 		this.allCourses = allCourses;
 	}
-	
-	public void addToAllCourses(Course course){
+
+	public void addToAllCourses(Course course) {
 		allCourses.add(course);
 	}
 
