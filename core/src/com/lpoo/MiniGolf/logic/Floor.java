@@ -57,7 +57,9 @@ public class Floor extends Element {
 		case iceFloor:
 			body.setUserData(new ElementType(type, GameScreen.ICE_DRAG, this));
 			break;
-
+		case voidFloor:
+			body.setUserData(new ElementType(type, 0, this));
+			break;
 		default:
 			break;
 		}

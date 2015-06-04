@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class Element extends Actor {
 
 	public enum elementType {
-		nothing, hole, ball, glueWall, waterFloor, iceFloor, illusionWall, regularWall, sandFloor, bouncyWall, speedWall, teleporter, squareOne, grassFloor
+		nothing, hole, ball, glueWall, waterFloor, iceFloor, illusionWall, regularWall, sandFloor, bouncyWall, voidFloor, teleporter, squareOne, grassFloor
 	};
 
 	protected Body body;

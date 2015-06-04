@@ -65,6 +65,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private Table score;
 	private int ballsInsideIllusion = 0;
 	static boolean allBallsStopped = true;
+	private boolean ballFellVoid = false;
 	float mouseX, mouseY;
 
 	public GameScreen(MiniGolf game) {
@@ -85,7 +86,10 @@ public class GameScreen implements Screen, InputProcessor {
 										// over
 			// CURRENT COURSE RENDER CYCLE
 
-			System.out.println("Current player has id: " + currentPlayer.getPlayerID());
+			if(ballFellVoid){
+				currentPlayer.getBallBody().setTransform(currentCourse.getPositions().get(currentPlayer.getPlayerID()-1),currentPlayer.getBallBody().getAngle());
+				ballFellVoid = false;
+			}
 			
 			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
 
@@ -194,6 +198,8 @@ public class GameScreen implements Screen, InputProcessor {
 							playerRemovalList.add(elementA.player);
 							elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
 
+						}else if(elementB.type == Element.elementType.voidFloor){
+							elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
 						}
 					}
 					// Collisions with the OUTSIDE SENSOR
@@ -217,6 +223,9 @@ public class GameScreen implements Screen, InputProcessor {
 							playerRemovalList.add(elementB.player);
 							elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
 
+						}else if(elementA.type == Element.elementType.voidFloor){
+							elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
+							ballFellVoid = true;
 						}
 
 					}
