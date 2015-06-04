@@ -50,7 +50,7 @@ public class EditorScreen implements Screen {
 	Vector2 posInit;
 	private boolean drawElement, pressedLeftButton;
 	private ShapeRenderer shapeRenderer;
-	// private OrthographicCamera cam;
+	private OrthographicCamera cam;
 	private float cursorPosX;
 	float cursorPosY;
 	private float mouseX;
@@ -81,7 +81,7 @@ public class EditorScreen implements Screen {
 		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
 		stage.getViewport().setCamera(secondaryCamera);
-
+		cam = (OrthographicCamera) stage.getViewport().getCamera();
 		stage.addActor(scene);
 		Gdx.input.setInputProcessor(stage);
 
@@ -96,18 +96,18 @@ public class EditorScreen implements Screen {
 		batch.begin();
 		background.draw(batch);
 		batch.end();
-		/*
-		 * MiniGolf.batch.begin(); for (int i = 0; i <
-		 * created.getElementos().size(); i++) {
-		 * created.getElement(i).draw(MiniGolf.batch, 0); if (i == 1)
-		 * System.out.println("i: " + i + " Height: " +
-		 * created.getElement(i).getHeight() + "  Width: " +
-		 * created.getElement(i).getWidth() + "   PosX: " +
-		 * created.getElement(i).getPosX() + "   PosY: " +
-		 * created.getElement(i).getPosY()); } MiniGolf.batch.end();
-		 */
+
+		// MiniGolf.batch.begin(); for (int i = 0; i <
+		// created.getElementos().size(); i++) {
+		// created.getElement(i).draw(MiniGolf.batch, 0); if (i == 1)
+		// System.out.println("i: " + i + " Height: " +
+		// created.getElement(i).getHeight() + "  Width: " +
+		// created.getElement(i).getWidth() + "   PosX: " +
+		// created.getElement(i).getPosX() + "   PosY: " +
+		// created.getElement(i).getPosY()); } MiniGolf.batch.end();
+
 		stage.act(delta);
-		// stage.draw();
+		stage.draw();
 		// System.out.println(pressedLeftButton);
 		if (pressedLeftButton) {
 			// Vector3 mouseVec = stage.getViewport().unproject(new
@@ -136,13 +136,13 @@ public class EditorScreen implements Screen {
 			shapeRenderer.end();
 		}
 
-		stage.getCamera().update();
+		cam.update();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		stage.getCamera().update();
+		cam.update();
 
 	}
 
@@ -229,8 +229,13 @@ public class EditorScreen implements Screen {
 		scene.row();
 		scene.setPosition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
 
-		Floor grass1 = new Floor(new Vector2((MiniGolf.WIDTH / 2f / MiniGolf.BOX_TO_WORLD), (MiniGolf.HEIGHT / 2f / MiniGolf.BOX_TO_WORLD)), MiniGolf.WIDTH / MiniGolf.BOX_TO_WORLD, MiniGolf.HEIGHT
-				/ MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
+		Floor grass1 = new Floor(new Vector2(0, 0), MiniGolf.getWidth() / MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
+		grass1.createBody(MiniGolf.getW());
+		// Floor grass1 = new Floor(new Vector2((MiniGolf.WIDTH / 2f /
+		// MiniGolf.BOX_TO_WORLD), (MiniGolf.HEIGHT / 2f /
+		// MiniGolf.BOX_TO_WORLD)), MiniGolf.WIDTH / MiniGolf.BOX_TO_WORLD,
+		// MiniGolf.HEIGHT
+		// / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
 		grass1.createBody(MiniGolf.getW());
 		created.addCourseElement(grass1);
 		stage.addActor(grass1);
@@ -290,7 +295,6 @@ public class EditorScreen implements Screen {
 	}
 
 	public void overrideStageListener() {
- 
 
 		stage.addListener(new InputListener() {
 			@Override
