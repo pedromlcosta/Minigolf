@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 public class Element {
-	
+
 	public enum elementType {
-		nothing, hole,  ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, grassFloor, accFloor, accWall, startSquareWall, startTriangularWall,
+		nothing, hole, ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, grassFloor, accFloor, accWall, startSquareWall, startTriangularWall,
 	};
-	
+
 	protected Body body;
 	protected Vector2 oldPos;
 	protected float width;
@@ -23,26 +23,41 @@ public class Element {
 		width = 0;
 
 	}
-	
+
 	public Element(Vector2 pos, float width, float height) {
 		this.oldPos = pos;
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	public Element(Vector2 pos, float width, float height, elementType type) {
 		this.oldPos = pos;
 		this.width = width;
 		this.height = height;
 		this.type = type;
 	}
-	
-	public void draw(){
-		//System.out.println("Walrus");
-		//System.out.println(body.getPosition().x + " " + body.getPosition().y + " " + width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD);
-		//MiniGolf.batch.draw(image, body.getPosition().x, body.getPosition().y, width*MiniGolf.BOX_TO_WORLD , height*MiniGolf.BOX_TO_WORLD );
+
+	public Element(float width, float height, elementType type) {
+
+		this.width = width;
+		this.height = height;
+		this.type = type;
 	}
-	
+
+	public Element(elementType type) {
+		this.type = type;
+	}
+
+	public void draw() {
+		// System.out.println("Walrus");
+		// System.out.println(body.getPosition().x + " " + body.getPosition().y
+		// + " " + width*MiniGolf.BOX_TO_WORLD + " " +
+		// height*MiniGolf.BOX_TO_WORLD);
+		// MiniGolf.batch.draw(image, body.getPosition().x,
+		// body.getPosition().y, width*MiniGolf.BOX_TO_WORLD ,
+		// height*MiniGolf.BOX_TO_WORLD );
+	}
+
 	public Sprite getImage() {
 		return image;
 	}
