@@ -155,13 +155,13 @@ public class EditorScreen implements Screen, InputProcessor {
 
 		shapeRenderer.setColor(Color.RED);
 
-		// stage.addListener(new InputListener() {
-		//
-		// public boolean mouseMoved(int posX, int posY ) {
-		//
-		// return false;
-		//
-		// }});
+		 stage.addListener(new InputListener() {
+		
+		 public boolean mouseMoved(int posX, int posY ) {
+		
+		 return false;
+		
+		 }});
 
 	}
 
