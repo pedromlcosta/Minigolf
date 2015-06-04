@@ -168,7 +168,6 @@ public class OptionsScreen implements Screen {
 	private void addListeners() {
 
 		numberOfPlayers.setTextFieldFilter(new TextFieldFilter() {
-
 			@Override
 			public boolean acceptChar(TextField textField, char c) {
 				int valor;
@@ -177,7 +176,6 @@ public class OptionsScreen implements Screen {
 					builder = new StringBuilder(numberOfPlayers.getText() + c);
 					valor = Integer.parseUnsignedInt(builder.toString());
 				} catch (NumberFormatException e) {
-
 					numberOfPlayers.setText("");
 					return false;
 				}
@@ -187,11 +185,9 @@ public class OptionsScreen implements Screen {
 				else {
 					game.setNrPlayers(valor);
 					return true;
-
 				}
 			}
 		});
-
 		numberOfPlayers.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -203,7 +199,6 @@ public class OptionsScreen implements Screen {
 
 			}
 		});
-
 		numberOfCourses.setTextFieldFilter(new TextFieldFilter() {
 			@Override
 			public boolean acceptChar(TextField textField, char c) {
@@ -226,7 +221,6 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
-
 		numberOfCourses.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -237,7 +231,6 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
-
 		maxTimeSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
@@ -246,7 +239,6 @@ public class OptionsScreen implements Screen {
 						+ (int) maxTimeSlider.getValue()));
 			}
 		});
-
 		maxTacadasSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
@@ -255,7 +247,6 @@ public class OptionsScreen implements Screen {
 						+ (int) maxTacadasSlider.getValue()));
 			}
 		});
-
 		userPicksCheck.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
@@ -274,14 +265,12 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
-
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				game.setScreen(new MenuScreen(game));
 			}
 		});
-
 		selectGame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
