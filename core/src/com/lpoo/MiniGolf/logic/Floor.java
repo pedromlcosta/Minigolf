@@ -1,6 +1,7 @@
 package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -67,16 +68,19 @@ public class Floor extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
-	public void draw() {
+	@Override
+	public void draw(Batch batch, float parentAlfa) {
 		// System.out.println((body.getPosition().x - width/2f) *
 		// MiniGolf.BOX_TO_WORLD + " " + (body.getPosition().y- height/2f)*
 		// MiniGolf.BOX_TO_WORLD + " " + width*MiniGolf.BOX_TO_WORLD + " " +
 		// height*MiniGolf.BOX_TO_WORLD);
 		// image.setCenter(x, y);
-//		System.out.println("IN PosX: " + (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD + " PosY: " + (body.getPosition().y - height / 2f) * MiniGolf.BOX_TO_WORLD + " Width: " + width
-//				* MiniGolf.BOX_TO_WORLD + " Height: " + height * MiniGolf.BOX_TO_WORLD);
-
-		MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2f) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
+		// System.out.println("IN PosX: " + (body.getPosition().x - width / 2f)
+		// * MiniGolf.BOX_TO_WORLD + " PosY: " + (body.getPosition().y - height
+		// / 2f) * MiniGolf.BOX_TO_WORLD + " Width: " + width
+		// * MiniGolf.BOX_TO_WORLD + " Height: " + height *
+		// MiniGolf.BOX_TO_WORLD);
+		batch.draw(image, (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2f) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
 				* MiniGolf.BOX_TO_WORLD);
 	}
 

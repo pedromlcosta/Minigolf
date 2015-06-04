@@ -32,7 +32,7 @@ import com.lpoo.MiniGolf.logic.Player;
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
 public class GameScreen implements Screen, InputProcessor {
 
-	public static final float GRASS_DRAG = 0.8f;
+	public static final float GRASS_DRAG = 1.5f;
 	public static final float SAND_DRAG = 6.0f;
 
 	static final float W_STEP = 1f / 60f;
@@ -79,12 +79,12 @@ public class GameScreen implements Screen, InputProcessor {
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 			// CURRENT COURSE RENDER CYCLE
-			
-			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart)/1000;
-			
-			if(elapsedTimeSeconds > game.getTempoMax() && allBallsStopped)
+
+			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
+
+			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped)
 				updateCurrentPlayer();
-			
+
 			cam.update();
 
 			MiniGolf.batch.setProjectionMatrix(cam.combined);
@@ -99,7 +99,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 			MiniGolf.batch.end();
 
-			//Checks if balls are stopped and render lines by polling
+			// Checks if balls are stopped and render lines by polling
 			renderLine();
 
 			debugRenderer.render(w, debugMatrix);
@@ -116,7 +116,7 @@ public class GameScreen implements Screen, InputProcessor {
 		} else {
 
 			// END OF COURSE
-			//System.out.println("Reseting Course nr. " + (courseIndex - 1));
+			// System.out.println("Reseting Course nr. " + (courseIndex - 1));
 
 			if (courseIndex == selectedCourses.size()) {
 				// WAS THE LAST COURSE - ENDING GAME
@@ -130,7 +130,7 @@ public class GameScreen implements Screen, InputProcessor {
 				resetCourse(selectedCourses.get(courseIndex - 1));
 
 				initializeCourse(selectedCourses.get(courseIndex));
-			//	System.out.println("Initializing Course nr. " + courseIndex);
+				// System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
 			}
 		}
@@ -156,7 +156,7 @@ public class GameScreen implements Screen, InputProcessor {
 															// courseIndex is 0
 		courseIndex++;
 		turnStart = System.currentTimeMillis();
-		
+
 		Gdx.input.setInputProcessor(this);
 		// Setting body contact handling functions
 		MiniGolf.getW().setContactListener(new ContactListener() {
@@ -172,6 +172,8 @@ public class GameScreen implements Screen, InputProcessor {
 
 				if ((elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball)) {
 					if (arg0.getFixtureA().isSensor()) {
+
+						
 						// accesses players because it is a ball that has the id
 						// refferent to a index of that array
 						elementA.player.getBall().steppingOn = elementB.type;
@@ -183,10 +185,14 @@ public class GameScreen implements Screen, InputProcessor {
 							elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
 
 						}
-
+					} else if (elementB.type == Element.elementType.glueWall) {
+						elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
+						System.out.println("Begin contact: " + elementA.type + " and " + elementB.type);
 					}
 
 				} else if ((elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball)) {
+
+					
 
 					if (arg0.getFixtureB().isSensor()) {
 						// accesses players because it is a ball that has the id
@@ -200,6 +206,10 @@ public class GameScreen implements Screen, InputProcessor {
 							elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
 
 						}
+
+					} else if (elementA.type == Element.elementType.glueWall) {
+						elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
+						//System.out.println("Begin contact: " + elementB.type + " and " + elementA.type);
 					}
 
 				}
@@ -298,7 +308,9 @@ public class GameScreen implements Screen, InputProcessor {
 
 			float mouseX = vec.x;
 			float mouseY = vec.y;
-			//System.out.println(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
+			// System.out.println(currentPlayer.getBallPosX() *
+			// MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() *
+			// MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
 			shapeRenderer.rectLine(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD, currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD, mouseX, mouseY, 5);
 			shapeRenderer.end();
 		}
@@ -406,13 +418,13 @@ public class GameScreen implements Screen, InputProcessor {
 
 		players = new ArrayList<Player>();
 
-		//System.out.println("Initialize - Nr. Players is " + players.size());
+		// System.out.println("Initialize - Nr. Players is " + players.size());
 
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 
 			// Vector2 ballPos = courseBallPos.get(i);
 			String str = "Player " + i;
-			Player player = new Player(str);
+			Player player = new Player(i + 1);
 			player.createBall(new Vector2(i + 1, i + 1), w, 0.25f);
 			players.add(player);
 		}
@@ -465,7 +477,6 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 
 	}
-
 
 	// ///////////////////////////////////////////
 	// InputProcessor Functions //

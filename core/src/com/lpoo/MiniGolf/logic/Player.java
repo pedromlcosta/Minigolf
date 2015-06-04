@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Player {
 
-	public String test;
+	private int playerID;
 	private Ball ball;
 	private int pontuacao;
 	private int tacadasJogada;
@@ -17,8 +17,8 @@ public class Player {
 	private boolean won;
 	private Vector2 clubMovement;
 
-	public Player(String test) {
-		this.test = test;
+	public Player(int id) {
+		playerID = id;
 		setJustPlayed(false);
 		pontuacao = 0;
 		tacadasJogada = 0;
@@ -179,6 +179,14 @@ public class Player {
 
 	public void setPlayTime(int playTime) {
 		this.playTime = playTime;
+	}
+
+	public int getPlayerID() {
+		return playerID;
+	}
+
+	public void setPlayerID(int playerID) {
+		this.playerID = playerID;
 	}
 
 }

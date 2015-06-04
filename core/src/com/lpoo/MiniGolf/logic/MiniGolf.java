@@ -72,8 +72,12 @@ public class MiniGolf extends Game {
 				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
 				HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
 		Hole hole1 = new Hole(new Vector2(5f, 5f), W, 0.3f);
+		
+		Wall wall1 =new Wall(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
+				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+				HEIGHT / 2f / BOX_TO_WORLD, elementType.glueWall);
 		Course1.addEle(grass1);
-		Course1.addEle(sand1);
+		Course1.addEle(wall1);
 		Course1.addEle(hole1);
 
 		// Course 2

@@ -1,11 +1,13 @@
 package com.lpoo.MiniGolf.logic;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class Element {
+public class Element extends Actor {
 
 	public enum elementType {
 		nothing, hole, ball, glueWall, waterFloor, iceFloor, regularWall, sandFloor, normalSquareWall, normalTriangularWall, bonceWall, speedWall, teleporter, squareOne, grassFloor, accFloor, accWall, startSquareWall, startTriangularWall,
@@ -60,10 +62,16 @@ public class Element {
 		// height*MiniGolf.BOX_TO_WORLD );
 	}
 
-	public void drawWithWorldCoords() {
-		// MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f),
-		// (body.getPosition().y - height / 2f), width, height);
-
+	
+	@Override
+	public void draw(Batch batch, float parentAlfa) {
+		// System.out.println("Walrus");
+		// System.out.println(body.getPosition().x + " " + body.getPosition().y
+		// + " " + width*MiniGolf.BOX_TO_WORLD + " " +
+		// height*MiniGolf.BOX_TO_WORLD);
+		// MiniGolf.batch.draw(image, body.getPosition().x,
+		// body.getPosition().y, width*MiniGolf.BOX_TO_WORLD ,
+		// height*MiniGolf.BOX_TO_WORLD );
 	}
 
 	public Sprite getImage() {

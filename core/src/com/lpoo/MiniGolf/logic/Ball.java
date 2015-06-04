@@ -49,7 +49,9 @@ public class Ball extends Element {
 		fixtOuter.setRestitution(0.85f);
 		fixtOuter.setFriction(0.0f);
 		
-		image = new Sprite(new Texture("bola0.png"));
+		String imageName = "bola" + player.getPlayerID() + ".png";
+		
+		image = new Sprite(new Texture(imageName));
 
 	}
 	
@@ -78,7 +80,7 @@ public class Ball extends Element {
 		body.createFixture(fixDefInner);
 		body.setUserData(new ElementType(elementType.ball, 0, player));
 		
-		fixtOuter.setRestitution(0.85f);
+		//fixtOuter.setRestitution(0.85f);
 		fixtOuter.setFriction(0.0f);
 		
 	}
