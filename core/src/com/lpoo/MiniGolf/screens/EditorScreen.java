@@ -50,7 +50,7 @@ public class EditorScreen implements Screen {
 	Vector2 posInit;
 	private boolean drawElement, pressedLeftButton;
 	private ShapeRenderer shapeRenderer;
-	private OrthographicCamera cam;
+	// private OrthographicCamera cam;
 	private float cursorPosX;
 	float cursorPosY;
 	private float mouseX;
@@ -62,6 +62,31 @@ public class EditorScreen implements Screen {
 
 	public EditorScreen(MiniGolf game) {
 		this.game = game;
+	}
+
+	@Override
+	public void show() {
+
+		batch = new SpriteBatch();
+		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		stage = new Stage();
+		background = new Sprite(new Texture("golfCourseBeach.jpg"));
+		endStage1 = new Actor();
+		posInit = new Vector2();
+		shapeRenderer = new ShapeRenderer();
+		createElements();
+		addListeners();
+
+		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
+		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
+		stage.getViewport().setCamera(secondaryCamera);
+
+		stage.addActor(scene);
+		Gdx.input.setInputProcessor(stage);
+
+		shapeRenderer.setColor(Color.RED);
+
 	}
 
 	@Override
@@ -82,20 +107,23 @@ public class EditorScreen implements Screen {
 		 * created.getElement(i).getPosY()); } MiniGolf.batch.end();
 		 */
 		stage.act(delta);
-		stage.draw();
-
+		// stage.draw();
+		// System.out.println(pressedLeftButton);
 		if (pressedLeftButton) {
-			Vector3 mouseVec = stage.getViewport().unproject(new Vector3((float) cursorPosX, (float) cursorPosY, 0));
-			Vector3 leftButtonVec = stage.getViewport().unproject(new Vector3((float) posInit.x, (float) posInit.y, 0));
-			mouseX = mouseVec.x;
-			mouseY = mouseVec.y;
-			leftX = leftButtonVec.x;
-			leftY = leftButtonVec.y;
+			// Vector3 mouseVec = stage.getViewport().unproject(new
+			// Vector3((float) cursorPosX, (float) cursorPosY, 0));
+			// Vector3 leftButtonVec = stage.getViewport().unproject(new
+			// Vector3((float) posInit.x, (float) posInit.y, 0));
+			mouseX = cursorPosX;// mouseVec.x;
+			mouseY = cursorPosY;// mouseVec.y;
+			leftX = posInit.x;// leftButtonVec.x;
+			leftY = posInit.y;// leftButtonVec.y;
 
-			shapeRenderer.setProjectionMatrix(cam.combined);
+			shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
 			shapeRenderer.begin(ShapeType.Filled);
 
-			System.out.println(leftX + "   " + leftY + "   " + mouseX + "  " + mouseY);
+			// System.out.println(leftX + "   " + leftY + "   " + mouseX + "  "
+			// + mouseY);
 
 			// Square of influence
 			/* 1 2 */
@@ -108,13 +136,13 @@ public class EditorScreen implements Screen {
 			shapeRenderer.end();
 		}
 
-		cam.update();
+		stage.getCamera().update();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
-		cam.update();
+		stage.getCamera().update();
 
 	}
 
@@ -132,40 +160,6 @@ public class EditorScreen implements Screen {
 
 	public float distance(float x1, float y1, float x2, float y2) {
 		return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-	}
-
-	@Override
-	public void show() {
-
-		batch = new SpriteBatch();
-		skin = new Skin(Gdx.files.internal("uiskin.json"));
-		stage = new Stage();
-		background = new Sprite(new Texture("golfCourseBeach.jpg"));
-		endStage1 = new Actor();
-		posInit = new Vector2();
-		shapeRenderer = new ShapeRenderer();
-		createElements();
-		addListeners();
-		cam = (OrthographicCamera) stage.getCamera();
-		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
-		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
-		stage.getViewport().setCamera(secondaryCamera);
-
-		stage.addActor(scene);
-		Gdx.input.setInputProcessor(stage);
-
-		shapeRenderer.setColor(Color.RED);
-
-		stage.addListener(new InputListener() {
-
-			@Override
-			public boolean mouseMoved(InputEvent Event, float posX, float posY) {
-				return false;
-
-			}
-		});
-
 	}
 
 	private void addListeners() {
@@ -296,49 +290,19 @@ public class EditorScreen implements Screen {
 	}
 
 	public void overrideStageListener() {
+ 
 
 		stage.addListener(new InputListener() {
 			@Override
-			public boolean mouseMoved(InputEvent Event, float posX, float posY) {
-				cursorPosX = posX;
-				cursorPosY = posY;
-				if (!pressedLeftButton) {
-					posInit.x = posX;
-					posInit.y = posY;
-				}
-
-				return false;
-			}
-		});
-
-		stage.addListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
-
-				if (button == Buttons.LEFT && !pressedLeftButton) {
-					System.out.println("Left pressed");
-					posInit.x = posX;
-					posInit.y = posY;
-					pressedLeftButton = true;
-					return true;
-				} else if (button == Buttons.RIGHT)
-					pressedLeftButton = false;
-				return false;
-			}
-		});
-
-		stage.addListener(new InputListener() {
-			@Override
-			public void touchUp(InputEvent Event, float posX, float posY, int arg2, int button) {
+			public void touchUp(InputEvent Event, float screenX, float screenY, int pointer, int button) {
+				// Event.getRelatedActor().getClass().getName();
 				if (button == Buttons.LEFT) {
 					drawElement = true;
 					System.out.println("Left released");
 					addElement();
 				}
 			}
-		});
 
-		stage.addListener(new InputListener() {
 			@Override
 			public void touchDragged(InputEvent Event, float posX, float posY, int button) {
 				if (button == Buttons.LEFT) {
@@ -346,7 +310,35 @@ public class EditorScreen implements Screen {
 					cursorPosY = posY;
 					System.out.println("OUT");
 				}
+				System.out.println("OUT");
+			}
 
+			@Override
+			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
+
+				if (button == Buttons.LEFT && !pressedLeftButton) {
+
+					System.out.println("Left pressed");
+					posInit.x = posX;
+					posInit.y = posY;
+					pressedLeftButton = true;
+					System.out.println("HERE GOD");
+					return true;
+				} else if (button == Buttons.RIGHT)
+					pressedLeftButton = false;
+				return false;
+			}
+
+			@Override
+			public boolean mouseMoved(InputEvent Event, float posX, float posY) {
+				cursorPosX = posX;
+				cursorPosY = posY;
+				if (!pressedLeftButton) {
+					System.out.println("Moved");
+					posInit.x = posX;
+					posInit.y = posY;
+				}
+				return false;
 			}
 		});
 

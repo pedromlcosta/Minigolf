@@ -22,6 +22,9 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.lpoo.MiniGolf.logic.Ball;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
@@ -35,7 +38,7 @@ public class GameScreen implements Screen, InputProcessor {
 	public static final float GRASS_DRAG = 1.5f;
 	public static final float SAND_DRAG = 6.0f;
 	public static final float ICE_DRAG = 0.3f;
-
+	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 	static final float W_STEP = 1f / 60f;
 	static final float FORCE_AUGMENT = 3.0f;
 
@@ -59,7 +62,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private static ArrayList<Player> playerRemovalList = new ArrayList<Player>();
 	private static Player currentPlayer;
 	private long turnStart = System.currentTimeMillis();
-	
+	private Table score;
 	private int ballsInsideIllusion = 0;
 	static boolean allBallsStopped = true;
 	float mouseX, mouseY;
@@ -151,7 +154,7 @@ public class GameScreen implements Screen, InputProcessor {
 	public void show() {
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
-
+		score = new Table();
 		initializePlayers();
 		selectedCourses = game.getSelectedCourses();
 		initializeCourse(selectedCourses.get(courseIndex)); // At this point,
@@ -188,8 +191,8 @@ public class GameScreen implements Screen, InputProcessor {
 							elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
 
 						}
-					} 
-					//Collisions with the OUTSIDE SENSOR
+					}
+					// Collisions with the OUTSIDE SENSOR
 					else if (elementB.type == Element.elementType.glueWall) {
 						elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
 					} else if (elementB.type == Element.elementType.illusionWall) {
@@ -212,8 +215,8 @@ public class GameScreen implements Screen, InputProcessor {
 
 						}
 
-					} 
-					//Collisions with the OUTSIDE SENSOR
+					}
+					// Collisions with the OUTSIDE SENSOR
 					else if (elementA.type == Element.elementType.glueWall) {
 						elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
 
@@ -237,14 +240,15 @@ public class GameScreen implements Screen, InputProcessor {
 				if (elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball) {
 					elementA.player.getBall().steppingOn = Element.elementType.grassFloor;
 					elementA.accel = GRASS_DRAG; // Always goes to grass after
-					
-					//For the BALL/ILLUSIONWALL collision, we want it to happen with the outside fixture of the ball
+
+					// For the BALL/ILLUSIONWALL collision, we want it to happen
+					// with the outside fixture of the ball
 					if (!arg0.getFixtureA().isSensor()) {
-						
+
 						if (elementB.type == Element.elementType.illusionWall) {
 							ballsInsideIllusion--;
-							if(ballsInsideIllusion == 0)
-							elementB.element.getImage().setAlpha(1.0f);
+							if (ballsInsideIllusion == 0)
+								elementB.element.getImage().setAlpha(1.0f);
 						}
 					}
 
@@ -252,13 +256,14 @@ public class GameScreen implements Screen, InputProcessor {
 					elementB.player.getBall().steppingOn = Element.elementType.grassFloor;
 					elementB.accel = GRASS_DRAG;
 
-					//For the BALL/ILLUSIONWALL collision, we want it to happen with the outside fixture of the ball
+					// For the BALL/ILLUSIONWALL collision, we want it to happen
+					// with the outside fixture of the ball
 					if (!arg0.getFixtureB().isSensor()) {
-						
+
 						if (elementA.type == Element.elementType.illusionWall) {
 							ballsInsideIllusion--;
-							if(ballsInsideIllusion == 0)
-							elementA.element.getImage().setAlpha(1.0f);
+							if (ballsInsideIllusion == 0)
+								elementA.element.getImage().setAlpha(1.0f);
 						}
 					}
 				}
@@ -456,7 +461,14 @@ public class GameScreen implements Screen, InputProcessor {
 			String str = "Player " + i;
 			Player player = new Player(i + 1);
 			player.createBall(new Vector2(i + 1, i + 1), w, 0.25f);
+			Label playerID = new Label("ID: " + i + 1, skin);
+			Label tacadas = new Label("Tacadas: " + 0, skin);
+
 			players.add(player);
+			
+			score.defaults().width(100);
+			score.add(playerID, tacadas);
+			score.row();
 		}
 
 		players.get(0).setJustPlayed(true);
