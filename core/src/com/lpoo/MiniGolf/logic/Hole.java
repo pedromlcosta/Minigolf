@@ -28,7 +28,7 @@ public class Hole extends Element {
 
 	public void createBody(World w) {
 		CircleShape circle = new CircleShape();
-		circle.setRadius(radius);
+		circle.setRadius(radius*0.50/f);
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = circle;
 		fixDef.isSensor = true;
@@ -47,7 +47,6 @@ public class Hole extends Element {
 			body.destroyFixture(body.getFixtureList().get(i));
 		}
 		body.getWorld().destroyBody(body);
-		System.out.println("Destroyed hole");
 	}
 
 	public void draw() {

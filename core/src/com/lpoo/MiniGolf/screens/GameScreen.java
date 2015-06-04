@@ -57,6 +57,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private static ArrayList<Player> actualPlayers = new ArrayList<Player>();
 	private static ArrayList<Player> playerRemovalList = new ArrayList<Player>();
 	private static Player currentPlayer;
+	private long turnStart = System.currentTimeMillis();
 
 	static boolean allBallsStopped = true;
 	float mouseX, mouseY;
@@ -75,12 +76,15 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		System.out.println("Nr. Players is " + players.size());
-
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 			// CURRENT COURSE RENDER CYCLE
-
+			
+			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart)/1000;
+			
+			if(elapsedTimeSeconds > game.getTempoMax() && allBallsStopped)
+				updateCurrentPlayer();
+			
 			cam.update();
 
 			MiniGolf.batch.setProjectionMatrix(cam.combined);
@@ -95,6 +99,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 			MiniGolf.batch.end();
 
+			//Checks if balls are stopped and render lines by polling
 			renderLine();
 
 			debugRenderer.render(w, debugMatrix);
@@ -111,7 +116,7 @@ public class GameScreen implements Screen, InputProcessor {
 		} else {
 
 			// END OF COURSE
-			System.out.println("Reseting Course nr. " + (courseIndex - 1));
+			//System.out.println("Reseting Course nr. " + (courseIndex - 1));
 
 			if (courseIndex == selectedCourses.size()) {
 				// WAS THE LAST COURSE - ENDING GAME
@@ -125,7 +130,7 @@ public class GameScreen implements Screen, InputProcessor {
 				resetCourse(selectedCourses.get(courseIndex - 1));
 
 				initializeCourse(selectedCourses.get(courseIndex));
-				System.out.println("Initializing Course nr. " + courseIndex);
+			//	System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
 			}
 		}
@@ -150,7 +155,8 @@ public class GameScreen implements Screen, InputProcessor {
 		initializeCourse(selectedCourses.get(courseIndex)); // At this point,
 															// courseIndex is 0
 		courseIndex++;
-
+		turnStart = System.currentTimeMillis();
+		
 		Gdx.input.setInputProcessor(this);
 		// Setting body contact handling functions
 		MiniGolf.getW().setContactListener(new ContactListener() {
@@ -171,7 +177,7 @@ public class GameScreen implements Screen, InputProcessor {
 						elementA.player.getBall().steppingOn = elementB.type;
 						elementA.accel = elementB.accel;
 
-						if (elementB.type == Element.elementType.hole) {
+						if (elementB.type == Element.elementType.hole && elementA.player.getBallSpeedLen() < 15.0f) {
 							elementA.player.setOver(true);
 							playerRemovalList.add(elementA.player);
 							elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
@@ -188,7 +194,7 @@ public class GameScreen implements Screen, InputProcessor {
 						elementB.player.getBall().steppingOn = elementA.type;
 						elementB.accel = elementA.accel;
 
-						if (elementA.type == Element.elementType.hole) {
+						if (elementA.type == Element.elementType.hole && elementB.player.getBallSpeedLen() < 10.0f) {
 							elementB.player.setOver(true);
 							playerRemovalList.add(elementB.player);
 							elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
@@ -292,7 +298,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 			float mouseX = vec.x;
 			float mouseY = vec.y;
-			System.out.println(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
+			//System.out.println(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
 			shapeRenderer.rectLine(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD, currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD, mouseX, mouseY, 5);
 			shapeRenderer.end();
 		}
@@ -363,11 +369,12 @@ public class GameScreen implements Screen, InputProcessor {
 
 				if (i != playerDecisionList.size() - 1) {
 					currentPlayer = playerDecisionList.get(i + 1);
-					currentPlayer.setJustPlayed(true);
 				} else {
 					currentPlayer = playerDecisionList.get(0);
-					currentPlayer.setJustPlayed(true);
 				}
+				currentPlayer.setJustPlayed(true);
+				turnStart = System.currentTimeMillis();
+				currentPlayer.setPlayTime(0);
 				break;
 			}
 
@@ -399,7 +406,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		players = new ArrayList<Player>();
 
-		System.out.println("Initialize - Nr. Players is " + players.size());
+		//System.out.println("Initialize - Nr. Players is " + players.size());
 
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 
@@ -459,9 +466,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 	}
 
-	public void resetWorld() {
-
-	}
 
 	// ///////////////////////////////////////////
 	// InputProcessor Functions //
@@ -515,7 +519,7 @@ public class GameScreen implements Screen, InputProcessor {
 				// must be scaled to the box size first
 				// forceY = Box_scale_mouse_Y - Box_scale_ball_Y
 
-				Vector3 vec = cam.unproject(new Vector3((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0));
+				Vector3 vec = game.viewport.unproject(new Vector3((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0));
 
 				float mouseX = vec.x;
 				float mouseY = vec.y;

@@ -35,7 +35,7 @@ public class MiniGolf extends Game {
 	private Point endPoint;
 	private Point startPoint;
 	private int tacadasMax;
-	private int tempoMax;
+	private int tempoMax = 10;
 	private int courseHeight;
 	private int courseWidth;
 

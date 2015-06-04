@@ -11,6 +11,7 @@ public class Player {
 	private int pontuacao;
 	private int tacadasJogada;
 	private int tacadaTotal;
+	private int playTime = 0;
 	private boolean justPlayed;
 	private boolean over;
 	private boolean won;
@@ -170,6 +171,14 @@ public class Player {
 
 	public void setJustPlayed(boolean justPlayed) {
 		this.justPlayed = justPlayed;
+	}
+
+	public int getPlayTime() {
+		return playTime;
+	}
+
+	public void setPlayTime(int playTime) {
+		this.playTime = playTime;
 	}
 
 }

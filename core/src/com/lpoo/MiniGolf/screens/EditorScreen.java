@@ -73,9 +73,11 @@ public class EditorScreen implements Screen, InputProcessor {
 		MiniGolf.batch.begin();
 		for (int i = 0; i < created.getElementos().size(); i++) {
 			created.getElement(i).draw();
-			if (i == 1)
-				System.out.println("i: " + i + " Height: " + created.getElement(i).getHeight() + "  Width: " + created.getElement(i).getWidth() + "   PosX: " + created.getElement(i).getPosX()
-						+ "   PosY: " + created.getElement(i).getPosY());
+			if (i == 1){
+				
+			}
+//				System.out.println("i: " + i + " Height: " + created.getElement(i).getHeight() + "  Width: " + created.getElement(i).getWidth() + "   PosX: " + created.getElement(i).getPosX()
+//						+ "   PosY: " + created.getElement(i).getPosY());
 		}
 		MiniGolf.batch.end();
 		if (pressedLeftButton) {
@@ -89,7 +91,7 @@ public class EditorScreen implements Screen, InputProcessor {
 			shapeRenderer.setProjectionMatrix(cam.combined);
 			shapeRenderer.begin(ShapeType.Filled);
 
-			System.out.println(leftX + "   " + leftY + "   " + mouseX + "  " + mouseY);
+//			System.out.println(leftX + "   " + leftY + "   " + mouseX + "  " + mouseY);
 
 			// Square of influence
 			/* 1 2 */
@@ -263,7 +265,7 @@ public class EditorScreen implements Screen, InputProcessor {
 			} else
 				posInicialY = leftY;
 
-			System.out.println("In add Height: " + height + "   Width: " + width + "  PosEX: " + posInicialX + " PosEY: " + posInicialY);
+//			System.out.println("In add Height: " + height + "   Width: " + width + "  PosEX: " + posInicialX + " PosEY: " + posInicialY);
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
 
