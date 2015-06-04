@@ -21,6 +21,10 @@ public class Element extends Actor {
 
 	protected Sprite image;
 
+	public boolean overlap(Element eleToBeAdded) {
+		return true;
+	}
+
 	public Element() {
 		oldPos = new Vector2();
 		height = 0;

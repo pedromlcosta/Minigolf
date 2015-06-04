@@ -74,7 +74,7 @@ public class EditorScreen implements Screen {
 		endStage1 = new Actor();
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
-		createElements();
+		createActors();
 		addListeners();
 
 		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
@@ -94,7 +94,7 @@ public class EditorScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		background.draw(batch);
+		// background.draw(batch);
 		batch.end();
 
 		// MiniGolf.batch.begin(); for (int i = 0; i <
@@ -202,7 +202,7 @@ public class EditorScreen implements Screen {
 
 	}
 
-	private void createElements() {
+	private void createActors() {
 		created = new Course();
 		overrideStageListener();
 		Label tableLabel = new Label("Editor", skin);
@@ -247,51 +247,51 @@ public class EditorScreen implements Screen {
 		// created.addCourseElement(sand2);
 	}
 
+	private boolean notOverlapping() {
+
+		for (Element ele : created.getElementos()) {
+			if (ele.overlap(elementToAdd)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private void addElement() {
 		if (drawElement) {
+
 			elementToAdd = new Floor(Element.elementType.sandFloor);
 
 			float width, height, posInicialX, posInicialY;
-			// width = (mouseX - leftX) / MiniGolf.BOX_TO_WORLD;
-			// height = (mouseY - leftY) / MiniGolf.BOX_TO_WORLD;
 			width = (float) (1 * distance(leftX, leftY, mouseX, leftY) / MiniGolf.BOX_TO_WORLD);
 			height = (float) (1 * distance(leftX, leftY, leftX, mouseY) / MiniGolf.BOX_TO_WORLD);
 
-			// System.out.println((mouseY - leftY) + "   " + (mouseY - leftY) /
-			// MiniGolf.BOX_TO_WORLD);
-			// width e heights negativas,funciona se o ponto inicial for 0
-			if (mouseY - leftY < 0) {
+			if (mouseX - leftX < 0) {
 				posInicialX = mouseX;
-				width *= -1;
 			} else
 				posInicialX = leftX;
 
 			if (mouseY - leftY < 0) {
 				posInicialY = mouseY;
-				height *= -1;
 			} else
 				posInicialY = leftY;
 
 			elementToAdd.setOldPos(new Vector2(posInicialX, posInicialY));
-			// System.out.println("In add Height: " + height + "   Width: " +
-			// width + "  PosEX: " + posInicialX + " PosEY: " + posInicialY);
+
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
+			if (notOverlapping()) {
+				elementToAdd.setOldPos(new Vector2(posInicialX, posInicialY));
+				elementToAdd.setHeight(height);
+				elementToAdd.setWidth(width);
+				elementToAdd.createBody(MiniGolf.getW());
+				stage.addActor(elementToAdd);
+				this.created.addEle(elementToAdd);
 
-			// será que tenho que voltar a projectar para o screen
-			// System.out.println("mouseX: " + mouseX + "  mouseY: " + mouseY +
-			// " PosX: " + leftX + "  PosY: " + leftY + " Width: " + width +
-			// "  Height: " + height);
-			elementToAdd.setOldPos(new Vector2(posInicialX, posInicialY));
-			elementToAdd.setHeight(height);
-			elementToAdd.setWidth(width);
-			elementToAdd.createBody(MiniGolf.getW());
-			this.created.addEle(elementToAdd);
+			}
 			pressedLeftButton = false;
 			drawElement = false;
-			// System.out.println(created.getElementos().size());
 		}
-
 	}
 
 	public void overrideStageListener() {
