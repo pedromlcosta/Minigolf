@@ -46,11 +46,14 @@ public class EditorScreen implements Screen, InputProcessor {
 	private Course created;
 	private Element elementToAdd;
 	private Actor endStage1;
-	Vector2 posInit, posFim;
+	Vector2 posInit;
 	private boolean drawElement, pressedLeftButton;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera cam = MiniGolf.cam;
 	private int cursorPosX, cursorPosY;
+	private float mouseX;
+	private float mouseY;
+	private float leftX, leftY;
 
 	public EditorScreen() {
 	}
@@ -69,26 +72,37 @@ public class EditorScreen implements Screen, InputProcessor {
 		MiniGolf.batch.begin();
 		for (int i = 0; i < created.getElementos().size(); i++) {
 			created.getElement(i).draw();
+			if (i == 1)
+				System.out.println("i: " + i + " Height: " + created.getElement(i).getHeight() + "  Width: " + created.getElement(i).getWidth() + "   PosX: " + created.getElement(i).getPosX()
+						+ "   PosY: " + created.getElement(i).getPosY());
 		}
 		MiniGolf.batch.end();
 		if (pressedLeftButton) {
-			Vector3 vec = MiniGolf.viewport.unproject(new Vector3((float) cursorPosX, (float) cursorPosY, 0));
+			Vector3 mouseVec = MiniGolf.viewport.unproject(new Vector3((float) cursorPosX, (float) cursorPosY, 0));
+			Vector3 leftButtonVec = MiniGolf.viewport.unproject(new Vector3((float) posInit.x, (float) posInit.y, 0));
+			mouseX = mouseVec.x;
+			mouseY = mouseVec.y;
+			leftX = leftButtonVec.x;
+			leftY = leftButtonVec.y;
 
-			float mouseX = vec.x;
-			float mouseY = vec.y;
 			shapeRenderer.setProjectionMatrix(cam.combined);
 			shapeRenderer.begin(ShapeType.Filled);
-	 
-			//Square of influence
-			shapeRenderer.rectLine(posInit.x, posInit.y, posInit.x, mouseY, 5);
-			shapeRenderer.rectLine(posInit.x, posInit.y, mouseX, posInit.y, 5);
-			shapeRenderer.rectLine(mouseX, posInit.y, mouseX, mouseY, 5);
-			shapeRenderer.rectLine(posInit.x, mouseY, mouseX, mouseY, 5);
+
+			System.out.println(leftX + "   " + leftY + "   " + mouseX + "  " + mouseY);
+
+			// Square of influence
+			/* 1 2 */
+			// System.out.println("Height: " + distance(leftX, leftY, leftX,
+			// mouseY) + "   Width: " + distance(leftX, leftY, mouseX, leftY));
+			shapeRenderer.rectLine(leftX, leftY, leftX, mouseY, 5);
+			shapeRenderer.rectLine(leftX, leftY, mouseX, leftY, 5);
+			shapeRenderer.rectLine(mouseX, leftY, mouseX, mouseY, 5);
+			shapeRenderer.rectLine(leftX, mouseY, mouseX, mouseY, 5);
 			shapeRenderer.end();
 		}
 
-		// stage.act(delta);
-		// stage.draw();
+		stage.act(delta);
+		stage.draw();
 
 		cam.update();
 	}
@@ -113,28 +127,30 @@ public class EditorScreen implements Screen, InputProcessor {
 
 	}
 
+	public float distance(float x1, float y1, float x2, float y2) {
+		return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+	}
+
 	@Override
 	public void show() {
+
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		stage = new Stage();
 		background = new Sprite(new Texture("golfCourseBeach.jpg"));
 		endStage1 = new Actor();
 		posInit = new Vector2();
-		posFim = new Vector2();
 		shapeRenderer = new ShapeRenderer();
 		createElements();
 		addListeners();
 
-		/*
-		 * stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
-		 * OrthographicCamera secondaryCamera = new
-		 * OrthographicCamera(Gdx.graphics.getWidth(),
-		 * Gdx.graphics.getHeight());
-		 * secondaryCamera.translate(Gdx.graphics.getWidth(),
-		 * Gdx.graphics.getHeight() + 300f);
-		 * stage.getViewport().setCamera(secondaryCamera);
-		 */
+		// stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
+		// OrthographicCamera secondaryCamera = new
+		// OrthographicCamera(Gdx.graphics.getWidth(),
+		// Gdx.graphics.getHeight());
+		// secondaryCamera.translate(Gdx.graphics.getWidth(),
+		// Gdx.graphics.getHeight() + 300f);
+		// stage.getViewport().setCamera(secondaryCamera);
 
 		stage.addActor(scene);
 		stage.addActor(goBackButton);
@@ -196,6 +212,7 @@ public class EditorScreen implements Screen, InputProcessor {
 		Floor grass1 = new Floor(new Vector2(0, 0), 2 * MiniGolf.getWidth() / MiniGolf.BOX_TO_WORLD, 2 * MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
 		grass1.createBody(MiniGolf.getW());
 		created.addCourseElement(grass1);
+
 		//
 		// Floor sand2 = new Floor(new Vector2(3 * (MiniGolf.WIDTH / 4f /
 		// MiniGolf.BOX_TO_WORLD), 3 * (MiniGolf.HEIGHT / 4f /
@@ -207,10 +224,43 @@ public class EditorScreen implements Screen, InputProcessor {
 	}
 
 	private void addElement() {
-		// posInit;
-		// posFim;
-		// this.elementToAdd
-		// this.drawElement
+		if (drawElement) {
+			elementToAdd = new Floor(Element.elementType.sandFloor);
+
+			float width, height, posInicialX, posInicialY;
+			// width = (mouseX - leftX) / MiniGolf.BOX_TO_WORLD;
+			// height = (mouseY - leftY) / MiniGolf.BOX_TO_WORLD;
+			width = (float) (1 * distance(leftX, leftY, mouseX, leftY) / MiniGolf.BOX_TO_WORLD);
+			height = (float) (1 * distance(leftX, leftY, leftX, mouseY) / MiniGolf.BOX_TO_WORLD);
+
+			// System.out.println((mouseY - leftY) + "   " + (mouseY - leftY) /
+			// MiniGolf.BOX_TO_WORLD);
+			// width e heights negativas,funciona se o ponto inicial for 0
+			if (mouseY - leftY < 0) {
+				posInicialX = mouseX;
+				width *= -1;
+			} else
+				posInicialX = leftX;
+			if (mouseY - leftY < 0) {
+				posInicialY = mouseY;
+				height *= -1;
+			} else
+				posInicialY = leftY;
+			System.out.println("In add Height: " + height + "   Width: " + width + "  PosEX: " + posInicialX + " PosEY: " + posInicialY);
+			posInicialX /= MiniGolf.BOX_TO_WORLD;
+			posInicialY /= MiniGolf.BOX_TO_WORLD;
+
+			//será que tenho que voltar a projectar para o screen
+//			System.out.println("mouseX: " + mouseX + "  mouseY: " + mouseY + " PosX: " + leftX + "  PosY: " + leftY + " Width: " + width + "  Height: " + height);
+			elementToAdd.setOldPos(new Vector2(posInicialX, posInicialY));
+			elementToAdd.setHeight(height);
+			elementToAdd.setWidth(width);
+			elementToAdd.createBody(MiniGolf.getW());
+			this.created.addEle(elementToAdd);
+			pressedLeftButton = false;
+			drawElement = false;
+			System.out.println(created.getElementos().size());
+		}
 
 	}
 
@@ -236,6 +286,11 @@ public class EditorScreen implements Screen, InputProcessor {
 	public boolean mouseMoved(int posX, int posY) {
 		cursorPosX = posX;
 		cursorPosY = posY;
+		if (!pressedLeftButton) {
+			posInit.x = posX;
+			posInit.y = posY;
+		}
+
 		return false;
 	}
 
@@ -248,7 +303,7 @@ public class EditorScreen implements Screen, InputProcessor {
 	@Override
 	public boolean touchDown(int posX, int posY, int arg2, int button) {
 
-		if (button == Buttons.LEFT) {
+		if (button == Buttons.LEFT && !pressedLeftButton) {
 			System.out.println("Left pressed");
 			posInit.x = posX;
 			posInit.y = posY;
@@ -262,8 +317,6 @@ public class EditorScreen implements Screen, InputProcessor {
 	@Override
 	public boolean touchUp(int posX, int posY, int arg2, int button) {
 		if (button == Buttons.LEFT) {
-			posFim.x = posX;
-			posFim.y = posY;
 			drawElement = true;
 			System.out.println("Left released");
 			addElement();
@@ -277,6 +330,7 @@ public class EditorScreen implements Screen, InputProcessor {
 		if (button == Buttons.LEFT) {
 			cursorPosX = posX;
 			cursorPosY = posY;
+
 		}
 		return false;
 	}

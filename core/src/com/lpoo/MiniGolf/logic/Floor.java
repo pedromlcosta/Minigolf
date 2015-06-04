@@ -60,8 +60,8 @@ public class Floor extends Element {
 
 	}
 
-	public void destroyBody(){
-		for(int i = 0; i < body.getFixtureList().size; i++){
+	public void destroyBody() {
+		for (int i = 0; i < body.getFixtureList().size; i++) {
 			body.destroyFixture(body.getFixtureList().get(i));
 		}
 		body.getWorld().destroyBody(body);
@@ -74,8 +74,10 @@ public class Floor extends Element {
 		// MiniGolf.BOX_TO_WORLD + " " + width*MiniGolf.BOX_TO_WORLD + " " +
 		// height*MiniGolf.BOX_TO_WORLD);
 		// image.setCenter(x, y);
+		System.out.println("In Draw PosX: " + (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD + " PosY: " + (body.getPosition().y - height / 2f) * MiniGolf.BOX_TO_WORLD + " Width: "
+				+ width * MiniGolf.BOX_TO_WORLD + " Height: " + height * MiniGolf.BOX_TO_WORLD);
 
-		MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2f) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-				* MiniGolf.BOX_TO_WORLD);
+		MiniGolf.batch.draw(image, (body.getPosition().x) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 	}
+
 }

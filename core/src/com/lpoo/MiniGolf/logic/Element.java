@@ -16,7 +16,6 @@ public class Element {
 	protected float width;
 	protected float height;
 	protected elementType type;
-	
 
 	protected Sprite image;
 
@@ -59,6 +58,12 @@ public class Element {
 		// MiniGolf.batch.draw(image, body.getPosition().x,
 		// body.getPosition().y, width*MiniGolf.BOX_TO_WORLD ,
 		// height*MiniGolf.BOX_TO_WORLD );
+	}
+
+	public void drawWithWorldCoords() {
+		// MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f),
+		// (body.getPosition().y - height / 2f), width, height);
+
 	}
 
 	public Sprite getImage() {
@@ -124,7 +129,7 @@ public class Element {
 	public void setWidth(float width) {
 		this.width = width;
 	}
-	
+
 	public elementType getType() {
 		return type;
 	}
@@ -132,13 +137,13 @@ public class Element {
 	public void setType(elementType type) {
 		this.type = type;
 	}
-	
-	public void createBody(World w){
-		
+
+	public void createBody(World w) {
+
 	}
-	
-	public void destroyBody(){
-		
+
+	public void destroyBody() {
+
 	}
 
 }
