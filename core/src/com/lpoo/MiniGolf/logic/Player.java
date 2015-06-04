@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Player {
 
-	private int playerID;
+	private int playerID;  //Starts at 0
 	private Ball ball;
 	private int pontuacao;
 	private int tacadasJogada;

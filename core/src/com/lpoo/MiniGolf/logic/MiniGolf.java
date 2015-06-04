@@ -25,7 +25,7 @@ public class MiniGolf extends Game {
 	public static Viewport viewport;
 	private static World W;
 
-	private int nrPlayers = 2;
+	private int nrPlayers = 4;
 	private ArrayList<Course> selectedCourses = new ArrayList<Course>();
 	private ArrayList<Course> allCourses = new ArrayList<Course>();
 
@@ -66,6 +66,12 @@ public class MiniGolf extends Game {
 		// Course 1
 		Course Course1 = new Course();
 		Course1.setNome("Course 1");
+		
+		Vector2 pos1 = new Vector2(1.0f,1.0f);
+		Vector2 pos2 = new Vector2(2.0f,2.0f);
+		Vector2 pos3 = new Vector2(3.0f,3.0f);
+		Vector2 pos4 = new Vector2(4.0f,4.0f);
+		
 		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
 				(HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT
 				/ BOX_TO_WORLD, elementType.grassFloor);
@@ -86,10 +92,18 @@ public class MiniGolf extends Game {
 		Course1.addEle(illusion1);
 		Course1.addEle(wall1);
 		Course1.addEle(hole1);
+		Course1.addPosition(pos1);
+		Course1.addPosition(pos2);
+		Course1.addPosition(pos3);
+		Course1.addPosition(pos4);
 
 		// Course 2
 		Course Course2 = new Course();
 		Course2.setNome("Course 2");
+		Vector2 pos5 = new Vector2(1.0f,1.0f);
+		Vector2 pos6 = new Vector2(2.0f,2.0f);
+		Vector2 pos7 = new Vector2(3.0f,3.0f);
+		Vector2 pos8 = new Vector2(4.0f,4.0f);
 		Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
 				(HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT
 				/ BOX_TO_WORLD, elementType.grassFloor);
@@ -100,7 +114,12 @@ public class MiniGolf extends Game {
 		Course2.addEle(grass2);
 		Course2.addEle(sand2);
 		Course2.addEle(hole2);
-
+		Course2.addPosition(pos5);
+		Course2.addPosition(pos6);
+		Course2.addPosition(pos7);
+		Course2.addPosition(pos8);
+		
+		
 		// Adding to all and selected
 		addToAllCourses(Course1);
 		addToAllCourses(Course2);

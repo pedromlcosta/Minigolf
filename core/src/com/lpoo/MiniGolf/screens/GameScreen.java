@@ -85,11 +85,13 @@ public class GameScreen implements Screen, InputProcessor {
 										// over
 			// CURRENT COURSE RENDER CYCLE
 
+			System.out.println("Current player has id: " + currentPlayer.getPlayerID());
+			
 			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
 
-			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped)
+			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped){
 				updateCurrentPlayer();
-
+			}
 			cam.update();
 
 			MiniGolf.batch.setProjectionMatrix(cam.combined);
@@ -131,10 +133,10 @@ public class GameScreen implements Screen, InputProcessor {
 				this.dispose();
 			} else {
 				// CHANGING COURSE
-				resetPlayers();
+				resetPlayers(selectedCourses.get(courseIndex));
 				resetCourse(selectedCourses.get(courseIndex - 1));
-
 				initializeCourse(selectedCourses.get(courseIndex));
+				
 				// System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
 			}
@@ -155,8 +157,10 @@ public class GameScreen implements Screen, InputProcessor {
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 		score = new Table();
-		initializePlayers();
+		
 		selectedCourses = game.getSelectedCourses();
+		
+		initializePlayers(selectedCourses.get(courseIndex));	
 		initializeCourse(selectedCourses.get(courseIndex)); // At this point,
 															// courseIndex is 0
 		courseIndex++;
@@ -324,6 +328,7 @@ public class GameScreen implements Screen, InputProcessor {
 				// Chegou ao ultimo e todos tinham velocidade 0
 				if (allBallsStopped == false) {
 					allBallsStopped = true;
+					System.out.println("Nao devia ter passado aqui 2");
 					updateCurrentPlayer();
 				}
 			}
@@ -398,7 +403,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private void updateCurrentPlayer() {
 		ArrayList<Player> playerDecisionList = new ArrayList<Player>();
-
+		
 		for (int i = 0; i < players.size(); i++) {
 			// System.out.println("Ball nr. " + i + " Over = " +
 			// players.get(i).isOver());
@@ -448,7 +453,7 @@ public class GameScreen implements Screen, InputProcessor {
 	 * Called when the show() method is called, initializing the player
 	 * variables for the first time
 	 */
-	public void initializePlayers() {
+	public void initializePlayers(Course course) {
 		// INITIALIZE PLAYERS
 
 		players = new ArrayList<Player>();
@@ -460,8 +465,8 @@ public class GameScreen implements Screen, InputProcessor {
 			// Vector2 ballPos = courseBallPos.get(i);
 			String str = "Player " + i;
 			Player player = new Player(i + 1);
-			player.createBall(new Vector2(i + 1, i + 1), w, 0.25f);
-			Label playerID = new Label("ID: " + i + 1, skin);
+			player.createBall(course.getPositions().get(i), w, 0.25f);
+			Label playerID = new Label("ID: " + (i + 1), skin);
 			Label tacadas = new Label("Tacadas: " + 0, skin);
 
 			players.add(player);
@@ -477,18 +482,21 @@ public class GameScreen implements Screen, InputProcessor {
 
 	}
 
-	public void resetPlayers() {
+	public void resetPlayers(Course course) {
 
 		// Restoring booleans and the body to each ball
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 			players.get(i).setOver(false);
 			players.get(i).setJustPlayed(false);
+			players.get(i).getBall().setOldPos(course.getPositions().get(i));
 			players.get(i).getBall().createBody(w, players.get(i));
+			
 		}
 		players.get(0).setJustPlayed(true);
 
 		// Reseting the actual an current players
 		currentPlayer = players.get(0);
+		System.out.println("Current player reset to 0, with player id = " + currentPlayer.getPlayerID());
 		actualPlayers = players;
 	}
 
@@ -517,7 +525,7 @@ public class GameScreen implements Screen, InputProcessor {
 			// Creates this elements body -> gives form to it
 			currentCourseElements.get(i).destroyBody();
 		}
-
+		allBallsStopped = true;
 	}
 
 	// ///////////////////////////////////////////
