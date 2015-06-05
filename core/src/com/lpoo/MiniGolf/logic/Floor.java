@@ -16,6 +16,7 @@ public class Floor extends Element {
 	public static final float GRASS_DRAG = 1.5f;
 	public static final float SAND_DRAG = 6.0f;
 	public static final float ICE_DRAG = 0.3f;
+	public static final float ACCELERATOR_DRAG = -5.0f;
 	private int ballsInsideIllusion = 0;
 
 	public Floor(Vector2 pos, float width, float height, elementType type) {

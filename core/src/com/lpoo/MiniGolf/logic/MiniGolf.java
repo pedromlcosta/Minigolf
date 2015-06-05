@@ -68,38 +68,43 @@ public class MiniGolf extends Game {
 		// Course 1
 		Course Course1 = new Course();
 		Course1.setNome("Course 1");
-		
-		Vector2 pos1 = new Vector2(1.0f,1.0f);
-		Vector2 pos2 = new Vector2(2.0f,2.0f);
-		Vector2 pos3 = new Vector2(3.0f,3.0f);
-		Vector2 pos4 = new Vector2(4.0f,4.0f);
-		
-		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
-				(HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT
-				/ BOX_TO_WORLD, elementType.grassFloor);
-//		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
-//				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-//				HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
-		Hole hole1 = new Hole(new Vector2(5f, 5f), W, 0.3f);
-		
-		
-		Floor water1 =new Floor(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
-				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-				HEIGHT / 2f / BOX_TO_WORLD, elementType.waterFloor);
-		
-		Floor void1 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
-				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-				HEIGHT / 2f / BOX_TO_WORLD, elementType.voidFloor);
-		
-//		Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
-//				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-//				HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
-		
-		
+
+		Vector2 pos1 = new Vector2(1.0f, 1.0f);
+		Vector2 pos2 = new Vector2(2.0f, 2.0f);
+		Vector2 pos3 = new Vector2(3.0f, 3.0f);
+		Vector2 pos4 = new Vector2(4.0f, 4.0f);
+
+		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
+
+		Hole hole1 = new Hole(new Vector2(5f, 5f), 0.3f);
+
+		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
+
+		Floor water1 = new Floor(new Vector2(7 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.waterFloor);
+
+		Wall glue1 = new Wall(new Vector2(5 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.glueWall);
+
+		Floor void1 = new Floor(new Vector2(9 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.voidFloor);
+
+		Floor ice1 = new Floor(new Vector2(11 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.iceFloor);
+
+		Wall wall1 = new Wall(new Vector2(1 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.regularWall);
+
+		Teleporter teleporter1 = new Teleporter(new Vector2(7f, 5f), new Vector2(7f, 3f), 0.3f, 1);
+
+		// Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
+		// 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+		// HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
+
 		Course1.addEle(grass1);
+		Course1.addEle(wall1);
+		Course1.addEle(glue1);
+		Course1.addEle(hole1);
 		Course1.addEle(void1);
 		Course1.addEle(water1);
-		Course1.addEle(hole1);
+		Course1.addEle(sand1);
+		Course1.addEle(ice1);
+		Course1.addEle(teleporter1);
 		Course1.addPosition(pos1);
 		Course1.addPosition(pos2);
 		Course1.addPosition(pos3);
@@ -108,17 +113,13 @@ public class MiniGolf extends Game {
 		// Course 2
 		Course Course2 = new Course();
 		Course2.setNome("Course 2");
-		Vector2 pos5 = new Vector2(1.0f,1.0f);
-		Vector2 pos6 = new Vector2(2.0f,2.0f);
-		Vector2 pos7 = new Vector2(3.0f,3.0f);
-		Vector2 pos8 = new Vector2(4.0f,4.0f);
-		Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
-				(HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT
-				/ BOX_TO_WORLD, elementType.grassFloor);
-		Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
-				1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-				HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
-		Hole hole2 = new Hole(new Vector2(7f, 7f), W, 0.3f);
+		Vector2 pos5 = new Vector2(1.0f, 2.0f);
+		Vector2 pos6 = new Vector2(2.0f, 3.0f);
+		Vector2 pos7 = new Vector2(3.0f, 4.0f);
+		Vector2 pos8 = new Vector2(4.0f, 5.0f);
+		Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
+		Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD), 1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
+		Hole hole2 = new Hole(new Vector2(7f, 7f), 0.3f);
 		Course2.addEle(grass2);
 		Course2.addEle(sand2);
 		Course2.addEle(hole2);
@@ -126,8 +127,7 @@ public class MiniGolf extends Game {
 		Course2.addPosition(pos6);
 		Course2.addPosition(pos7);
 		Course2.addPosition(pos8);
-		
-		
+
 		// Adding to all and selected
 		addToAllCourses(Course1);
 		addToAllCourses(Course2);
@@ -135,8 +135,7 @@ public class MiniGolf extends Game {
 		addToSelectedCourses(Course2);
 
 		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
-		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT
-				/ BOX_TO_WORLD);
+		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
 		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT / BOX_TO_WORLD);
 		createEdge(0.0f, HEIGHT / BOX_TO_WORLD, 0.0f, 0.0f);
 
