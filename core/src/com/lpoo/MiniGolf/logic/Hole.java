@@ -19,6 +19,14 @@ public class Hole extends Element {
 		image = new Sprite(new Texture("hole.png"));
 	}
 
+	public float getRadius() {
+		return radius;
+	}
+
+	public void setRadius(float radius) {
+		this.radius = radius;
+	}
+
 	public Hole(Vector2 pos, float radius) {
 		super(pos, radius * 2, radius * 2);
 

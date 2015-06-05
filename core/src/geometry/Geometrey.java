@@ -1,16 +1,15 @@
 package geometry;
 
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.lpoo.MiniGolf.logic.Element;
 
 public class Geometrey {
 
-	private final static float tolerance = 0.1f;
+	private final static float tolerance = 0.2f;
 
 	public Geometrey() {
 
@@ -27,7 +26,7 @@ public class Geometrey {
 		float dist = distance(posC1.x, posC1.y, posC2.x, posC2.y);
 		float absSum, absDiff;
 		absSum = Math.abs(radiusC1 + radiusC2 + tolerance);
-		absDiff = Math.abs(radiusC1 - radiusC2 - tolerance);
+		absDiff = Math.abs(radiusC1 - radiusC2);
 
 		if (dist <= absSum) {
 			if (absDiff <= dist) {
@@ -39,14 +38,9 @@ public class Geometrey {
 
 	public static boolean overlap(Element circle, Vector2 pos1, float radius, Element rectangule, Vector2 pos2) {
 
-		float dist = distance(pos1.x, pos1.y, pos2.x, pos2.y);
-
-		float maxDist=distance(rectangule.getWidth(),0,0,rectangule.getHeight());
-		System.out.println("Dist: " + dist + "  radius: " + radius*2 + "  Width: " + rectangule.getWidth()*2 + "  Height: " + rectangule.getHeight()*2);
-		if (dist <= radius*2 || dist <= rectangule.getWidth()*2 || dist <= rectangule.getHeight()*2) {
-			return true;
-		}
-		return false;
+		Circle c = new Circle(pos1.x, pos1.y, radius);
+		Rectangle r = new Rectangle(pos2.x, pos2.y, rectangule.getWidth(), rectangule.getHeight());
+		return Intersector.overlaps(c, r);
 
 	}
 
