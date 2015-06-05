@@ -69,11 +69,11 @@ public class Element extends Actor {
 		// height*MiniGolf.BOX_TO_WORLD );
 	}
 
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		System.out.println(this.getType());
-		return this;
-	}
+//	@Override
+//	public Actor hit(float x, float y, boolean touchable) {
+//		
+//		return this;
+//	}
 
 	@Override
 	public void draw(Batch batch, float parentAlfa) {

@@ -304,6 +304,7 @@ public class EditorScreen implements Screen {
 
 	}
 
+	// TODO area minima 0.2*0.2 em quadrado
 	private void createActors() {
 		created = new Course();
 		overrideStageListener();
@@ -353,15 +354,7 @@ public class EditorScreen implements Screen {
 		grass1.createBody(MiniGolf.getW());
 		created.addCourseElement(grass1);
 		stage.addActor(grass1);
-		Floor grass2 = new Floor(new Vector2(3, 3), MiniGolf.getWidth() / 5 / MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / 5 / MiniGolf.BOX_TO_WORLD, elementType.voidFloor);
-		grass2.createBody(MiniGolf.getW());
-		created.addCourseElement(grass2);
-		stage.addActor(grass2);
-		
-		Floor wall = new Floor(new Vector2(5, 7), MiniGolf.getWidth() / 3 / MiniGolf.BOX_TO_WORLD+10, MiniGolf.getHeight() / 5 / MiniGolf.BOX_TO_WORLD , elementType.bouncyWall);
-		wall.createBody(MiniGolf.getW());
-		created.addCourseElement(wall);
-		stage.addActor(wall);
+
 		// Floor sand2 = new Floor(new Vector2(3 * (MiniGolf.WIDTH / 4f /
 		// MiniGolf.BOX_TO_WORLD), 3 * (MiniGolf.HEIGHT / 4f /
 		// MiniGolf.BOX_TO_WORLD)), MiniGolf.WIDTH / 2f / MiniGolf.BOX_TO_WORLD,
