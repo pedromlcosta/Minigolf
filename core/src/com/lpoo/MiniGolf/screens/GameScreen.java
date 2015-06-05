@@ -59,11 +59,11 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private static ArrayList<Player> players = new ArrayList<Player>();
 	private static ArrayList<Player> actualPlayers = new ArrayList<Player>();
-	private static ArrayList<Player> playerRemovalList = new ArrayList<Player>();
+	public static ArrayList<Player> playerRemovalList = new ArrayList<Player>();
 	private static Player currentPlayer;
 	private long turnStart = System.currentTimeMillis();
 	private Table score;
-	private int ballsInsideIllusion = 0;
+	public static int ballsInsideIllusion = 0;
 	static boolean allBallsStopped = true;
 	float mouseX, mouseY;
 
@@ -85,15 +85,14 @@ public class GameScreen implements Screen, InputProcessor {
 										// over
 			// CURRENT COURSE RENDER CYCLE
 
-			
 			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
 
-			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped){
+			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped) {
 				updateCurrentPlayer();
 			}
-			
+
 			checkBallsInVoid();
-			
+
 			cam.update();
 
 			MiniGolf.batch.setProjectionMatrix(cam.combined);
@@ -138,7 +137,7 @@ public class GameScreen implements Screen, InputProcessor {
 				resetPlayers(selectedCourses.get(courseIndex));
 				resetCourse(selectedCourses.get(courseIndex - 1));
 				initializeCourse(selectedCourses.get(courseIndex));
-				
+
 				// System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
 			}
@@ -159,10 +158,10 @@ public class GameScreen implements Screen, InputProcessor {
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 		score = new Table();
-		
+
 		selectedCourses = game.getSelectedCourses();
-		
-		initializePlayers(selectedCourses.get(courseIndex));	
+
+		initializePlayers(selectedCourses.get(courseIndex));
 		initializeCourse(selectedCourses.get(courseIndex)); // At this point,
 															// courseIndex is 0
 		courseIndex++;
@@ -185,57 +184,11 @@ public class GameScreen implements Screen, InputProcessor {
 				// Collisions between ball and something else
 				if ((elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball)) {
 
-					// Collisions with the INSIDE SENSOR of the ball
-					if (arg0.getFixtureA().isSensor()) {
-
-						elementA.player.getBall().steppingOn = elementB.type;
-						elementA.accel = elementB.accel;
-
-						if (elementB.type == Element.elementType.hole && elementA.player.getBallSpeedLen() < 15.0f) {
-							elementA.player.setOver(true);
-							playerRemovalList.add(elementA.player);
-							elementA.player.getBallBody().setLinearVelocity(0f, 0f);
-
-						}else if(elementB.type == Element.elementType.voidFloor){
-							elementA.player.getBallBody().setLinearVelocity(0f, 0f);
-							elementA.player.setBallFellVoid(true); 
-						}
-					}
-					// Collisions with the OUTSIDE SENSOR
-					else if (elementB.type == Element.elementType.glueWall) {
-						elementA.player.getBallBody().setLinearVelocity(0f, 0f);
-					} else if (elementB.type == Element.elementType.illusionWall) {
-						elementB.element.getImage().setAlpha(0.75f);
-						ballsInsideIllusion++;
-					}
-
+						elementA.player.getBall().beginContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
+						
 				} else if ((elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball)) {
 
-					// Collisions with the INSIDE SENSOR of the ball
-					if (arg0.getFixtureB().isSensor()) {
-
-						elementB.player.getBall().steppingOn = elementA.type;
-						elementB.accel = elementA.accel;
-
-						if (elementA.type == Element.elementType.hole && elementB.player.getBallSpeedLen() < 10.0f) {
-							elementB.player.setOver(true);
-							playerRemovalList.add(elementB.player);
-							elementB.player.getBallBody().setLinearVelocity(0f, 0f);
-
-						}else if(elementA.type == Element.elementType.voidFloor){
-							elementB.player.getBallBody().setLinearVelocity(0f, 0f);
-							elementB.player.setBallFellVoid(true);
-						}
-
-					}
-					// Collisions with the OUTSIDE SENSOR
-					else if (elementA.type == Element.elementType.glueWall) {
-						elementB.player.getBallBody().setLinearVelocity(0f, 0f);
-
-					} else if (elementA.type == Element.elementType.illusionWall) {
-						elementA.element.getImage().setAlpha(0.75f);
-						ballsInsideIllusion++;
-					}
+					elementB.player.getBall().beginContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
 
 				}
 
@@ -250,34 +203,13 @@ public class GameScreen implements Screen, InputProcessor {
 				}
 				// Ending Contact: Ball returns to stepping on grass
 				if (elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball) {
-					elementA.player.getBall().steppingOn = Element.elementType.grassFloor;
-					elementA.accel = GRASS_DRAG; // Always goes to grass after
-
-					// For the BALL/ILLUSIONWALL collision, we want it to happen
-					// with the outside fixture of the ball
-					if (!arg0.getFixtureA().isSensor()) {
-
-						if (elementB.type == Element.elementType.illusionWall) {
-							ballsInsideIllusion--;
-							if (ballsInsideIllusion == 0)
-								elementB.element.getImage().setAlpha(1.0f);
-						}
-					}
+					
+					elementA.player.getBall().endContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
+					
 
 				} else if (elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball) {
-					elementB.player.getBall().steppingOn = Element.elementType.grassFloor;
-					elementB.accel = GRASS_DRAG;
 
-					// For the BALL/ILLUSIONWALL collision, we want it to happen
-					// with the outside fixture of the ball
-					if (!arg0.getFixtureB().isSensor()) {
-
-						if (elementA.type == Element.elementType.illusionWall) {
-							ballsInsideIllusion--;
-							if (ballsInsideIllusion == 0)
-								elementA.element.getImage().setAlpha(1.0f);
-						}
-					}
+					elementB.player.getBall().endContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
 				}
 			}
 
@@ -409,19 +341,19 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
-	private void checkBallsInVoid(){
-		for(int i = 0; i < actualPlayers.size(); i++){
+	private void checkBallsInVoid() {
+		for (int i = 0; i < actualPlayers.size(); i++) {
 			Player player = actualPlayers.get(i);
-			if(player.isBallFellVoid()){
-				player.getBallBody().setTransform(currentCourse.getPositions().get(player.getPlayerID()-1), 	player.getBallBody().getAngle());
+			if (player.isBallFellVoid()) {
+				player.getBallBody().setTransform(currentCourse.getPositions().get(player.getPlayerID() - 1), player.getBallBody().getAngle());
 				player.setBallFellVoid(false);
 			}
 		}
 	}
-	
+
 	private void updateCurrentPlayer() {
 		ArrayList<Player> playerDecisionList = new ArrayList<Player>();
-		
+
 		for (int i = 0; i < players.size(); i++) {
 			// System.out.println("Ball nr. " + i + " Over = " +
 			// players.get(i).isOver());
@@ -488,7 +420,7 @@ public class GameScreen implements Screen, InputProcessor {
 			Label tacadas = new Label("Tacadas: " + 0, skin);
 
 			players.add(player);
-			
+
 			score.defaults().width(100);
 			score.add(playerID, tacadas);
 			score.row();
@@ -508,7 +440,7 @@ public class GameScreen implements Screen, InputProcessor {
 			players.get(i).setJustPlayed(false);
 			players.get(i).getBall().setOldPos(course.getPositions().get(i));
 			players.get(i).getBall().createBody(w, players.get(i));
-			
+
 		}
 		players.get(0).setJustPlayed(true);
 
@@ -545,7 +477,6 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 		allBallsStopped = true;
 	}
-	
 
 	// ///////////////////////////////////////////
 	// InputProcessor Functions //

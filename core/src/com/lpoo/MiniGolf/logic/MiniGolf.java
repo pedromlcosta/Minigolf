@@ -80,16 +80,21 @@ public class MiniGolf extends Game {
 //				HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
 		Hole hole1 = new Hole(new Vector2(5f, 5f), W, 0.3f);
 		
+		
 		Wall wall1 =new Wall(new Vector2(3 * (WIDTH / 4f / BOX_TO_WORLD),
 				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
 				HEIGHT / 2f / BOX_TO_WORLD, elementType.glueWall);
 		
-		Floor void1 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
+//		Floor void1 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
+//				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+//				HEIGHT / 2f / BOX_TO_WORLD, elementType.voidFloor);
+		
+		Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
 				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-				HEIGHT / 2f / BOX_TO_WORLD, elementType.voidFloor);
+				HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
 		
 		Course1.addEle(grass1);
-		Course1.addEle(void1);
+		Course1.addEle(illusion1);
 		Course1.addEle(wall1);
 		Course1.addEle(hole1);
 		Course1.addPosition(pos1);
