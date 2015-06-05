@@ -75,28 +75,6 @@ public class Floor extends Element {
 
 	}
 
-	// public boolean overlap(Element eleToBeAdded) {
-	//
-	// //TODO square
-	// if (eleToBeAdded.getType() == this.getType() || eleToBeAdded.getType() !=
-	// elementType.grassFloor)
-	// return false;
-	// Body bodyAdded, bodyInGame;
-	//
-	// bodyAdded = eleToBeAdded.getBody();
-	// bodyInGame = this.getBody();
-	//
-	// // for (Fixture fixtureAdded : bodyAdded.getFixtureList()) {
-	//
-	// for (Fixture fixtureInGame : bodyInGame.getFixtureList()) {
-	//
-	// // fixtureInGame.getShape().
-	// }
-	// // }
-	//
-	// return true;
-	// }
-	
 	public void destroyBody() {
 		for (int i = 0; i < body.getFixtureList().size; i++) {
 			body.destroyFixture(body.getFixtureList().get(i));

@@ -358,10 +358,7 @@ public class EditorScreen implements Screen {
 	}
 
 	private boolean notOverlapping() {
-		int i = 0;
 		for (Element ele : created.getElementos()) {
-			System.out.println(i);
-			i++;
 			if (ele.overlap(elementToAdd)) {
 				return false;
 			}
@@ -377,6 +374,7 @@ public class EditorScreen implements Screen {
 				return;
 			float width, height, posInicialX, posInicialY;
 			elementType eleType = elementToAdd.getType();
+
 			if (eleType == elementType.hole || eleType == elementType.teleporter || eleType == elementType.squareOne) {
 				width = 2 * HOLE_RADIUS;
 				height = width;
@@ -410,7 +408,7 @@ public class EditorScreen implements Screen {
 			elementToAdd.setWidth(width);
 			elementToAdd.createBody(MiniGolf.getW());
 			if (notOverlapping()) {
-				System.out.println("here");
+				System.out.println(elementToAdd.getType());
 				stage.addActor(elementToAdd);
 				this.created.addEle(elementToAdd);
 			} else {

@@ -1,6 +1,7 @@
 package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -15,7 +16,8 @@ public class Hole extends Element {
 
 	public Hole() {
 		super();
-	} 
+		image = new Sprite(new Texture("hole.png"));
+	}
 
 	public Hole(Vector2 pos, float radius) {
 		super(pos, radius * 2, radius * 2);
@@ -48,32 +50,6 @@ public class Hole extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
-//	public boolean overlap(Element eleToBeAdded) {
-//		// TODO circle
-//		if (eleToBeAdded.getType() == this.getType() || eleToBeAdded.getType() != elementType.grassFloor)
-//			return false;
-//		Body bodyAdded, bodyInGame;
-//
-//		bodyAdded = eleToBeAdded.getBody();
-//		bodyInGame = this.getBody();
-//
-//		// for (Fixture fixtureAdded : bodyAdded.getFixtureList()) {
-//
-//		for (Fixture fixtureInGame : bodyInGame.getFixtureList()) {
-//
-//			CircleShape circle = (CircleShape) fixtureInGame.getShape();
-//			float radius = circle.getRadius();
-//
-//			float dist = EditorScreen.distance(bodyInGame.getPosition().x, bodyInGame.getPosition().y, eleToBeAdded.getOldPosX(), eleToBeAdded.getOldPosY());
-//			if (dist <= radius)
-//				return true;
-//			
-//
-//		}
-//		// }
-//
-//		return true;
-//	}
 
 	public void draw() {
 		// System.out.println((body.getPosition().x-width/2f)*MiniGolf.BOX_TO_WORLD
@@ -87,6 +63,13 @@ public class Hole extends Element {
 		// image.setSize(width*MiniGolf.BOX_TO_WORLD,
 		// height*MiniGolf.BOX_TO_WORLD);
 		// image.draw(MiniGolf.batch);
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlfa) {
+
+		batch.draw(image, (body.getPosition().x) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
+
 	}
 
 }
