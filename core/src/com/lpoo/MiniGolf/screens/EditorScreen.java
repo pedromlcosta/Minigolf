@@ -74,6 +74,13 @@ public class EditorScreen implements Screen {
 		endStage1 = new Actor();
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
+		elementToAdd = new Floor(Element.elementType.bouncyWall);
+		// first value
+		// of drop
+		// down and
+		// default
+		// value for
+		// elementToAdd
 		createActors();
 		addListeners();
 
@@ -186,18 +193,49 @@ public class EditorScreen implements Screen {
 		selectElement.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
-				elementToAdd = getElement(selectElement.getSelected());
+				getElement(selectElement.getSelected());
 			}
 
 		});
 	}
 
-	public Element getElement(String selected) {
+	public void getElement(String selected) {
 		switch (selected) {
+		case "BouncyWall":
+			elementToAdd = new Floor(Element.elementType.bouncyWall);
+			break;
+		case "GlueWall":
+			elementToAdd = new Floor(Element.elementType.glueWall);
+			break;
+		case "Hole":
+			elementToAdd = new Floor(Element.elementType.hole);
+			break;
+		case "IceFloor":
+			elementToAdd = new Floor(Element.elementType.iceFloor);
+			break;
+		case "IllusionWall":
+			elementToAdd = new Floor(Element.elementType.illusionWall);
+			break;
+		case "WaterFloor":
+			elementToAdd = new Floor(Element.elementType.sandFloor);
+			break;
+		case "RegularWall":
+			elementToAdd = new Floor(Element.elementType.sandFloor);
+			break;
+		case "SquareOne":
+			elementToAdd = new Floor(Element.elementType.squareOne);
+			break;
 		case "SandFloor":
-			return null;
+			elementToAdd = new Floor(Element.elementType.sandFloor);
+			break;
+		case "Teleporter":
+			elementToAdd = new Floor(Element.elementType.teleporter);
+			break;
+		case "VoidFloor":
+			elementToAdd = new Floor(Element.elementType.voidFloor);
+			break;
 		default:
-			return null;
+			break;
 		}
 
 	}
@@ -217,7 +255,7 @@ public class EditorScreen implements Screen {
 		goBackButton.setHeight(BUTTON_HEIGHT);
 
 		selectElement = new SelectBox<String>(skin);
-		selectElement.setItems(new String[] { "SandFloor", "hole", "ball" });
+		selectElement.setItems(new String[] { "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "SquareOne", "Teleporter", "VoidFloor" });
 		selectElement.setMaxListCount(0);
 		scene = new Table();
 		scene.add(doneButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
@@ -259,8 +297,6 @@ public class EditorScreen implements Screen {
 
 	private void addElement() {
 		if (drawElement) {
-
-			elementToAdd = new Floor(Element.elementType.sandFloor);
 
 			float width, height, posInicialX, posInicialY;
 			width = (float) (1 * distance(leftX, leftY, mouseX, leftY) / MiniGolf.BOX_TO_WORLD);
