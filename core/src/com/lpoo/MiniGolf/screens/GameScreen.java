@@ -323,15 +323,23 @@ public class GameScreen implements Screen, InputProcessor {
 				// unitary.
 				// -> Then multiply by the drag force intensity and get
 				// dragForceX and dragForceY
-				float dragForceX = (currXSpeed / speedIntensity) * (10 * elementA.accel);
-				float dragForceY = (currYSpeed / speedIntensity) * (10 * elementA.accel);
+				double dragForceX = 0f;
+				double dragForceY = 0f;
 
+				if(elementA.accel >= 0){ //When the object suffers drag
+					dragForceX = (currXSpeed / speedIntensity) * (10 * elementA.accel);
+					dragForceY = (currYSpeed / speedIntensity) * (10 * elementA.accel);
+				}else{ //When the object suffers acceleration in a certain direction
+					dragForceX = Math.cos(ball.accelAngle)* (10 * elementA.accel);
+					dragForceY = Math.sin(ball.accelAngle) * (10 * elementA.accel);
+				}
+				
 				// Acceleration = Force, because mass = 1kg
 				// F = delta v / delta t <=> DELTA V = F * DELTA T
 				// FINAL VEL = INITIAL VEL - DELTA V <=> FINAL VEL = INITIAL VEL
 				// - F * DELTA T
-				float newXSpeed = currXSpeed - (dragForceX * W_STEP);
-				float newYSpeed = currYSpeed - (dragForceY * W_STEP);
+				double newXSpeed = currXSpeed - (dragForceX * W_STEP);
+				double newYSpeed = currYSpeed - (dragForceY * W_STEP);
 
 				if (currXSpeed * newXSpeed < 0) {
 					newXSpeed = 0f;
@@ -348,7 +356,7 @@ public class GameScreen implements Screen, InputProcessor {
 					ball.setLastPos(ballBody.getPosition());
 					System.out.println("dragHandler changed lastPos");
 				}
-				ballBody.setLinearVelocity(newXSpeed, newYSpeed);
+				ballBody.setLinearVelocity((float)newXSpeed, (float)newYSpeed);
 			}
 		}
 	}

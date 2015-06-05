@@ -17,8 +17,11 @@ public class Ball extends Element {
 	public float radius;
 	private Vector2 lastPos;
 	public elementType lastPosType;
+	
 	private Vector2 teleportDestination;
 	private Vector2 velocityBeforeTeleport;
+	public float accelAngle;
+	
 	private boolean touchedVoid = false;
 	private boolean touchedWater = false;
 	private boolean touchedTeleporter = false;
@@ -104,7 +107,9 @@ public class Ball extends Element {
 			} else if (obstacleUserData.type == Element.elementType.waterFloor) {
 				//Can't teleport immediately, because object might be locked, because of world.step(...);
 				this.touchedWater = true; 
-			} 
+			}else if (obstacleUserData.type == Element.elementType.acceleratorFloor){
+				
+			}
 
 			// Inherits the obstacles acceleration
 			steppingOn = obstacleUserData.type;
@@ -238,4 +243,6 @@ public class Ball extends Element {
 	public void setVelocityBeforeTeleport(Vector2 velocityBeforeTeleport) {
 		this.velocityBeforeTeleport = velocityBeforeTeleport;
 	}
+
+
 }
