@@ -30,29 +30,6 @@ public class Wall extends Element {
 
 	}
 
-	// public boolean overlap(Element eleToBeAdded) {
-	// //TODO square
-	// if (eleToBeAdded.getType() == this.getType() || eleToBeAdded.getType() !=
-	// elementType.grassFloor)
-	// return false;
-	// Body bodyAdded, bodyInGame;
-	//
-	// bodyAdded = eleToBeAdded.getBody();
-	// bodyInGame = this.getBody();
-	//
-	// // for (Fixture fixtureAdded : bodyAdded.getFixtureList()) {
-	//
-	// for (Fixture fixtureInGame : bodyInGame.getFixtureList()) {
-	//
-	// PolygonShape square = (PolygonShape) fixtureInGame.getShape();
-	// square.getRadius();
-	// }
-	// // }
-	//
-	// return true;
-	// }
-	 
-
 	public void createBody(World w) {
 
 		PolygonShape square = new PolygonShape();
@@ -61,21 +38,13 @@ public class Wall extends Element {
 		fixDef.shape = square;
 		fixDef.isSensor = false;
 
-		PolygonShape square2 = new PolygonShape();
-		square2.setAsBox(width / 2f, height / 2f);
-		FixtureDef fixDefSensor = new FixtureDef();
-		fixDefSensor.shape = square2;
-		fixDefSensor.isSensor = true;
-
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(oldPos);
+		bodyDef.position.set(startPos);
 
 		body = w.createBody(bodyDef);
 		Fixture fixt = body.createFixture(fixDef); // Wall physic fixture for
 													// contact
-		body.createFixture(fixDefSensor); // Wall sensor
-
 		fixt.setFriction(0.0f);
 
 		switch (type) {
@@ -84,7 +53,8 @@ public class Wall extends Element {
 			body.setUserData(new ElementType(elementType.regularWall, 0, this));
 			break;
 		case glueWall:
-			fixt.setRestitution(0.1f);
+			fixt.setRestitution(0.01f);
+			System.out.println("Hue, restitution!");
 			body.setUserData(new ElementType(elementType.glueWall, 0, this));
 			break;
 		case bouncyWall:
@@ -105,9 +75,9 @@ public class Wall extends Element {
 	}
 
 	public void draw() {
-
-		image.draw(MiniGolf.batch);
-
+		MiniGolf.batch.draw(image.getTexture(), (startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD,image.getWidth(), image.getHeight(), 0, 0, 2, 1);
+		//image.draw(MiniGolf.batch);
+		
 	}
 
 }

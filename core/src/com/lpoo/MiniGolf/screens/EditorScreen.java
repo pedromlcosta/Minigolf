@@ -1,5 +1,7 @@
 package com.lpoo.MiniGolf.screens;
 
+import geometry.Geometrey;
+
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -23,12 +25,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
 import com.lpoo.MiniGolf.logic.Element.elementType;
 import com.lpoo.MiniGolf.logic.Floor;
+import com.lpoo.MiniGolf.logic.Hole;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
 //TODO array the shape2d e vou testando
@@ -46,7 +50,7 @@ public class EditorScreen implements Screen {
 	private MiniGolf game;
 	private Course created;
 	private Element elementToAdd;
-
+	private static final float HOLE_RADIUS = 0.3f;
 	Vector2 posInit;
 	private boolean drawElement, pressedLeftButton, pressedRightButton, pressedResetbutton;
 	private ShapeRenderer shapeRenderer;
@@ -125,14 +129,6 @@ public class EditorScreen implements Screen {
 
 			shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
 			shapeRenderer.begin(ShapeType.Filled);
-
-			// System.out.println(leftX + "   " + leftY + "   " + mouseX + "  "
-			// + mouseY);
-
-			// Square of influence
-			/* 1 2 */
-			// System.out.println("Height: " + distance(leftX, leftY, leftX,
-			// mouseY) + "   Width: " + distance(leftX, leftY, mouseX, leftY));
 			shapeRenderer.rectLine(leftX, leftY, leftX, mouseY, 5);
 			shapeRenderer.rectLine(leftX, leftY, mouseX, leftY, 5);
 			shapeRenderer.rectLine(mouseX, leftY, mouseX, mouseY, 5);
@@ -160,10 +156,6 @@ public class EditorScreen implements Screen {
 	public void resume() {
 		// TODO Auto-generated method stub
 
-	}
-
-	public static float distance(float x1, float y1, float x2, float y2) {
-		return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 	}
 
 	// TODO
@@ -252,6 +244,15 @@ public class EditorScreen implements Screen {
 
 			}
 		});
+
+		selectElement.addListener(new ChangeListener() {
+
+			@Override
+			public void changed(ChangeEvent arg0, Actor arg1) {
+				getElement(selectElement.getSelected());
+			}
+		});
+
 	}
 
 	// TODO passar para Element método static??
@@ -264,7 +265,8 @@ public class EditorScreen implements Screen {
 			elementToAdd = new Floor(Element.elementType.glueWall);
 			break;
 		case "Hole":
-			elementToAdd = new Floor(Element.elementType.hole);
+			elementToAdd = new Hole();
+			elementToAdd.setType(elementType.hole);
 			break;
 		case "IceFloor":
 			// elementToAdd = new Floor(Element.elementType.iceFloor);
@@ -279,7 +281,7 @@ public class EditorScreen implements Screen {
 			elementToAdd = new Floor(Element.elementType.regularWall);
 			break;
 		case "SquareOne":
-			elementToAdd = new Floor(Element.elementType.squareOne);
+			// elementToAdd = new Floor(Element.elementType.squareOne);
 			break;
 		case "SandFloor":
 			elementToAdd = new Floor(Element.elementType.sandFloor);
@@ -356,8 +358,10 @@ public class EditorScreen implements Screen {
 	}
 
 	private boolean notOverlapping() {
-
+		int i = 0;
 		for (Element ele : created.getElementos()) {
+			System.out.println(i);
+			i++;
 			if (ele.overlap(elementToAdd)) {
 				return false;
 			}
@@ -372,8 +376,22 @@ public class EditorScreen implements Screen {
 			if (elementToAdd == null)
 				return;
 			float width, height, posInicialX, posInicialY;
-			width = (float) (1 * distance(leftX, leftY, mouseX, leftY) / MiniGolf.BOX_TO_WORLD);
-			height = (float) (1 * distance(leftX, leftY, leftX, mouseY) / MiniGolf.BOX_TO_WORLD);
+			elementType eleType = elementToAdd.getType();
+			if (eleType == elementType.hole || eleType == elementType.teleporter || eleType == elementType.squareOne) {
+				width = 2 * HOLE_RADIUS;
+				height = width;
+				elementToAdd.setRadius(HOLE_RADIUS);
+			} else {
+				width = (float) (Geometrey.distance(leftX, leftY, mouseX, leftY) / MiniGolf.BOX_TO_WORLD);
+				height = (float) (Geometrey.distance(leftX, leftY, leftX, mouseY) / MiniGolf.BOX_TO_WORLD);
+				if (width * height <= 0.04) {
+					System.out.println("area not big enough");
+					pressedLeftButton = false;
+					drawElement = false;
+					pressedRightButton = false;
+					return;
+				}
+			}
 
 			if (mouseX - leftX < 0) {
 				posInicialX = mouseX;
@@ -385,18 +403,22 @@ public class EditorScreen implements Screen {
 			} else
 				posInicialY = leftY;
 
-			elementToAdd.setOldPos(new Vector2(posInicialX, posInicialY));
+			elementToAdd.setStartPos(new Vector2(posInicialX, posInicialY));
 
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
+
+			elementToAdd.setHeight(height);
+			elementToAdd.setWidth(width);
+			elementToAdd.createBody(MiniGolf.getW());
 			if (notOverlapping()) {
-				elementToAdd.setOldPos(new Vector2(posInicialX, posInicialY));
-				elementToAdd.setHeight(height);
-				elementToAdd.setWidth(width);
-				elementToAdd.createBody(MiniGolf.getW());
 				stage.addActor(elementToAdd);
 				this.created.addEle(elementToAdd);
+			} else {
+				System.out.println("overlapped bodies");
+				elementToAdd.destroyBody();
 			}
+
 			pressedLeftButton = false;
 			drawElement = false;
 			pressedRightButton = false;
@@ -413,7 +435,6 @@ public class EditorScreen implements Screen {
 				// Event.getRelatedActor().getClass().getName();
 				if (button == Buttons.LEFT && !pressedResetbutton) {
 					drawElement = true;
-					// System.out.println("Left released");
 					addElement();
 				}
 			}
@@ -430,12 +451,9 @@ public class EditorScreen implements Screen {
 			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
 
 				if (button == Buttons.LEFT && !pressedLeftButton) {
-
-					// System.out.println("Left pressed");
 					posInit.x = posX;
 					posInit.y = posY;
 					pressedLeftButton = true;
-
 					pressedRightButton = false;
 					return true;
 				} else if (button == Buttons.RIGHT) {
@@ -452,7 +470,6 @@ public class EditorScreen implements Screen {
 				cursorPosX = posX;
 				cursorPosY = posY;
 				if (!pressedLeftButton && !pressedResetbutton) {
-					// System.out.println("Moved");
 					posInit.x = posX;
 					posInit.y = posY;
 				}

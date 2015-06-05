@@ -80,12 +80,13 @@ public class GameScreen implements Screen, InputProcessor {
 
 		ElementType element;
 		
-		if (currentPlayer.getBallBody() != null){
-			if ((element = (ElementType) currentPlayer.getBallBody().getUserData()) != null){
-				System.out.println("Ball acceleration is: " + element.accel);
+//		if (currentPlayer.getBallBody() != null){
+//			if ((element = (ElementType) currentPlayer.getBallBody().getUserData()) != null){
+//				System.out.println("Ball acceleration is: " + element.accel);
+//		
+//			}
+//		}
 		
-			}
-		}
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 			// CURRENT COURSE RENDER CYCLE
@@ -295,6 +296,8 @@ public class GameScreen implements Screen, InputProcessor {
 			// MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() *
 			// MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
 			shapeRenderer.rectLine(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD, currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD, mouseX, mouseY, 5);
+			//shapeRenderer.rectLine(p1, p2, width);
+			
 			shapeRenderer.end();
 		}
 	}
@@ -352,7 +355,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private void checkFallenBalls() {
 		for (int i = 0; i < actualPlayers.size(); i++) {
-			actualPlayers.get(i).getBall().checkIfFallen();
+			actualPlayers.get(i).getBall().checkElementsTouched();
 		}
 	}
 
@@ -442,7 +445,7 @@ public class GameScreen implements Screen, InputProcessor {
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 			players.get(i).setOver(false);
 			players.get(i).setJustPlayed(false);
-			players.get(i).getBall().setOldPos(course.getPositions().get(i));
+			players.get(i).getBall().setStartPos(course.getPositions().get(i));
 			players.get(i).getBall().createBody(w, players.get(i), course.getPositions().get(i));
 
 		}

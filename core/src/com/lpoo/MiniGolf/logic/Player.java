@@ -110,15 +110,15 @@ public class Player {
 	}
 
 	public float getBallOldPosX() {
-		return ball.oldPos.x;
+		return ball.startPos.x;
 	}
 
 	public float getBallOldPosY() {
-		return ball.oldPos.y;
+		return ball.startPos.y;
 	}
 
 	public void setBallOldPosX(float x) {
-		this.ball.oldPos.x = x;
+		this.ball.startPos.x = x;
 	}
 
 	public Vector2 getBallPos() {
@@ -126,11 +126,11 @@ public class Player {
 	}
 
 	public Vector2 getBallOldPos() {
-		return ball.oldPos;
+		return ball.startPos;
 	}
 
 	public void setBallOldPos(Vector2 oldPos) {
-		this.ball.oldPos = oldPos;
+		this.ball.startPos = oldPos;
 	}
 
 	public float getBallHeight() {

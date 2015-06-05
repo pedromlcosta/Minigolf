@@ -46,7 +46,7 @@ public class Floor extends Element {
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(oldPos);
+		bodyDef.position.set(startPos);
 
 		body = w.createBody(bodyDef);
 		body.createFixture(fixDef);
@@ -104,6 +104,7 @@ public class Floor extends Element {
 	}
 
 	public void draw() {
+		//MiniGolf.batch.draw(image.getTexture(), image.getOriginX(), image.getOriginY(),image.getWidth(), image.getHeight(), 0, 0, 2, 1);
 		image.draw(MiniGolf.batch);
 	}
 

@@ -1,9 +1,16 @@
 package com.lpoo.MiniGolf.logic;
 
+import geometry.Geometrey;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
@@ -14,7 +21,7 @@ public class Element extends Actor {
 	};
 
 	protected Body body;
-	protected Vector2 oldPos;
+	protected Vector2 startPos;
 	protected float width;
 	protected float height;
 	protected elementType type;
@@ -23,24 +30,47 @@ public class Element extends Actor {
 
 	public boolean overlap(Element eleToBeAdded) {
 
-		return false;
+		if (type == Element.elementType.grassFloor)
+			return false;
+
+		Body bodyToAdd = eleToBeAdded.getBody();
+
+		Shape shapeToAdd = eleToBeAdded.getBody().getFixtureList().get(0).getShape();
+		Shape shapeEle = body.getFixtureList().get(0).getShape();
+
+		if (shapeToAdd.getType() == Type.Circle && shapeEle.getType() == Type.Circle) {
+			return Geometrey.overlapCircles((CircleShape) shapeEle, startPos, (CircleShape) shapeToAdd, eleToBeAdded.getStartPos());
+		} else if (shapeToAdd.getType() == Type.Polygon && shapeEle.getType() == Type.Polygon) {
+			if (type == eleToBeAdded.getType())
+				return false;
+			else
+				return Geometrey.overlapPloygons(this, startPos, eleToBeAdded, eleToBeAdded.getStartPos());
+		} else {
+			float radius;
+			if (shapeToAdd.getType() == Type.Polygon) {
+				return Geometrey.overlap(eleToBeAdded, eleToBeAdded.getStartPos(), shapeToAdd.getRadius(), this, startPos);
+			} else {
+				return Geometrey.overlap(this, startPos, shapeEle.getRadius(), eleToBeAdded, eleToBeAdded.getStartPos());
+			}
+
+		}
 	}
 
 	public Element() {
-		oldPos = new Vector2();
+		startPos = new Vector2();
 		height = 0;
 		width = 0;
 
 	}
 
 	public Element(Vector2 pos, float width, float height) {
-		this.oldPos = pos;
+		this.startPos = pos;
 		this.width = width;
 		this.height = height;
 	}
 
 	public Element(Vector2 pos, float width, float height, elementType type) {
-		this.oldPos = pos;
+		this.startPos = pos;
 		this.width = width;
 		this.height = height;
 		this.type = type;
@@ -66,12 +96,6 @@ public class Element extends Actor {
 		// body.getPosition().y, width*MiniGolf.BOX_TO_WORLD ,
 		// height*MiniGolf.BOX_TO_WORLD );
 	}
-
-//	@Override
-//	public Actor hit(float x, float y, boolean touchable) {
-//		
-//		return this;
-//	}
 
 	@Override
 	public void draw(Batch batch, float parentAlfa) {
@@ -109,27 +133,27 @@ public class Element extends Actor {
 	}
 
 	public float getOldPosX() {
-		return oldPos.x;
+		return startPos.x;
 	}
 
 	public float getOldPosY() {
-		return oldPos.y;
+		return startPos.y;
 	}
 
 	public void setOldPosX(float x) {
-		this.oldPos.x = x;
+		this.startPos.x = x;
 	}
 
 	public Vector2 getPos() {
 		return body.getPosition();
 	}
 
-	public Vector2 getOldPos() {
-		return oldPos;
+	public Vector2 getStartPos() {
+		return startPos;
 	}
 
-	public void setOldPos(Vector2 oldPos) {
-		this.oldPos = oldPos;
+	public void setStartPos(Vector2 oldPos) {
+		this.startPos = oldPos;
 	}
 
 	public float getHeight() {
@@ -161,6 +185,12 @@ public class Element extends Actor {
 	}
 
 	public void destroyBody() {
+
+	}
+
+	public void setRadius(float holeRadius) {
+		// System.out.println("here Rad");
+		// TODO Auto-generated method stub
 
 	}
 

@@ -15,11 +15,13 @@ public class Ball extends Element {
 
 	public elementType steppingOn = elementType.nothing;
 	public float radius;
-	private Vector2 firstPos;
 	private Vector2 lastPos;
 	public elementType lastPosType;
-	private boolean fellInVoid = false;
-	private boolean fellInWater = false;
+	private Vector2 teleportDestination;
+	private Vector2 velocityBeforeTeleport;
+	private boolean touchedVoid = false;
+	private boolean touchedWater = false;
+	private boolean touchedTeleporter = false;
 
 	public Ball() {
 		super();
@@ -30,7 +32,7 @@ public class Ball extends Element {
 		super(pos, radius * 2, radius * 2);
 		this.radius = radius;
 
-		firstPos = pos.cpy();
+		//firstPos = pos.cpy();
 		lastPos = pos.cpy();
 
 		createBody(w, player, pos);
@@ -83,7 +85,7 @@ public class Ball extends Element {
 	}
 
 	public void beginContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
-		System.out.println("Begin Contact: " + ballUserData.type+" " + obstacleUserData.type);
+		//System.out.println("Begin Contact: " + ballUserData.type+" " + obstacleUserData.type);
 		if (innerSensor) {
 			
 			steppingOn = obstacleUserData.type;
@@ -97,16 +99,12 @@ public class Ball extends Element {
 				body.setLinearVelocity(0f, 0f);
 
 			} else if (obstacleUserData.type == Element.elementType.voidFloor) {
-				this.fellInVoid = true; // Assumes that the ball who called this
-										// function is the same as in
-										// ballUserData.element
+				//Can't teleport immediately, because object might be locked, because of world.step(...);
+				this.touchedVoid = true;
 			} else if (obstacleUserData.type == Element.elementType.waterFloor) {
-				System.out.println("Water");
-				this.fellInWater = true; // Needs a boolean!!!
-											// body.transform(pos,angle) can't
-											// be called in the listener, or the
-											// program will crash!!!!
-			}
+				//Can't teleport immediately, because object might be locked, because of world.step(...);
+				this.touchedWater = true; 
+			} 
 
 			// Inherits the obstacles acceleration
 			steppingOn = obstacleUserData.type;
@@ -116,6 +114,7 @@ public class Ball extends Element {
 
 			if (obstacleUserData.type == Element.elementType.glueWall) {
 				// Ball + glueWall = ball loses all speed
+				
 				lastPos = body.getPosition().cpy();
 				body.setLinearVelocity(0f, 0f);
 			} else if (obstacleUserData.type == Element.elementType.illusionWall) {
@@ -124,6 +123,11 @@ public class Ball extends Element {
 				obstacleUserData.element.getImage().setAlpha(0.75f);
 				Floor tempFloorRef = (Floor) obstacleUserData.element;
 				tempFloorRef.incrementBallsIllusion();
+			}else if (obstacleUserData.type == Element.elementType.teleporter){
+				//Can't teleport immediately, because object might be locked, because of world.step(...);
+				Teleporter tempTeleRef = (Teleporter) obstacleUserData.element;
+				teleportDestination = tempTeleRef.getDestination();
+				this.touchedTeleporter = true;
 			}
 		}
 
@@ -131,10 +135,8 @@ public class Ball extends Element {
 
 	public void endContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
 
-		System.out.println("End Contact: " + ballUserData.type+" " + obstacleUserData.type);
-		// These 2 lines are just for safety. When a object gets out of
-		// something, it enters something else immediately and changes these
-		// values
+		//System.out.println("End Contact: " + ballUserData.type+" " + obstacleUserData.type);
+		
 		steppingOn = Element.elementType.grassFloor;
 		ballUserData.accel = Floor.GRASS_DRAG;
 		
@@ -171,47 +173,69 @@ public class Ball extends Element {
 		this.lastPos = lastPos.cpy();
 	}
 
-	public void checkIfFallen() {
+	public void checkElementsTouched() {
 
-		if (fellInVoid) {
+		if (touchedVoid) {
 			body.setLinearVelocity(0f, 0f);
-			ElementType element = (ElementType) this.getBody().getUserData();
-			Player player = element.player;
-			World w = body.getWorld();
-			
-			destroyBody();
-			createBody(w, player, firstPos);  //Recreates ball on the firstPos
-			lastPos = firstPos.cpy();
-			fellInVoid = false;
+			teleport(startPos, false);
+			lastPos = startPos.cpy();
+			touchedVoid = false;
 		}
 
-		if (fellInWater) {
+		if (touchedWater) {
 			body.setLinearVelocity(0f, 0f);
-			ElementType element = (ElementType) this.getBody().getUserData();
-			Player player = element.player;
-			World w = body.getWorld();
-			
-			destroyBody();
-			System.out.println("Going back to last Pos: " + lastPos.x + " " + lastPos.y);
-			createBody(w, player, lastPos); //Recreates ball on the lastPosition where it had stopped			
-			fellInWater = false;
+			teleport(lastPos, false);		
+			touchedWater = false;
+		}
+		
+		if (touchedTeleporter) {
+			teleport(teleportDestination, true);
+			touchedTeleporter = false;
 		}
 	}
 
-	public boolean isFellInVoid() {
-		return fellInVoid;
+	public boolean isTouchedVoid() {
+		return touchedVoid;
 	}
 
-	public void setFellInVoid(boolean fellInVoid) {
-		this.fellInVoid = fellInVoid;
+	public void setTouchedVoid(boolean touchedVoid) {
+		this.touchedVoid = touchedVoid;
 	}
 
-	public boolean isFellInWater() {
-		return fellInWater;
+	public boolean isTouchedWater() {
+		return touchedWater;
 	}
 
-	public void setFellInWater(boolean fellInWater) {
-		this.fellInWater = fellInWater;
+	public void setTouchedWater(boolean touchedWater) {
+		this.touchedWater = touchedWater;
 	}
 
+	public void teleport(Vector2 destination, boolean keepVelocity){
+		
+		if(keepVelocity){
+			velocityBeforeTeleport = body.getLinearVelocity().cpy();
+		}
+		
+		ElementType element = (ElementType) this.getBody().getUserData();
+		Player player = element.player;
+		World w = body.getWorld();
+		
+		destroyBody();
+		createBody(w, player, destination); //Recreates ball on the lastPosition where it had stopped	
+		
+		if(keepVelocity){
+			body.setLinearVelocity(velocityBeforeTeleport);
+		}
+		
+	}
+	
+
+	public Vector2 getVelocityBeforeTeleport() {
+		return velocityBeforeTeleport;
+	}
+	
+
+	public void setVelocityBeforeTeleport(Vector2 velocityBeforeTeleport) {
+		this.velocityBeforeTeleport = velocityBeforeTeleport;
+	}
 }
