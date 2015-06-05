@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -81,9 +80,6 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		
-		ElementType elementA = (ElementType) currentPlayer.getBallBody().getUserData();
-		System.out.println("Ball accel is " + elementA.accel);
 		
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
@@ -417,7 +413,6 @@ public class GameScreen implements Screen, InputProcessor {
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 
 			// Vector2 ballPos = courseBallPos.get(i);
-			String str = "Player " + i;
 			Player player = new Player(i + 1);
 			player.createBall(course.getPositions().get(i), w, 0.25f);
 			Label playerID = new Label("ID: " + (i + 1), skin);
@@ -443,7 +438,7 @@ public class GameScreen implements Screen, InputProcessor {
 			players.get(i).setOver(false);
 			players.get(i).setJustPlayed(false);
 			players.get(i).getBall().setOldPos(course.getPositions().get(i));
-			players.get(i).getBall().createBody(w, players.get(i));
+			players.get(i).getBall().createBody(w, players.get(i), course.getPositions().get(i));
 
 		}
 		players.get(0).setJustPlayed(true);
@@ -454,6 +449,7 @@ public class GameScreen implements Screen, InputProcessor {
 		actualPlayers = players;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void initializeCourse(Course course) {
 
 		// Sets current course
@@ -467,8 +463,7 @@ public class GameScreen implements Screen, InputProcessor {
 			currentCourseElements.get(i).createBody(w);
 		}
 
-		// Clone the actualPlayers array. This way it was empty before this
-		// function was called
+		// Clone the actualPlayers array.
 		actualPlayers = (ArrayList<Player>) players.clone();
 
 	}
@@ -534,7 +529,7 @@ public class GameScreen implements Screen, InputProcessor {
 				// must be scaled to the box size first
 				// forceY = Box_scale_mouse_Y - Box_scale_ball_Y
 
-				Vector3 vec = game.viewport.unproject(new Vector3((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0));
+				Vector3 vec = MiniGolf.viewport.unproject(new Vector3((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0));
 
 				float mouseX = vec.x;
 				float mouseY = vec.y;

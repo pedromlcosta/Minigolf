@@ -25,6 +25,7 @@ public class Ball extends Element {
 		super();
 	}
 
+	//Constructor that also creates the body
 	public Ball(Vector2 pos, World w, float radius, Player player) {
 		super(pos, radius * 2, radius * 2);
 		this.radius = radius;
@@ -32,30 +33,7 @@ public class Ball extends Element {
 		firstPos = pos.cpy();
 		lastPos = pos.cpy();
 
-		CircleShape circleOuter = new CircleShape();
-		circleOuter.setRadius(radius);
-		FixtureDef fixDefOuter = new FixtureDef();
-		fixDefOuter.shape = circleOuter;
-		fixDefOuter.isSensor = false;
-
-		CircleShape circleInner = new CircleShape();
-
-		circleInner.setRadius(radius / 8);
-		FixtureDef fixDefInner = new FixtureDef();
-		fixDefInner.shape = circleInner;
-		fixDefInner.isSensor = true;
-
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.bullet = true;
-		bodyDef.position.set(pos);
-		this.body = w.createBody(bodyDef);
-		Fixture fixtOuter = this.body.createFixture(fixDefOuter);
-		body.createFixture(fixDefInner);
-		body.setUserData(new ElementType(elementType.ball, 0, player));
-
-		fixtOuter.setRestitution(0.85f);
-		fixtOuter.setFriction(0.0f);
+		createBody(w, player, pos);
 
 		String imageName = "bola" + player.getPlayerID() + ".png";
 
@@ -63,7 +41,7 @@ public class Ball extends Element {
 
 	}
 
-	public void createBody(World w, Player player) {
+	public void createBody(World w, Player player, Vector2 newPos) {
 
 		CircleShape circleOuter = new CircleShape();
 		circleOuter.setRadius(radius);
@@ -80,7 +58,7 @@ public class Ball extends Element {
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(oldPos);
+		bodyDef.position.set(newPos);
 		this.body = w.createBody(bodyDef);
 		Fixture fixtOuter = this.body.createFixture(fixDefOuter);
 		body.createFixture(fixDefInner);
@@ -159,7 +137,7 @@ public class Ball extends Element {
 		// values
 		//steppingOn = Element.elementType.grassFloor;
 		//ballUserData.accel = GameScreen.GRASS_DRAG;
-		System.out.println("Here");
+		
 
 		if (innerSensor) {
 			// No inner sensor does anything particular to it when leaving yet
@@ -202,8 +180,7 @@ public class Ball extends Element {
 			World w = body.getWorld();
 			
 			destroyBody();
-			createBody(w, player);
-			//body.setTransform(firstPos, body.getAngle());
+			createBody(w, player, firstPos);  //Recreates ball on the firstPos
 			lastPos = firstPos.cpy();
 			fellInVoid = false;
 		}
@@ -215,9 +192,8 @@ public class Ball extends Element {
 			World w = body.getWorld();
 			
 			destroyBody();
-			createBody(w, player);
-			//body.setTransform(lastPos, body.getAngle());
-			
+			System.out.println("Going back to last Pos: " + lastPos.x + " " + lastPos.y);
+			createBody(w, player, lastPos); //Recreates ball on the lastPosition where it had stopped			
 			fellInWater = false;
 		}
 	}
