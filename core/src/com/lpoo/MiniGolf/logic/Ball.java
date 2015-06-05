@@ -17,6 +17,7 @@ public class Ball extends Element {
 	public float radius;
 	private Vector2 firstPos;
 	private Vector2 lastPos;
+	public elementType lastPosType;
 	private boolean fellInVoid = false;
 	private boolean fellInWater = false;
 
@@ -28,8 +29,8 @@ public class Ball extends Element {
 		super(pos, radius * 2, radius * 2);
 		this.radius = radius;
 
-		firstPos = pos;
-		lastPos = pos;
+		firstPos = pos.cpy();
+		lastPos = pos.cpy();
 
 		CircleShape circleOuter = new CircleShape();
 		circleOuter.setRadius(radius);
@@ -104,9 +105,9 @@ public class Ball extends Element {
 	}
 
 	public void beginContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
-
+		System.out.println("Begin Contact: " + ballUserData.type+" " + obstacleUserData.type);
 		if (innerSensor) {
-
+			
 			steppingOn = obstacleUserData.type;
 			getBodyUserData().accel = obstacleUserData.accel;
 
@@ -118,16 +119,11 @@ public class Ball extends Element {
 				body.setLinearVelocity(0f, 0f);
 
 			} else if (obstacleUserData.type == Element.elementType.voidFloor) {
-				System.out.println("Void");
-				// Ball + voidFloor = ball goes back to the beggining position
-				lastPos = body.getPosition();
-				body.setLinearVelocity(0f, 0f);
 				this.fellInVoid = true; // Assumes that the ball who called this
 										// function is the same as in
 										// ballUserData.element
 			} else if (obstacleUserData.type == Element.elementType.waterFloor) {
 				System.out.println("Water");
-				body.setLinearVelocity(0f, 0f);
 				this.fellInWater = true; // Needs a boolean!!!
 											// body.transform(pos,angle) can't
 											// be called in the listener, or the
@@ -142,7 +138,7 @@ public class Ball extends Element {
 
 			if (obstacleUserData.type == Element.elementType.glueWall) {
 				// Ball + glueWall = ball loses all speed
-				lastPos = body.getPosition();
+				lastPos = body.getPosition().cpy();
 				body.setLinearVelocity(0f, 0f);
 			} else if (obstacleUserData.type == Element.elementType.illusionWall) {
 				// Ball + illusionWall = enters the wall, but changes its
@@ -157,11 +153,13 @@ public class Ball extends Element {
 
 	public void endContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
 
+		System.out.println("End Contact: " + ballUserData.type+" " + obstacleUserData.type);
 		// These 2 lines are just for safety. When a object gets out of
 		// something, it enters something else immediately and changes these
 		// values
-		steppingOn = Element.elementType.grassFloor;
-		obstacleUserData.accel = GameScreen.GRASS_DRAG;
+		//steppingOn = Element.elementType.grassFloor;
+		//ballUserData.accel = GameScreen.GRASS_DRAG;
+		System.out.println("Here");
 
 		if (innerSensor) {
 			// No inner sensor does anything particular to it when leaving yet
@@ -192,19 +190,34 @@ public class Ball extends Element {
 	}
 
 	public void setLastPos(Vector2 lastPos) {
-		this.lastPos = lastPos;
+		this.lastPos = lastPos.cpy();
 	}
 
 	public void checkIfFallen() {
 
 		if (fellInVoid) {
-			body.setTransform(firstPos, body.getAngle());
+			body.setLinearVelocity(0f, 0f);
+			ElementType element = (ElementType) this.getBody().getUserData();
+			Player player = element.player;
+			World w = body.getWorld();
+			
+			destroyBody();
+			createBody(w, player);
+			//body.setTransform(firstPos, body.getAngle());
+			lastPos = firstPos.cpy();
 			fellInVoid = false;
 		}
 
 		if (fellInWater) {
-			body.setTransform(lastPos, body.getAngle());
-			System.out.println("body transform done");
+			body.setLinearVelocity(0f, 0f);
+			ElementType element = (ElementType) this.getBody().getUserData();
+			Player player = element.player;
+			World w = body.getWorld();
+			
+			destroyBody();
+			createBody(w, player);
+			//body.setTransform(lastPos, body.getAngle());
+			
 			fellInWater = false;
 		}
 	}

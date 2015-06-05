@@ -81,6 +81,10 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		
+		ElementType elementA = (ElementType) currentPlayer.getBallBody().getUserData();
+		System.out.println("Ball accel is " + elementA.accel);
+		
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 			// CURRENT COURSE RENDER CYCLE
@@ -267,7 +271,6 @@ public class GameScreen implements Screen, InputProcessor {
 				// Chegou ao ultimo e todos tinham velocidade 0
 				if (allBallsStopped == false) {
 					allBallsStopped = true;
-					System.out.println("Nao devia ter passado aqui 2");
 					updateCurrentPlayer();
 				}
 			}
@@ -335,10 +338,12 @@ public class GameScreen implements Screen, InputProcessor {
 					newYSpeed = 0f;
 					// System.out.println("newYSpeed is 0");
 				}
+				//&& ball.steppingOn != Element.elementType.waterFloor
 				
-				if(newXSpeed == 0f && newYSpeed == 0f)
+				if(newXSpeed == 0f && newYSpeed == 0f ){
 					ball.setLastPos(ballBody.getPosition());
-				
+					System.out.println("dragHandler changed lastPos");
+				}
 				ballBody.setLinearVelocity(newXSpeed, newYSpeed);
 			}
 		}

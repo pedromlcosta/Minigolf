@@ -25,7 +25,7 @@ public class MiniGolf extends Game {
 	public static Viewport viewport;
 	private static World W;
 
-	private int nrPlayers = 4;
+	private int nrPlayers = 3;
 	private ArrayList<Course> selectedCourses = new ArrayList<Course>();
 	private ArrayList<Course> allCourses = new ArrayList<Course>();
 
