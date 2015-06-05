@@ -3,12 +3,16 @@ package com.lpoo.MiniGolf.logic;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.lpoo.MiniGolf.logic.Element.elementType;
+import com.lpoo.MiniGolf.screens.EditorScreen;
 
 public class Hole extends Element {
 
@@ -28,7 +32,7 @@ public class Hole extends Element {
 
 	public void createBody(World w) {
 		CircleShape circle = new CircleShape();
-		circle.setRadius(radius*0.50f);
+		circle.setRadius(radius * 0.50f);
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = circle;
 		fixDef.isSensor = true;
@@ -48,6 +52,33 @@ public class Hole extends Element {
 		}
 		body.getWorld().destroyBody(body);
 	}
+
+//	public boolean overlap(Element eleToBeAdded) {
+//		// TODO circle
+//		if (eleToBeAdded.getType() == this.getType() || eleToBeAdded.getType() != elementType.grassFloor)
+//			return false;
+//		Body bodyAdded, bodyInGame;
+//
+//		bodyAdded = eleToBeAdded.getBody();
+//		bodyInGame = this.getBody();
+//
+//		// for (Fixture fixtureAdded : bodyAdded.getFixtureList()) {
+//
+//		for (Fixture fixtureInGame : bodyInGame.getFixtureList()) {
+//
+//			CircleShape circle = (CircleShape) fixtureInGame.getShape();
+//			float radius = circle.getRadius();
+//
+//			float dist = EditorScreen.distance(bodyInGame.getPosition().x, bodyInGame.getPosition().y, eleToBeAdded.getOldPosX(), eleToBeAdded.getOldPosY());
+//			if (dist <= radius)
+//				return true;
+//			
+//
+//		}
+//		// }
+//
+//		return true;
+//	}
 
 	public void draw() {
 		// System.out.println((body.getPosition().x-width/2f)*MiniGolf.BOX_TO_WORLD

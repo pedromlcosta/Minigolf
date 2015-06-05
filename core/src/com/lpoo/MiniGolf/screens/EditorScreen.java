@@ -1,5 +1,7 @@
 package com.lpoo.MiniGolf.screens;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputProcessor;
@@ -14,6 +16,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -29,9 +35,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
 import com.lpoo.MiniGolf.logic.Element.elementType;
+import com.lpoo.MiniGolf.logic.ElementType;
 import com.lpoo.MiniGolf.logic.Floor;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
+//TODO array the shape2d e vou testando
 public class EditorScreen implements Screen {
 
 	private SpriteBatch batch;
@@ -40,22 +48,18 @@ public class EditorScreen implements Screen {
 	private SelectBox<String> selectElement;
 	private Table scene;
 	private Sprite background;
-	private TextButton goBackButton, doneButton;
+	private TextButton goBackButton, doneButton, revertLastMoveButton, reseteButton;
 	private static final float BUTTON_WIDTH = 200f;
 	private static final float BUTTON_HEIGHT = 50f;
 	private MiniGolf game;
 	private Course created;
 	private Element elementToAdd;
-	private Actor endStage1;
+
 	Vector2 posInit;
-	private boolean drawElement, pressedLeftButton;
+	private boolean drawElement, pressedLeftButton, pressedRightButton, pressedResetbutton;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera cam;
-	private float cursorPosX;
-	float cursorPosY;
-	private float mouseX;
-	private float mouseY;
-	private float leftX, leftY;
+	private float cursorPosX, cursorPosY, mouseX, mouseY, leftX, leftY;
 
 	public EditorScreen() {
 	}
@@ -71,7 +75,7 @@ public class EditorScreen implements Screen {
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		stage = new Stage();
 		background = new Sprite(new Texture("golfCourseBeach.jpg"));
-		endStage1 = new Actor();
+
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
 		elementToAdd = new Floor(Element.elementType.bouncyWall);
@@ -81,6 +85,7 @@ public class EditorScreen implements Screen {
 		// default
 		// value for
 		// elementToAdd
+		pressedResetbutton = drawElement = pressedLeftButton = pressedRightButton = false;
 		createActors();
 		addListeners();
 
@@ -116,7 +121,7 @@ public class EditorScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 		// System.out.println(pressedLeftButton);
-		if (pressedLeftButton) {
+		if (pressedLeftButton && !pressedResetbutton) {
 			// Vector3 mouseVec = stage.getViewport().unproject(new
 			// Vector3((float) cursorPosX, (float) cursorPosY, 0));
 			// Vector3 leftButtonVec = stage.getViewport().unproject(new
@@ -165,8 +170,15 @@ public class EditorScreen implements Screen {
 
 	}
 
-	public float distance(float x1, float y1, float x2, float y2) {
+	public static float distance(float x1, float y1, float x2, float y2) {
 		return (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+	}
+
+	// TODO
+	private void removeActorFromEditor(ArrayList<Element> ele, int index, Element removed) {
+		ele.remove(index);
+		removed.destroyBody();
+		removed.remove();
 	}
 
 	private void addListeners() {
@@ -183,6 +195,7 @@ public class EditorScreen implements Screen {
 				// game.setScreen(new MenuScreen(game));
 			}
 		});
+
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -190,13 +203,63 @@ public class EditorScreen implements Screen {
 			}
 		});
 
-		// selectElement.addListener(new ChangeListener() {
-		// @Override
-		// public void changed(ChangeEvent arg0, Actor arg1) {
-		//
-		// }
-		//
-		// });
+		revertLastMoveButton.addListener(new ClickListener() {
+			@Override
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				pressedResetbutton = true;
+			}
+
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				pressedResetbutton = false;
+			}
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				pressedResetbutton = true;
+				pressedLeftButton = false;
+				ArrayList<Element> ele = created.getElementos();
+				int index = ele.size() - 1;
+				// System.out.println(index);
+				if (index == 0)
+					return;
+				Element removed = ele.get(index);
+				removeActorFromEditor(ele, index, removed);
+
+			}
+
+		});
+
+		reseteButton.addListener(new ClickListener() {
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				pressedResetbutton = true;
+			}
+
+			@Override
+			public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				pressedResetbutton = false;
+			}
+
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				pressedResetbutton = true;
+				pressedLeftButton = false;
+				elementToAdd = null;
+				ArrayList<Element> elementsArray = created.getElementos();
+				int index = elementsArray.size() - 1;
+				if (index == 0)
+					return;
+				for (; index >= 1; index--) {
+
+					Element eleRemoved = elementsArray.get(index);
+					eleRemoved.destroyBody();
+					eleRemoved.remove();
+					elementsArray.remove(index);
+
+				}
+
+			}
+		});
 	}
 
 	// TODO passar para Element método static??
@@ -251,6 +314,14 @@ public class EditorScreen implements Screen {
 		doneButton.setWidth(BUTTON_WIDTH);
 		doneButton.setHeight(BUTTON_HEIGHT);
 
+		revertLastMoveButton = new TextButton("Revert Last Placement", skin);
+		revertLastMoveButton.setWidth(BUTTON_WIDTH);
+		revertLastMoveButton.setHeight(BUTTON_HEIGHT);
+
+		reseteButton = new TextButton("Reset", skin);
+		reseteButton.setWidth(BUTTON_WIDTH);
+		reseteButton.setHeight(BUTTON_HEIGHT);
+
 		goBackButton = new TextButton("Back", skin);
 		goBackButton.setWidth(BUTTON_WIDTH);
 		goBackButton.setHeight(BUTTON_HEIGHT);
@@ -259,6 +330,10 @@ public class EditorScreen implements Screen {
 		selectElement.setItems(new String[] { "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "SquareOne", "Teleporter", "VoidFloor" });
 		selectElement.setMaxListCount(0);
 		scene = new Table();
+		scene.add(reseteButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+		scene.add(spaceLabel).width(50f);
+		scene.add(revertLastMoveButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+		scene.add(spaceLabel).width(50f);
 		scene.add(doneButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
 		scene.add(spaceLabel).width(50f);
 		scene.add(goBackButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
@@ -278,6 +353,15 @@ public class EditorScreen implements Screen {
 		grass1.createBody(MiniGolf.getW());
 		created.addCourseElement(grass1);
 		stage.addActor(grass1);
+		Floor grass2 = new Floor(new Vector2(3, 3), MiniGolf.getWidth() / 5 / MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / 5 / MiniGolf.BOX_TO_WORLD, elementType.voidFloor);
+		grass2.createBody(MiniGolf.getW());
+		created.addCourseElement(grass2);
+		stage.addActor(grass2);
+		
+		Floor wall = new Floor(new Vector2(5, 7), MiniGolf.getWidth() / 3 / MiniGolf.BOX_TO_WORLD+10, MiniGolf.getHeight() / 5 / MiniGolf.BOX_TO_WORLD , elementType.bouncyWall);
+		wall.createBody(MiniGolf.getW());
+		created.addCourseElement(wall);
+		stage.addActor(wall);
 		// Floor sand2 = new Floor(new Vector2(3 * (MiniGolf.WIDTH / 4f /
 		// MiniGolf.BOX_TO_WORLD), 3 * (MiniGolf.HEIGHT / 4f /
 		// MiniGolf.BOX_TO_WORLD)), MiniGolf.WIDTH / 2f / MiniGolf.BOX_TO_WORLD,
@@ -297,7 +381,7 @@ public class EditorScreen implements Screen {
 	}
 
 	private void addElement() {
-		if (drawElement) {
+		if (drawElement && !pressedRightButton) {
 			getElement(selectElement.getSelected());
 
 			if (elementToAdd == null)
@@ -327,34 +411,34 @@ public class EditorScreen implements Screen {
 				elementToAdd.createBody(MiniGolf.getW());
 				stage.addActor(elementToAdd);
 				this.created.addEle(elementToAdd);
-
 			}
 			pressedLeftButton = false;
 			drawElement = false;
+			pressedRightButton = false;
 		}
+		pressedRightButton = false;
 	}
 
 	public void overrideStageListener() {
 
 		stage.addListener(new InputListener() {
+
 			@Override
 			public void touchUp(InputEvent Event, float screenX, float screenY, int pointer, int button) {
 				// Event.getRelatedActor().getClass().getName();
-				if (button == Buttons.LEFT) {
+				if (button == Buttons.LEFT && !pressedResetbutton) {
 					drawElement = true;
-					System.out.println("Left released");
+					// System.out.println("Left released");
 					addElement();
 				}
 			}
 
 			@Override
 			public void touchDragged(InputEvent Event, float posX, float posY, int button) {
-				if (button == Buttons.LEFT) {
+				if (button == Buttons.LEFT && !pressedResetbutton) {
 					cursorPosX = posX;
 					cursorPosY = posY;
-					System.out.println("OUT");
 				}
-				System.out.println("OUT");
 			}
 
 			@Override
@@ -362,14 +446,19 @@ public class EditorScreen implements Screen {
 
 				if (button == Buttons.LEFT && !pressedLeftButton) {
 
-					System.out.println("Left pressed");
+					// System.out.println("Left pressed");
 					posInit.x = posX;
 					posInit.y = posY;
 					pressedLeftButton = true;
-					System.out.println("HERE GOD");
+
+					pressedRightButton = false;
 					return true;
-				} else if (button == Buttons.RIGHT)
+				} else if (button == Buttons.RIGHT) {
 					pressedLeftButton = false;
+					elementToAdd = null;
+					drawElement = false;
+					pressedRightButton = true;
+				}
 				return false;
 			}
 
@@ -377,13 +466,14 @@ public class EditorScreen implements Screen {
 			public boolean mouseMoved(InputEvent Event, float posX, float posY) {
 				cursorPosX = posX;
 				cursorPosY = posY;
-				if (!pressedLeftButton) {
-					System.out.println("Moved");
+				if (!pressedLeftButton && !pressedResetbutton) {
+					// System.out.println("Moved");
 					posInit.x = posX;
 					posInit.y = posY;
 				}
 				return false;
 			}
+
 		});
 
 	}

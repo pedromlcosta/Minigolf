@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.lpoo.MiniGolf.logic.Element.elementType;
 import com.lpoo.MiniGolf.screens.GameScreen;
 
@@ -32,6 +34,29 @@ public class Wall extends Element {
 
 	}
 
+	// public boolean overlap(Element eleToBeAdded) {
+	// //TODO square
+	// if (eleToBeAdded.getType() == this.getType() || eleToBeAdded.getType() !=
+	// elementType.grassFloor)
+	// return false;
+	// Body bodyAdded, bodyInGame;
+	//
+	// bodyAdded = eleToBeAdded.getBody();
+	// bodyInGame = this.getBody();
+	//
+	// // for (Fixture fixtureAdded : bodyAdded.getFixtureList()) {
+	//
+	// for (Fixture fixtureInGame : bodyInGame.getFixtureList()) {
+	//
+	// PolygonShape square = (PolygonShape) fixtureInGame.getShape();
+	// square.getRadius();
+	// }
+	// // }
+	//
+	// return true;
+	// }
+	 
+
 	public void createBody(World w) {
 
 		PolygonShape square = new PolygonShape();
@@ -39,7 +64,7 @@ public class Wall extends Element {
 		FixtureDef fixDef = new FixtureDef();
 		fixDef.shape = square;
 		fixDef.isSensor = false;
-		
+
 		PolygonShape square2 = new PolygonShape();
 		square2.setAsBox(width / 2f, height / 2f);
 		FixtureDef fixDefSensor = new FixtureDef();
@@ -51,11 +76,9 @@ public class Wall extends Element {
 		bodyDef.position.set(oldPos);
 
 		body = w.createBody(bodyDef);
-		Fixture fixt = body.createFixture(fixDef);            //Wall physic fixture for contact
-		Fixture fixtSense = body.createFixture(fixDefSensor); //Wall sensor
-		
-
-		
+		Fixture fixt = body.createFixture(fixDef); // Wall physic fixture for
+													// contact
+		Fixture fixtSense = body.createFixture(fixDefSensor); // Wall sensor
 
 		fixt.setFriction(0.0f);
 
@@ -74,10 +97,10 @@ public class Wall extends Element {
 			break;
 		default:
 			break;
-		
 
+		}
 	}
-}
+
 	public void destroyBody() {
 		for (int i = 0; i < body.getFixtureList().size; i++) {
 			body.destroyFixture(body.getFixtureList().get(i));
@@ -86,7 +109,7 @@ public class Wall extends Element {
 	}
 
 	public void draw() {
-		
+
 		image.draw(MiniGolf.batch);
 
 	}
