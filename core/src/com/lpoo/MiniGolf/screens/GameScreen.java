@@ -34,9 +34,7 @@ import com.lpoo.MiniGolf.logic.Player;
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
 public class GameScreen implements Screen, InputProcessor {
 
-	public static final float GRASS_DRAG = 1.5f;
-	public static final float SAND_DRAG = 6.0f;
-	public static final float ICE_DRAG = 0.3f;
+	
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 	static final float W_STEP = 1f / 60f;
 	static final float FORCE_AUGMENT = 3.0f;
@@ -80,7 +78,14 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		ElementType element;
 		
+		if (currentPlayer.getBallBody() != null){
+			if ((element = (ElementType) currentPlayer.getBallBody().getUserData()) != null){
+				System.out.println("Ball acceleration is: " + element.accel);
+		
+			}
+		}
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 			// CURRENT COURSE RENDER CYCLE

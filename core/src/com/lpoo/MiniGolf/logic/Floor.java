@@ -10,10 +10,12 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.lpoo.MiniGolf.screens.GameScreen;
 
 public class Floor extends Element {
 
+	public static final float GRASS_DRAG = 1.5f;
+	public static final float SAND_DRAG = 6.0f;
+	public static final float ICE_DRAG = 0.3f;
 	private int ballsInsideIllusion = 0;
 
 	public Floor(Vector2 pos, float width, float height, elementType type) {
@@ -52,13 +54,13 @@ public class Floor extends Element {
 		switch (type) {
 		case grassFloor:
 		case illusionWall:
-			body.setUserData(new ElementType(type, GameScreen.GRASS_DRAG, this));
+			body.setUserData(new ElementType(type, GRASS_DRAG, this));
 			break;
 		case sandFloor:
-			body.setUserData(new ElementType(type, GameScreen.SAND_DRAG, this));
+			body.setUserData(new ElementType(type, SAND_DRAG, this));
 			break;
 		case iceFloor:
-			body.setUserData(new ElementType(type, GameScreen.ICE_DRAG, this));
+			body.setUserData(new ElementType(type, ICE_DRAG, this));
 			break;
 		case voidFloor:
 			body.setUserData(new ElementType(type, 0, this));
@@ -93,6 +95,7 @@ public class Floor extends Element {
 	//
 	// return true;
 	// }
+	
 	public void destroyBody() {
 		for (int i = 0; i < body.getFixtureList().size; i++) {
 			body.destroyFixture(body.getFixtureList().get(i));

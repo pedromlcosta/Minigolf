@@ -135,8 +135,8 @@ public class Ball extends Element {
 		// These 2 lines are just for safety. When a object gets out of
 		// something, it enters something else immediately and changes these
 		// values
-		//steppingOn = Element.elementType.grassFloor;
-		//ballUserData.accel = GameScreen.GRASS_DRAG;
+		steppingOn = Element.elementType.grassFloor;
+		ballUserData.accel = Floor.GRASS_DRAG;
 		
 
 		if (innerSensor) {
