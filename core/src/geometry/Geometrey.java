@@ -41,7 +41,8 @@ public class Geometrey {
 		Circle c = new Circle(pos1.x, pos1.y, radius);
 		Rectangle r = new Rectangle(pos2.x, pos2.y, rectangule.getWidth(), rectangule.getHeight());
 
-		return Intersector.overlaps(c, r);
+		System.out.println(Intersector.overlaps(c, r));
+		return false;
 	}
 
 	public static boolean overlapPloygons(Element element, Vector2 posSq1, Element eleToBeAdded, Vector2 posSq2) {
