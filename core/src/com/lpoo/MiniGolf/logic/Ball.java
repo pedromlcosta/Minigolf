@@ -15,6 +15,10 @@ public class Ball extends Element {
 
 	public elementType steppingOn = elementType.nothing;
 	public float radius;
+	private Vector2 firstPos;
+	private Vector2 lastPos;
+	private boolean fellInVoid = false;
+	private boolean fellInWater = false;
 
 	public Ball() {
 		super();
@@ -23,6 +27,9 @@ public class Ball extends Element {
 	public Ball(Vector2 pos, World w, float radius, Player player) {
 		super(pos, radius * 2, radius * 2);
 		this.radius = radius;
+
+		firstPos = pos;
+		lastPos = pos;
 
 		CircleShape circleOuter = new CircleShape();
 		circleOuter.setRadius(radius);
@@ -107,22 +114,35 @@ public class Ball extends Element {
 				// Ball + hole = removes ball and player ends the course
 				ballUserData.player.setOver(true);
 				GameScreen.playerRemovalList.add(ballUserData.player);
+
 				body.setLinearVelocity(0f, 0f);
 
 			} else if (obstacleUserData.type == Element.elementType.voidFloor) {
+				System.out.println("Void");
 				// Ball + voidFloor = ball goes back to the beggining position
+				lastPos = body.getPosition();
 				body.setLinearVelocity(0f, 0f);
-				ballUserData.player.setBallFellVoid(true);
+				this.fellInVoid = true; // Assumes that the ball who called this
+										// function is the same as in
+										// ballUserData.element
+			} else if (obstacleUserData.type == Element.elementType.waterFloor) {
+				System.out.println("Water");
+				body.setLinearVelocity(0f, 0f);
+				this.fellInWater = true; // Needs a boolean!!!
+											// body.transform(pos,angle) can't
+											// be called in the listener, or the
+											// program will crash!!!!
 			}
 
 			// Inherits the obstacles acceleration
 			steppingOn = obstacleUserData.type;
 			ballUserData.accel = obstacleUserData.accel;
 
-		} else { // else if outerSensor
+		} else { // else if outerSensor/outer part of the ball
 
 			if (obstacleUserData.type == Element.elementType.glueWall) {
 				// Ball + glueWall = ball loses all speed
+				lastPos = body.getPosition();
 				body.setLinearVelocity(0f, 0f);
 			} else if (obstacleUserData.type == Element.elementType.illusionWall) {
 				// Ball + illusionWall = enters the wall, but changes its
@@ -137,14 +157,14 @@ public class Ball extends Element {
 
 	public void endContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
 
-		//These 2 lines are just for safety. When a object gets out of something, it enters something else immediately and changes these values
+		// These 2 lines are just for safety. When a object gets out of
+		// something, it enters something else immediately and changes these
+		// values
 		steppingOn = Element.elementType.grassFloor;
 		obstacleUserData.accel = GameScreen.GRASS_DRAG;
 
-		
-		
 		if (innerSensor) {
-			//No inner sensor does anything particular to it when leaving yet
+			// No inner sensor does anything particular to it when leaving yet
 		} else { // else if outerSensor
 
 			if (obstacleUserData.type == Element.elementType.illusionWall) {
@@ -165,6 +185,44 @@ public class Ball extends Element {
 
 	public ElementType getBodyUserData() {
 		return (ElementType) body.getUserData();
+	}
+
+	public Vector2 getLastPos() {
+		return lastPos;
+	}
+
+	public void setLastPos(Vector2 lastPos) {
+		this.lastPos = lastPos;
+	}
+
+	public void checkIfFallen() {
+
+		if (fellInVoid) {
+			body.setTransform(firstPos, body.getAngle());
+			fellInVoid = false;
+		}
+
+		if (fellInWater) {
+			body.setTransform(lastPos, body.getAngle());
+			System.out.println("body transform done");
+			fellInWater = false;
+		}
+	}
+
+	public boolean isFellInVoid() {
+		return fellInVoid;
+	}
+
+	public void setFellInVoid(boolean fellInVoid) {
+		this.fellInVoid = fellInVoid;
+	}
+
+	public boolean isFellInWater() {
+		return fellInWater;
+	}
+
+	public void setFellInWater(boolean fellInWater) {
+		this.fellInWater = fellInWater;
 	}
 
 }

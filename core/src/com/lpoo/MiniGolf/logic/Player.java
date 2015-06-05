@@ -15,7 +15,6 @@ public class Player {
 	private boolean justPlayed;
 	private boolean over;
 	private boolean won;
-	private boolean ballFellVoid;
 	private Vector2 clubMovement;
 
 	public Player(int id) {
@@ -26,7 +25,6 @@ public class Player {
 		tacadaTotal = 0;
 		over = false;
 		won = false;
-		ballFellVoid = false;
 	}
 
 	public Player(Ball b) {
@@ -37,7 +35,6 @@ public class Player {
 		tacadaTotal = 0;
 		over = false;
 		won = false;
-		ballFellVoid = false;
 	}
 	
 	public void createBall(Vector2 pos, World w, float radius){
@@ -192,12 +189,5 @@ public class Player {
 		this.playerID = playerID;
 	}
 
-	public boolean isBallFellVoid() {
-		return ballFellVoid;
-	}
-
-	public void setBallFellVoid(boolean ballFellVoid) {
-		this.ballFellVoid = ballFellVoid;
-	}
 
 }

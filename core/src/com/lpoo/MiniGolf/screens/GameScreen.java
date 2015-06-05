@@ -91,7 +91,7 @@ public class GameScreen implements Screen, InputProcessor {
 				updateCurrentPlayer();
 			}
 
-			checkBallsInVoid();
+			checkFallenBalls();
 
 			cam.update();
 
@@ -184,8 +184,8 @@ public class GameScreen implements Screen, InputProcessor {
 				// Collisions between ball and something else
 				if ((elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball)) {
 
-						elementA.player.getBall().beginContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
-						
+					elementA.player.getBall().beginContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
+
 				} else if ((elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball)) {
 
 					elementB.player.getBall().beginContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
@@ -203,9 +203,8 @@ public class GameScreen implements Screen, InputProcessor {
 				}
 				// Ending Contact: Ball returns to stepping on grass
 				if (elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball) {
-					
+
 					elementA.player.getBall().endContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
-					
 
 				} else if (elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball) {
 
@@ -301,7 +300,8 @@ public class GameScreen implements Screen, InputProcessor {
 		for (int i = 0; i < actualPlayers.size(); i++) {
 
 			// Getting Ball Data
-			Body ballBody = actualPlayers.get(i).getBallBody();
+			Ball ball =  actualPlayers.get(i).getBall();
+			Body ballBody = ball.getBody();
 			ElementType elementA = (ElementType) ballBody.getUserData();
 			// Deciding if there is something to change in force or velocity
 			if ((actualPlayers.get(i).getBall().steppingOn != Element.elementType.nothing) && (actualPlayers.get(i).getBallBody().getLinearVelocity().len() != 0f)) {
@@ -335,19 +335,18 @@ public class GameScreen implements Screen, InputProcessor {
 					newYSpeed = 0f;
 					// System.out.println("newYSpeed is 0");
 				}
-
+				
+				if(newXSpeed == 0f && newYSpeed == 0f)
+					ball.setLastPos(ballBody.getPosition());
+				
 				ballBody.setLinearVelocity(newXSpeed, newYSpeed);
 			}
 		}
 	}
 
-	private void checkBallsInVoid() {
+	private void checkFallenBalls() {
 		for (int i = 0; i < actualPlayers.size(); i++) {
-			Player player = actualPlayers.get(i);
-			if (player.isBallFellVoid()) {
-				player.getBallBody().setTransform(currentCourse.getPositions().get(player.getPlayerID() - 1), player.getBallBody().getAngle());
-				player.setBallFellVoid(false);
-			}
+			actualPlayers.get(i).getBall().checkIfFallen();
 		}
 	}
 

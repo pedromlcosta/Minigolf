@@ -63,7 +63,10 @@ public class Floor extends Element {
 		case voidFloor:
 			body.setUserData(new ElementType(type, 0, this));
 			break;
+		case waterFloor:
+			body.setUserData(new ElementType(type, 0, this));
 		default:
+			body.setUserData(new ElementType(type, 0, this));
 			break;
 		}
 
