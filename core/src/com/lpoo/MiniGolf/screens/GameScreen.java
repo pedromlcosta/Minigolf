@@ -65,7 +65,6 @@ public class GameScreen implements Screen, InputProcessor {
 	private Table score;
 	private int ballsInsideIllusion = 0;
 	static boolean allBallsStopped = true;
-	private boolean ballFellVoid = false;
 	float mouseX, mouseY;
 
 	public GameScreen(MiniGolf game) {
@@ -86,16 +85,15 @@ public class GameScreen implements Screen, InputProcessor {
 										// over
 			// CURRENT COURSE RENDER CYCLE
 
-			if(ballFellVoid){
-				currentPlayer.getBallBody().setTransform(currentCourse.getPositions().get(currentPlayer.getPlayerID()-1),currentPlayer.getBallBody().getAngle());
-				ballFellVoid = false;
-			}
 			
 			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
 
 			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped){
 				updateCurrentPlayer();
 			}
+			
+			checkBallsInVoid();
+			
 			cam.update();
 
 			MiniGolf.batch.setProjectionMatrix(cam.combined);
@@ -196,15 +194,16 @@ public class GameScreen implements Screen, InputProcessor {
 						if (elementB.type == Element.elementType.hole && elementA.player.getBallSpeedLen() < 15.0f) {
 							elementA.player.setOver(true);
 							playerRemovalList.add(elementA.player);
-							elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
+							elementA.player.getBallBody().setLinearVelocity(0f, 0f);
 
 						}else if(elementB.type == Element.elementType.voidFloor){
-							elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
+							elementA.player.getBallBody().setLinearVelocity(0f, 0f);
+							elementA.player.setBallFellVoid(true); 
 						}
 					}
 					// Collisions with the OUTSIDE SENSOR
 					else if (elementB.type == Element.elementType.glueWall) {
-						elementA.player.getBall().getBody().setLinearVelocity(0f, 0f);
+						elementA.player.getBallBody().setLinearVelocity(0f, 0f);
 					} else if (elementB.type == Element.elementType.illusionWall) {
 						elementB.element.getImage().setAlpha(0.75f);
 						ballsInsideIllusion++;
@@ -221,17 +220,17 @@ public class GameScreen implements Screen, InputProcessor {
 						if (elementA.type == Element.elementType.hole && elementB.player.getBallSpeedLen() < 10.0f) {
 							elementB.player.setOver(true);
 							playerRemovalList.add(elementB.player);
-							elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
+							elementB.player.getBallBody().setLinearVelocity(0f, 0f);
 
 						}else if(elementA.type == Element.elementType.voidFloor){
-							elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
-							ballFellVoid = true;
+							elementB.player.getBallBody().setLinearVelocity(0f, 0f);
+							elementB.player.setBallFellVoid(true);
 						}
 
 					}
 					// Collisions with the OUTSIDE SENSOR
 					else if (elementA.type == Element.elementType.glueWall) {
-						elementB.player.getBall().getBody().setLinearVelocity(0f, 0f);
+						elementB.player.getBallBody().setLinearVelocity(0f, 0f);
 
 					} else if (elementA.type == Element.elementType.illusionWall) {
 						elementA.element.getImage().setAlpha(0.75f);
@@ -373,7 +372,7 @@ public class GameScreen implements Screen, InputProcessor {
 			Body ballBody = actualPlayers.get(i).getBallBody();
 			ElementType elementA = (ElementType) ballBody.getUserData();
 			// Deciding if there is something to change in force or velocity
-			if ((actualPlayers.get(i).getBall().steppingOn != Element.elementType.nothing) && (actualPlayers.get(i).getBall().getBody().getLinearVelocity().len() != 0f)) {
+			if ((actualPlayers.get(i).getBall().steppingOn != Element.elementType.nothing) && (actualPlayers.get(i).getBallBody().getLinearVelocity().len() != 0f)) {
 
 				// Calculate new speed
 				float currXSpeed = ballBody.getLinearVelocity().x;
@@ -410,6 +409,16 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
+	private void checkBallsInVoid(){
+		for(int i = 0; i < actualPlayers.size(); i++){
+			Player player = actualPlayers.get(i);
+			if(player.isBallFellVoid()){
+				player.getBallBody().setTransform(currentCourse.getPositions().get(player.getPlayerID()-1), 	player.getBallBody().getAngle());
+				player.setBallFellVoid(false);
+			}
+		}
+	}
+	
 	private void updateCurrentPlayer() {
 		ArrayList<Player> playerDecisionList = new ArrayList<Player>();
 		

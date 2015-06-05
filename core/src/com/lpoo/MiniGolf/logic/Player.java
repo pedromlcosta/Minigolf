@@ -15,26 +15,29 @@ public class Player {
 	private boolean justPlayed;
 	private boolean over;
 	private boolean won;
+	private boolean ballFellVoid;
 	private Vector2 clubMovement;
 
 	public Player(int id) {
 		playerID = id;
-		setJustPlayed(false);
+		justPlayed = false;
 		pontuacao = 0;
 		tacadasJogada = 0;
 		tacadaTotal = 0;
-		setOver(false);
-		setWon(false);
+		over = false;
+		won = false;
+		ballFellVoid = false;
 	}
 
 	public Player(Ball b) {
-		setJustPlayed(false);
+		justPlayed = false;
 		ball = b;
 		pontuacao = 0;
 		tacadasJogada = 0;
 		tacadaTotal = 0;
-		setOver(false);
-		setWon(false);
+		over = false;
+		won = false;
+		ballFellVoid = false;
 	}
 	
 	public void createBall(Vector2 pos, World w, float radius){
@@ -187,6 +190,14 @@ public class Player {
 
 	public void setPlayerID(int playerID) {
 		this.playerID = playerID;
+	}
+
+	public boolean isBallFellVoid() {
+		return ballFellVoid;
+	}
+
+	public void setBallFellVoid(boolean ballFellVoid) {
+		this.ballFellVoid = ballFellVoid;
 	}
 
 }
