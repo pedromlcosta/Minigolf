@@ -403,15 +403,14 @@ public class EditorScreen implements Screen {
 			} else
 				posInicialY = leftY;
 
-			elementToAdd.setStartPos(new Vector2(posInicialX, posInicialY));
-
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
-
+			elementToAdd.setStartPos(new Vector2(posInicialX, posInicialY));
 			elementToAdd.setHeight(height);
 			elementToAdd.setWidth(width);
 			elementToAdd.createBody(MiniGolf.getW());
 			if (notOverlapping()) {
+				System.out.println("here");
 				stage.addActor(elementToAdd);
 				this.created.addEle(elementToAdd);
 			} else {

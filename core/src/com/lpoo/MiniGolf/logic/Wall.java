@@ -2,6 +2,7 @@ package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -75,9 +76,16 @@ public class Wall extends Element {
 	}
 
 	public void draw() {
-		MiniGolf.batch.draw(image.getTexture(), (startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD,image.getWidth(), image.getHeight(), 0, 0, 2, 1);
-		//image.draw(MiniGolf.batch);
-		
+		MiniGolf.batch.draw(image.getTexture(), (startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD, image.getWidth(), image.getHeight(), 0, 0, 2, 1);
+		// image.draw(MiniGolf.batch);
+
+	}
+
+	@Override
+	public void draw(Batch batch, float parentAlfa) {
+
+		batch.draw(image, (body.getPosition().x) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
+
 	}
 
 }

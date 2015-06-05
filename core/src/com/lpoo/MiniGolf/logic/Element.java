@@ -33,7 +33,6 @@ public class Element extends Actor {
 		if (type == Element.elementType.grassFloor)
 			return false;
 
-		Body bodyToAdd = eleToBeAdded.getBody();
 
 		Shape shapeToAdd = eleToBeAdded.getBody().getFixtureList().get(0).getShape();
 		Shape shapeEle = body.getFixtureList().get(0).getShape();
@@ -46,7 +45,6 @@ public class Element extends Actor {
 			else
 				return Geometrey.overlapPloygons(this, startPos, eleToBeAdded, eleToBeAdded.getStartPos());
 		} else {
-			float radius;
 			if (shapeToAdd.getType() == Type.Polygon) {
 				return Geometrey.overlap(eleToBeAdded, eleToBeAdded.getStartPos(), shapeToAdd.getRadius(), this, startPos);
 			} else {
