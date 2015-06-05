@@ -190,15 +190,16 @@ public class EditorScreen implements Screen {
 			}
 		});
 
-		selectElement.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent arg0, Actor arg1) {
-				getElement(selectElement.getSelected());
-			}
-
-		});
+		// selectElement.addListener(new ChangeListener() {
+		// @Override
+		// public void changed(ChangeEvent arg0, Actor arg1) {
+		//
+		// }
+		//
+		// });
 	}
 
+	// TODO passar para Element método static??
 	public void getElement(String selected) {
 		switch (selected) {
 		case "BouncyWall":
@@ -211,16 +212,16 @@ public class EditorScreen implements Screen {
 			elementToAdd = new Floor(Element.elementType.hole);
 			break;
 		case "IceFloor":
-			elementToAdd = new Floor(Element.elementType.iceFloor);
+			// elementToAdd = new Floor(Element.elementType.iceFloor);
 			break;
 		case "IllusionWall":
 			elementToAdd = new Floor(Element.elementType.illusionWall);
 			break;
 		case "WaterFloor":
-			elementToAdd = new Floor(Element.elementType.sandFloor);
+			// elementToAdd = new Floor(Element.elementType.sandFloor);
 			break;
 		case "RegularWall":
-			elementToAdd = new Floor(Element.elementType.sandFloor);
+			elementToAdd = new Floor(Element.elementType.regularWall);
 			break;
 		case "SquareOne":
 			elementToAdd = new Floor(Element.elementType.squareOne);
@@ -229,7 +230,7 @@ public class EditorScreen implements Screen {
 			elementToAdd = new Floor(Element.elementType.sandFloor);
 			break;
 		case "Teleporter":
-			elementToAdd = new Floor(Element.elementType.teleporter);
+			// elementToAdd = new Floor(Element.elementType.teleporter);
 			break;
 		case "VoidFloor":
 			elementToAdd = new Floor(Element.elementType.voidFloor);
@@ -297,7 +298,10 @@ public class EditorScreen implements Screen {
 
 	private void addElement() {
 		if (drawElement) {
+			getElement(selectElement.getSelected());
 
+			if (elementToAdd == null)
+				return;
 			float width, height, posInicialX, posInicialY;
 			width = (float) (1 * distance(leftX, leftY, mouseX, leftY) / MiniGolf.BOX_TO_WORLD);
 			height = (float) (1 * distance(leftX, leftY, leftX, mouseY) / MiniGolf.BOX_TO_WORLD);
