@@ -5,17 +5,17 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.lpoo.MiniGolf.screens.GameScreen;
 
 public class Floor extends Element {
+
+	private int ballsInsideIllusion = 0;
+
 	public Floor(Vector2 pos, float width, float height, elementType type) {
 
 		super(pos, width, height, type);
@@ -33,28 +33,6 @@ public class Floor extends Element {
 		image = new Sprite(new Texture(type.toString() + ".png"));
 
 	}
-
-	// public boolean overlap(Element eleToBeAdded) {
-	//
-	// //TODO square
-	// if (eleToBeAdded.getType() == this.getType() || eleToBeAdded.getType() !=
-	// elementType.grassFloor)
-	// return false;
-	// Body bodyAdded, bodyInGame;
-	//
-	// bodyAdded = eleToBeAdded.getBody();
-	// bodyInGame = this.getBody();
-	//
-	// // for (Fixture fixtureAdded : bodyAdded.getFixtureList()) {
-	//
-	// for (Fixture fixtureInGame : bodyInGame.getFixtureList()) {
-	//
-	// // fixtureInGame.getShape().
-	// }
-	// // }
-	//
-	// return true;
-	// }
 
 	public void createBody(World w) {
 
@@ -91,6 +69,27 @@ public class Floor extends Element {
 
 	}
 
+	// public boolean overlap(Element eleToBeAdded) {
+	//
+	// //TODO square
+	// if (eleToBeAdded.getType() == this.getType() || eleToBeAdded.getType() !=
+	// elementType.grassFloor)
+	// return false;
+	// Body bodyAdded, bodyInGame;
+	//
+	// bodyAdded = eleToBeAdded.getBody();
+	// bodyInGame = this.getBody();
+	//
+	// // for (Fixture fixtureAdded : bodyAdded.getFixtureList()) {
+	//
+	// for (Fixture fixtureInGame : bodyInGame.getFixtureList()) {
+	//
+	// // fixtureInGame.getShape().
+	// }
+	// // }
+	//
+	// return true;
+	// }
 	public void destroyBody() {
 		for (int i = 0; i < body.getFixtureList().size; i++) {
 			body.destroyFixture(body.getFixtureList().get(i));
@@ -107,6 +106,22 @@ public class Floor extends Element {
 
 		batch.draw(image, (body.getPosition().x) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 
+	}
+
+	public int getBallsInsideIllusion() {
+		return ballsInsideIllusion;
+	}
+
+	public void setBallsInsideIllusion(int ballsInsideIllusion) {
+		this.ballsInsideIllusion = ballsInsideIllusion;
+	}
+
+	public void incrementBallsIllusion() {
+		ballsInsideIllusion++;
+	}
+
+	public void decrementBallsIllusion() {
+		ballsInsideIllusion--;
 	}
 
 }

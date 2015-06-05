@@ -128,7 +128,8 @@ public class Ball extends Element {
 				// Ball + illusionWall = enters the wall, but changes its
 				// transparency
 				obstacleUserData.element.getImage().setAlpha(0.75f);
-				GameScreen.ballsInsideIllusion++;
+				Floor tempFloorRef = (Floor) obstacleUserData.element;
+				tempFloorRef.incrementBallsIllusion();
 			}
 		}
 
@@ -140,13 +141,16 @@ public class Ball extends Element {
 		steppingOn = Element.elementType.grassFloor;
 		obstacleUserData.accel = GameScreen.GRASS_DRAG;
 
+		
+		
 		if (innerSensor) {
 			//No inner sensor does anything particular to it when leaving yet
 		} else { // else if outerSensor
 
 			if (obstacleUserData.type == Element.elementType.illusionWall) {
-				GameScreen.ballsInsideIllusion--;
-				if (GameScreen.ballsInsideIllusion == 0)
+				Floor tempFloorRef = (Floor) obstacleUserData.element;
+				tempFloorRef.decrementBallsIllusion();
+				if (tempFloorRef.getBallsInsideIllusion() == 0)
 					obstacleUserData.element.getImage().setAlpha(1.0f);
 			}
 
