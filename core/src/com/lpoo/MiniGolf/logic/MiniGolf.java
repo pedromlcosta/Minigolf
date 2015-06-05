@@ -93,6 +93,7 @@ public class MiniGolf extends Game {
 				3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
 				HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
 		
+		
 		Course1.addEle(grass1);
 		Course1.addEle(illusion1);
 		Course1.addEle(wall1);
