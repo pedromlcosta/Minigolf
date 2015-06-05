@@ -7,6 +7,9 @@ public class ElementType {
 	public float accel = 0;
 	public Player player;
 	public Element element;
+	public int endContacts = 0;
+	public boolean readyToCheckEnd = false;
+	public Element.elementType typeToCheck = null;
 	
 	
 	ElementType( Element.elementType type, float acceleration){

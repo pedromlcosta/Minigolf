@@ -34,7 +34,6 @@ import com.lpoo.MiniGolf.logic.Player;
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
 public class GameScreen implements Screen, InputProcessor {
 
-	
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 	static final float W_STEP = 1f / 60f;
 	static final float FORCE_AUGMENT = 3.0f;
@@ -79,14 +78,15 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		ElementType element;
+
+		 if (currentPlayer.getBallBody() != null){
+		 if ((element = (ElementType)
+		 currentPlayer.getBallBody().getUserData()) != null){
+		 System.out.println("Ball acceleration is: " + element.accel);
 		
-//		if (currentPlayer.getBallBody() != null){
-//			if ((element = (ElementType) currentPlayer.getBallBody().getUserData()) != null){
-//				System.out.println("Ball acceleration is: " + element.accel);
-//		
-//			}
-//		}
-		
+		 }
+		 }
+
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 			// CURRENT COURSE RENDER CYCLE
@@ -296,8 +296,8 @@ public class GameScreen implements Screen, InputProcessor {
 			// MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() *
 			// MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
 			shapeRenderer.rectLine(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD, currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD, mouseX, mouseY, 5);
-			//shapeRenderer.rectLine(p1, p2, width);
-			
+			// shapeRenderer.rectLine(p1, p2, width);
+
 			shapeRenderer.end();
 		}
 	}
@@ -307,7 +307,7 @@ public class GameScreen implements Screen, InputProcessor {
 		for (int i = 0; i < actualPlayers.size(); i++) {
 
 			// Getting Ball Data
-			Ball ball =  actualPlayers.get(i).getBall();
+			Ball ball = actualPlayers.get(i).getBall();
 			Body ballBody = ball.getBody();
 			ElementType elementA = (ElementType) ballBody.getUserData();
 			// Deciding if there is something to change in force or velocity
@@ -326,14 +326,16 @@ public class GameScreen implements Screen, InputProcessor {
 				double dragForceX = 0f;
 				double dragForceY = 0f;
 
-				if(elementA.accel >= 0){ //When the object suffers drag
+				if (!ball.isOnSpeedPad()) { // When the object suffers drag
 					dragForceX = (currXSpeed / speedIntensity) * (10 * elementA.accel);
 					dragForceY = (currYSpeed / speedIntensity) * (10 * elementA.accel);
-				}else{ //When the object suffers acceleration in a certain direction
-					dragForceX = Math.cos(ball.accelAngle)* (10 * elementA.accel);
+				} else { // When the object suffers acceleration in a certain
+							// direction
+					
+					dragForceX = Math.cos(ball.accelAngle) * (10 * elementA.accel);
 					dragForceY = Math.sin(ball.accelAngle) * (10 * elementA.accel);
 				}
-				
+				//System.out.println("Second: " + elementA.accel);
 				// Acceleration = Force, because mass = 1kg
 				// F = delta v / delta t <=> DELTA V = F * DELTA T
 				// FINAL VEL = INITIAL VEL - DELTA V <=> FINAL VEL = INITIAL VEL
@@ -341,22 +343,28 @@ public class GameScreen implements Screen, InputProcessor {
 				double newXSpeed = currXSpeed - (dragForceX * W_STEP);
 				double newYSpeed = currYSpeed - (dragForceY * W_STEP);
 
-				if (currXSpeed * newXSpeed < 0) {
-					newXSpeed = 0f;
-					// System.out.println("newXSpeed is 0");
-				}
+				//System.out.println("Third: " + elementA.accel);
+				if (!ball.isOnSpeedPad()) {
+					// Only for the real drag/attrition/friction, it will stop
+					// acting if the speed is nullified.
+					// This happens because drag only exists while there exists speed.
+					//System.out.println("Fourth: " + elementA.accel);
+					if (currXSpeed * newXSpeed < 0) {
+						newXSpeed = 0f;
+						// System.out.println("newXSpeed is 0");
+					}
 
-				if (currYSpeed * newYSpeed < 0) {
-					newYSpeed = 0f;
-					// System.out.println("newYSpeed is 0");
+					if (currYSpeed * newYSpeed < 0) {
+						newYSpeed = 0f;
+						// System.out.println("newYSpeed is 0");
+					}
+					// && ball.steppingOn != Element.elementType.waterFloor
+
+					if (newXSpeed == 0f && newYSpeed == 0f) {
+						ball.setLastPos(ballBody.getPosition());
+					}
 				}
-				//&& ball.steppingOn != Element.elementType.waterFloor
-				
-				if(newXSpeed == 0f && newYSpeed == 0f ){
-					ball.setLastPos(ballBody.getPosition());
-					System.out.println("dragHandler changed lastPos");
-				}
-				ballBody.setLinearVelocity((float)newXSpeed, (float)newYSpeed);
+				ballBody.setLinearVelocity((float) newXSpeed, (float) newYSpeed);
 			}
 		}
 	}

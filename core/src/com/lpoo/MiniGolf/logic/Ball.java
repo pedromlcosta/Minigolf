@@ -17,11 +17,12 @@ public class Ball extends Element {
 	public float radius;
 	private Vector2 lastPos;
 	public elementType lastPosType;
-	
+
 	private Vector2 teleportDestination;
 	private Vector2 velocityBeforeTeleport;
+	private boolean onSpeedPad = false;
 	public float accelAngle;
-	
+
 	private boolean touchedVoid = false;
 	private boolean touchedWater = false;
 	private boolean touchedTeleporter = false;
@@ -30,12 +31,12 @@ public class Ball extends Element {
 		super();
 	}
 
-	//Constructor that also creates the body
+	// Constructor that also creates the body
 	public Ball(Vector2 pos, World w, float radius, Player player) {
 		super(pos, radius * 2, radius * 2);
 		this.radius = radius;
 
-		//firstPos = pos.cpy();
+		// firstPos = pos.cpy();
 		lastPos = pos.cpy();
 
 		createBody(w, player, pos);
@@ -88,11 +89,18 @@ public class Ball extends Element {
 	}
 
 	public void beginContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
-		//System.out.println("Begin Contact: " + ballUserData.type+" " + obstacleUserData.type);
+
 		if (innerSensor) {
-			
+			ballUserData.endContacts = 0;
+
+			// Entered a begin - reset the check to 1 and type
+			ballUserData.readyToCheckEnd = true;
+			ballUserData.typeToCheck = obstacleUserData.type;
+
+			System.out.println("Begin Contact: " + ballUserData.type + " " + obstacleUserData.type);
 			steppingOn = obstacleUserData.type;
 			getBodyUserData().accel = obstacleUserData.accel;
+			onSpeedPad = false;
 
 			if (obstacleUserData.type == Element.elementType.hole && ballUserData.player.getBallSpeedLen() < 10.0f) {
 				// Ball + hole = removes ball and player ends the course
@@ -102,24 +110,24 @@ public class Ball extends Element {
 				body.setLinearVelocity(0f, 0f);
 
 			} else if (obstacleUserData.type == Element.elementType.voidFloor) {
-				//Can't teleport immediately, because object might be locked, because of world.step(...);
+				// Can't teleport immediately, because object might be locked,
+				// because of world.step(...);
 				this.touchedVoid = true;
 			} else if (obstacleUserData.type == Element.elementType.waterFloor) {
-				//Can't teleport immediately, because object might be locked, because of world.step(...);
-				this.touchedWater = true; 
-			}else if (obstacleUserData.type == Element.elementType.acceleratorFloor){
-				
+				// Can't teleport immediately, because object might be locked,
+				// because of world.step(...);
+				this.touchedWater = true;
+			} else if (obstacleUserData.type == Element.elementType.acceleratorFloor) {
+				Floor tempAccelFloor = (Floor) obstacleUserData.element;
+				accelAngle = tempAccelFloor.getBody().getAngle();
+				onSpeedPad = true;
 			}
-
-			// Inherits the obstacles acceleration
-			steppingOn = obstacleUserData.type;
-			ballUserData.accel = obstacleUserData.accel;
 
 		} else { // else if outerSensor/outer part of the ball
 
 			if (obstacleUserData.type == Element.elementType.glueWall) {
 				// Ball + glueWall = ball loses all speed
-				
+
 				lastPos = body.getPosition().cpy();
 				body.setLinearVelocity(0f, 0f);
 			} else if (obstacleUserData.type == Element.elementType.illusionWall) {
@@ -128,8 +136,9 @@ public class Ball extends Element {
 				obstacleUserData.element.getImage().setAlpha(0.75f);
 				Floor tempFloorRef = (Floor) obstacleUserData.element;
 				tempFloorRef.incrementBallsIllusion();
-			}else if (obstacleUserData.type == Element.elementType.teleporter){
-				//Can't teleport immediately, because object might be locked, because of world.step(...);
+			} else if (obstacleUserData.type == Element.elementType.teleporter) {
+				// Can't teleport immediately, because object might be locked,
+				// because of world.step(...);
 				Teleporter tempTeleRef = (Teleporter) obstacleUserData.element;
 				teleportDestination = tempTeleRef.getDestination();
 				this.touchedTeleporter = true;
@@ -140,13 +149,30 @@ public class Ball extends Element {
 
 	public void endContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
 
-		//System.out.println("End Contact: " + ballUserData.type+" " + obstacleUserData.type);
-		
-		steppingOn = Element.elementType.grassFloor;
-		ballUserData.accel = Floor.GRASS_DRAG;
-		
+		// steppingOn = Element.elementType.grassFloor;
+		// ballUserData.accel = Floor.GRASS_DRAG;
 
 		if (innerSensor) {
+			ballUserData.endContacts++;
+
+			if (ballUserData.readyToCheckEnd) { // was ready to be checked
+				//if the type from the last begin is the same as the one in this end
+				if (ballUserData.typeToCheck == obstacleUserData.type){
+					//Checks criteria to have entered something and went back to grass after
+					steppingOn = Element.elementType.grassFloor;
+					ballUserData.accel = Floor.GRASS_DRAG;
+					ballUserData.readyToCheckEnd = false;
+				}
+			}
+
+			if (ballUserData.endContacts == 2) {
+				steppingOn = Element.elementType.grassFloor;
+				ballUserData.accel = Floor.GRASS_DRAG;
+			}
+			if (obstacleUserData.type == Element.elementType.acceleratorFloor) {
+				onSpeedPad = false;
+			}
+			System.out.println("End Contact: " + ballUserData.type + " " + obstacleUserData.type);
 			// No inner sensor does anything particular to it when leaving yet
 		} else { // else if outerSensor
 
@@ -189,10 +215,10 @@ public class Ball extends Element {
 
 		if (touchedWater) {
 			body.setLinearVelocity(0f, 0f);
-			teleport(lastPos, false);		
+			teleport(lastPos, false);
 			touchedWater = false;
 		}
-		
+
 		if (touchedTeleporter) {
 			teleport(teleportDestination, true);
 			touchedTeleporter = false;
@@ -215,34 +241,40 @@ public class Ball extends Element {
 		this.touchedWater = touchedWater;
 	}
 
-	public void teleport(Vector2 destination, boolean keepVelocity){
-		
-		if(keepVelocity){
+	public void teleport(Vector2 destination, boolean keepVelocity) {
+
+		if (keepVelocity) {
 			velocityBeforeTeleport = body.getLinearVelocity().cpy();
 		}
-		
+
 		ElementType element = (ElementType) this.getBody().getUserData();
 		Player player = element.player;
 		World w = body.getWorld();
-		
+
 		destroyBody();
-		createBody(w, player, destination); //Recreates ball on the lastPosition where it had stopped	
-		
-		if(keepVelocity){
+		createBody(w, player, destination); // Recreates ball on the
+											// lastPosition where it had stopped
+
+		if (keepVelocity) {
 			body.setLinearVelocity(velocityBeforeTeleport);
 		}
-		
+
 	}
-	
 
 	public Vector2 getVelocityBeforeTeleport() {
 		return velocityBeforeTeleport;
 	}
-	
 
 	public void setVelocityBeforeTeleport(Vector2 velocityBeforeTeleport) {
 		this.velocityBeforeTeleport = velocityBeforeTeleport;
 	}
 
+	public boolean isOnSpeedPad() {
+		return onSpeedPad;
+	}
+
+	public void setOnSpeedPad(boolean onSpeedPad) {
+		this.onSpeedPad = onSpeedPad;
+	}
 
 }
