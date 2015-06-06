@@ -11,10 +11,8 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
- 
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.lpoo.MiniGolf.geometry.Geometry;
- 
 
 public class Element extends Actor implements Serializable {
 
@@ -62,6 +60,8 @@ public class Element extends Actor implements Serializable {
 		startPos = new Vector2();
 		height = 0;
 		width = 0;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
 
 	}
 
@@ -69,6 +69,8 @@ public class Element extends Actor implements Serializable {
 		this.startPos = pos;
 		this.width = width;
 		this.height = height;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
 	}
 
 	public Element(Vector2 pos, float width, float height, elementType type) {
@@ -76,6 +78,8 @@ public class Element extends Actor implements Serializable {
 		this.width = width;
 		this.height = height;
 		this.type = type;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
 	}
 
 	public Element(float width, float height, elementType type) {
@@ -83,10 +87,14 @@ public class Element extends Actor implements Serializable {
 		this.width = width;
 		this.height = height;
 		this.type = type;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
 	}
 
 	public Element(elementType type) {
 		this.type = type;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
 	}
 
 	public void draw() {

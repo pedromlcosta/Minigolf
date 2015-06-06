@@ -70,7 +70,7 @@ public class EditorScreen implements Screen {
 		temp.setTexture(new Texture("bola1.png"));
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
-		elementToAdd = new Floor(Element.elementType.bouncyWall);
+		elementToAdd = new Element(Element.elementType.ball);
 		// first value
 		// of drop
 		// down and
@@ -100,6 +100,19 @@ public class EditorScreen implements Screen {
 
 		stage.act(delta);
 		stage.draw();
+
+		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+		shapeRenderer.setAutoShapeType(true);
+		shapeRenderer.setColor(Color.GREEN);
+		shapeRenderer.begin();
+		for (int i = 0; i < nPlayersPlaced; i++) {
+			Vector2 pos = created.getPositions().get(i);
+			// System.out.println(pos);
+			shapeRenderer.circle(pos.x, pos.y, 0.5f * MiniGolf.BOX_TO_WORLD);
+		}
+		shapeRenderer.setColor(Color.RED);
+		shapeRenderer.end();
+		shapeRenderer.setAutoShapeType(false);
 
 		if (pressedLeftButton && !pressedResetbutton) {
 			// Vector3 mouseVec = stage.getViewport().unproject(new
@@ -332,7 +345,7 @@ public class EditorScreen implements Screen {
 
 		selectElement = new SelectBox2<String>(skin);
 		selectElement.setItems(new String[] { "Ball", "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "SquareOne", "Teleporter", "VoidFloor" });
-		selectElement.setMaxListCount(3);
+		selectElement.setMaxListCount(0);
 
 		// TODO ADD PLAYER STATUS TO GAME; CHANGE LETTER COLOR
 		scene = new Table();
@@ -421,33 +434,7 @@ public class EditorScreen implements Screen {
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
 
-			if (eleType == elementType.ball) {
-				if (nPlayersPlaced < 4) {
-					created.addPosition(new Vector2(posInicialX, posInicialY));
-					// TODO
-					// shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-					// shapeRenderer.setAutoShapeType(true);
-					// shapeRenderer.begin();
-					// shapeRenderer.setColor(Color.GREEN);
-					// shapeRenderer.circle(MiniGolf.WIDTH *
-					// MiniGolf.BOX_TO_WORLD / 2, MiniGolf.HEIGHT *
-					// MiniGolf.BOX_TO_WORLD / 2, 10.5f *
-					// MiniGolf.BOX_TO_WORLD);
-					// System.out.println("Here draw ball: " + posInicialX *
-					// MiniGolf.BOX_TO_WORLD + "  " + posInicialY *
-					// MiniGolf.BOX_TO_WORLD + "  " + 1.5f *
-					// MiniGolf.BOX_TO_WORLD);
-					// shapeRenderer.end();
-					// shapeRenderer.setColor(Color.RED);
-					// shapeRenderer.setAutoShapeType(false);
-					 
-					nPlayersPlaced++;
-
-					cam.update();
-
-				}
-
-			} else if (nTeleporters % 2 != 0 && elementToAdd.getType() == elementType.teleporter) {
+			if (nTeleporters % 2 != 0 && elementToAdd.getType() == elementType.teleporter) {
 				elementToAdd.setDestination(new Vector2(posInicialX, posInicialY));
 				nTeleporters++;
 				getElement(selectElement.getSelected());
@@ -480,10 +467,40 @@ public class EditorScreen implements Screen {
 		stage.addListener(new InputListener() {
 
 			@Override
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+
+				if (fromActor == null) {
+					System.out.println("null");
+					return;
+				}
+				// if (EditorScreen.middleMouseButtonPressed) {
+				System.out.println("Middle");
+				if (fromActor instanceof Element) {
+					System.out.println("Ele");
+				}
+
+			}
+
+			// }
+
+			@Override
 			public void touchUp(InputEvent Event, float screenX, float screenY, int pointer, int button) {
 				if (button == Buttons.LEFT && !pressedResetbutton) {
-					drawElement = true;
-					addElement();
+
+					if (elementToAdd.getType() == elementType.ball) {
+						if (nPlayersPlaced < 4) {
+							created.addPosition(new Vector2(screenX, screenY));
+							nPlayersPlaced++;
+							pressedLeftButton = false;
+							drawElement = false;
+							pressedRightButton = true;
+							return;
+						}
+
+					} else {
+						drawElement = true;
+						addElement();
+					}
 				}
 			}
 

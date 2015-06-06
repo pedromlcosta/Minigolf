@@ -21,9 +21,12 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.logic.Ball;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
@@ -62,8 +65,10 @@ public class GameScreen implements Screen, InputProcessor {
 	public static int ballsInsideIllusion = 0;
 	static boolean allBallsStopped = true;
 	float mouseX, mouseY;
-	
+	private Stage stage;
 	boolean invertedPointMode = false;
+	private Label playerID;
+	private ArrayList<Label> tacadas;
 
 	public GameScreen(MiniGolf game) {
 		this.game = game;
@@ -79,15 +84,16 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		stage.act(delta);
+		stage.draw();
 		ElementType element;
 
-		 if (currentPlayer.getBallBody() != null){
-		 if ((element = (ElementType)
-		 currentPlayer.getBallBody().getUserData()) != null){
-		 System.out.println("Ball acceleration is: " + element.accel);
-		
-		 }
-		 }
+		if (currentPlayer.getBallBody() != null) {
+			if ((element = (ElementType) currentPlayer.getBallBody().getUserData()) != null) {
+				System.out.println("Ball acceleration is: " + element.accel);
+
+			}
+		}
 
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
@@ -150,22 +156,29 @@ public class GameScreen implements Screen, InputProcessor {
 				courseIndex++;
 			}
 		}
-
+		stage.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 
 		MiniGolf.viewport.update(width, height);
+		stage.getCamera().update();
 		cam.update();
 
 	}
 
 	@Override
 	public void show() {
+		stage = new Stage();
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 		score = new Table();
+
+		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
+		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
+		stage.getViewport().setCamera(secondaryCamera);
 
 		selectedCourses = game.getSelectedCourses();
 
@@ -282,9 +295,9 @@ public class GameScreen implements Screen, InputProcessor {
 
 		// RENDER A LINE BETWEEN MOUSE POSITION AND BALL
 		if (allBallsStopped) {
-			
+
 			shapeRenderer.begin(ShapeType.Filled);
-			
+
 			shapeRenderer.setColor(Color.BLACK);
 			shapeRenderer.setProjectionMatrix(cam.combined);
 			// Transforms mouse screen coordinates to camera World coordinates
@@ -293,27 +306,26 @@ public class GameScreen implements Screen, InputProcessor {
 
 			float mouseX = vec.x;
 			float mouseY = vec.y;
-			
+
 			float ballX = currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD;
 			float ballY = currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD;
 			// System.out.println(currentPlayer.getBallPosX() *
 			// MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() *
 			// MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
-			
-			
-			if(!invertedPointMode){
-			shapeRenderer.rectLine(ballX, ballY, mouseX, mouseY, 5);
-			}else{ // Ball + (Ball-Mouse)
-				shapeRenderer.rectLine(ballX, ballY, ballX+(ballX-mouseX),ballY+(ballY-mouseY), 5);
+
+			if (!invertedPointMode) {
+				shapeRenderer.rectLine(ballX, ballY, mouseX, mouseY, 5);
+			} else { // Ball + (Ball-Mouse)
+				shapeRenderer.rectLine(ballX, ballY, ballX + (ballX - mouseX), ballY + (ballY - mouseY), 5);
 				shapeRenderer.setColor(Color.RED);
 				shapeRenderer.rectLine(ballX, ballY, mouseX, mouseY, 5);
 			}
 
 			shapeRenderer.end();
-			
+
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.BLACK);
-			shapeRenderer.circle(ballX, ballY , MiniGolf.HEIGHT /2f);
+			shapeRenderer.circle(ballX, ballY, MiniGolf.HEIGHT / 2f);
 			shapeRenderer.end();
 		}
 	}
@@ -347,11 +359,11 @@ public class GameScreen implements Screen, InputProcessor {
 					dragForceY = (currYSpeed / speedIntensity) * (10 * elementA.accel);
 				} else { // When the object suffers acceleration in a certain
 							// direction
-					
+
 					dragForceX = Math.cos(ball.accelAngle) * (10 * elementA.accel);
 					dragForceY = Math.sin(ball.accelAngle) * (10 * elementA.accel);
 				}
-				//System.out.println("Second: " + elementA.accel);
+				// System.out.println("Second: " + elementA.accel);
 				// Acceleration = Force, because mass = 1kg
 				// F = delta v / delta t <=> DELTA V = F * DELTA T
 				// FINAL VEL = INITIAL VEL - DELTA V <=> FINAL VEL = INITIAL VEL
@@ -359,12 +371,13 @@ public class GameScreen implements Screen, InputProcessor {
 				double newXSpeed = currXSpeed - (dragForceX * W_STEP);
 				double newYSpeed = currYSpeed - (dragForceY * W_STEP);
 
-				//System.out.println("Third: " + elementA.accel);
+				// System.out.println("Third: " + elementA.accel);
 				if (!ball.isOnSpeedPad()) {
 					// Only for the real drag/attrition/friction, it will stop
 					// acting if the speed is nullified.
-					// This happens because drag only exists while there exists speed.
-					//System.out.println("Fourth: " + elementA.accel);
+					// This happens because drag only exists while there exists
+					// speed.
+					// System.out.println("Fourth: " + elementA.accel);
 					if (currXSpeed * newXSpeed < 0) {
 						newXSpeed = 0f;
 						// System.out.println("newXSpeed is 0");
@@ -446,7 +459,7 @@ public class GameScreen implements Screen, InputProcessor {
 	 */
 	public void initializePlayers(Course course) {
 		// INITIALIZE PLAYERS
-
+		tacadas = new ArrayList<Label>();
 		players = new ArrayList<Player>();
 
 		// System.out.println("Initialize - Nr. Players is " + players.size());
@@ -456,16 +469,20 @@ public class GameScreen implements Screen, InputProcessor {
 			// Vector2 ballPos = courseBallPos.get(i);
 			Player player = new Player(i + 1);
 			player.createBall(course.getPositions().get(i), w, 0.25f);
-			Label playerID = new Label("ID: " + (i + 1), skin);
-			Label tacadas = new Label("Tacadas: " + 0, skin);
+			playerID = new Label("ID: " + (i + 1), skin);
+			tacadas.add(new Label("Tacadas: " + 0, skin));
 
 			players.add(player);
 
 			score.defaults().width(100);
-			score.add(playerID, tacadas);
+			score.add(playerID, tacadas.get(i));
 			score.row();
 		}
+		// score.add(teste);
 
+		stage.addActor(score);
+		// TODO see position stuff
+		score.setPosition(MiniGolf.WIDTH - 1100f, MiniGolf.HEIGHT + 300f);
 		players.get(0).setJustPlayed(true);
 		currentPlayer = players.get(0);
 		actualPlayers = players;
@@ -574,15 +591,15 @@ public class GameScreen implements Screen, InputProcessor {
 
 				float mouseX = vec.x;
 				float mouseY = vec.y;
-				
+
 				float forceX = (mouseX / MiniGolf.BOX_TO_WORLD - currentPlayer.getBallPosX());
 				float forceY = (mouseY / MiniGolf.BOX_TO_WORLD) - currentPlayer.getBallPosY();
 
-				if(invertedPointMode){
-					forceX*=-1;
-					forceY*=-1;
+				if (invertedPointMode) {
+					forceX *= -1;
+					forceY *= -1;
 				}
-				
+
 				// (forceX/W_STEP) is as if the force where applied during 1
 				// second instead of 1/60 seconds
 
@@ -602,7 +619,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		if (button == Buttons.RIGHT){
+		if (button == Buttons.RIGHT) {
 			invertedPointMode = !invertedPointMode;
 		}
 		return false;

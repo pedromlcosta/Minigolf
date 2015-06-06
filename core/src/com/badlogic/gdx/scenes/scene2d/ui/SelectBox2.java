@@ -64,11 +64,14 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet
  */
+@SuppressWarnings("unchecked")
 public class SelectBox2<T> extends Widget implements Disableable {
 	static final Vector2 temp = new Vector2();
 
 	SelectBoxStyle style;
+	
 	final Array<T> items = new Array();
+	@SuppressWarnings("rawtypes")
 	final ArraySelection<T> selection = new ArraySelection(items);
 	SelectBoxList<T> selectBoxList;
 	private float prefWidth, prefHeight;
