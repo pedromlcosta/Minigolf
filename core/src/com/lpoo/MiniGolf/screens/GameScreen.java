@@ -22,11 +22,17 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.logic.*;
 import com.lpoo.MiniGolf.logic.Element.elementType;
@@ -49,6 +55,10 @@ public class GameScreen implements Screen, InputProcessor {
 	private ShapeRenderer shapeRenderer;
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.cam;
+	
+	private TextButton goBackButton, nextMapButton;
+	private static final float BUTTON_WIDTH = 200f;
+	private static final float BUTTON_HEIGHT = 50f;
 
 	// TODO eliminate bodies after a game
 	private ArrayList<Course> selectedCourses;
@@ -137,7 +147,7 @@ public class GameScreen implements Screen, InputProcessor {
 			if (!playerRemovalList.isEmpty())
 				removeBalls();
 		} else {
-
+			System.out.println(courseIndex);
 			// END OF COURSE
 			// System.out.println("Reseting Course nr. " + (courseIndex - 1));
 			// System.out.println("Derp");
@@ -752,5 +762,23 @@ public class GameScreen implements Screen, InputProcessor {
 
 	public void initializeButtons() {
 
+	}
+	
+	private void addListeners() {
+		
+		goBackButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				resetCourse(selectedCourses.get(courseIndex - 1));
+				game.setScreen(new MenuScreen(game));
+			}
+		});
+		
+		nextMapButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				actualPlayers.clear();
+			}
+		});
 	}
 }
