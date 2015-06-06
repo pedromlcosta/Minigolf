@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.Color;
+import com.lpoo.MiniGolf.data.Assets;
 
 public class Teleporter extends Element {
 
@@ -23,12 +24,14 @@ public class Teleporter extends Element {
 
 	public Teleporter() {
 		super();
+		image = new Sprite(Assets.manager.get("teleporter.png", Texture.class));
+		destinationImage = new Sprite(Assets.manager.get("teleporterDestination.png", Texture.class));
 	}
 
 	public Teleporter(elementType type) {
 		super(type);
-		image = new Sprite(new Texture("teleporter.png"));
-		destinationImage = new Sprite(new Texture("teleporterDestination.png"));
+		image = new Sprite(Assets.manager.get("teleporter.png", Texture.class));
+		destinationImage = new Sprite(Assets.manager.get("teleporterDestination.png", Texture.class));
 	}
 
 	public Teleporter(Vector2 start, Vector2 destination, float radius) {
@@ -36,8 +39,8 @@ public class Teleporter extends Element {
 		this.destination = destination;
 
 		this.radius = radius;
-		image = new Sprite(new Texture("teleporter.png"));
-		destinationImage = new Sprite(new Texture("teleporterDestination.png"));
+		image = new Sprite(Assets.manager.get("teleporter.png", Texture.class));
+		destinationImage = new Sprite(Assets.manager.get("teleporterDestination.png", Texture.class));
 
 		image.setPosition((startPos.x - radius) * MiniGolf.BOX_TO_WORLD, (startPos.y - radius) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(radius * 2 * MiniGolf.BOX_TO_WORLD, radius * 2 * MiniGolf.BOX_TO_WORLD);
@@ -51,8 +54,8 @@ public class Teleporter extends Element {
 		this.destination = destination;
 
 		this.radius = radius;
-		image = new Sprite(new Texture("teleporter.png"));
-		destinationImage = new Sprite(new Texture("teleporterDestination.png"));
+		image = new Sprite(Assets.manager.get("teleporter.png", Texture.class));
+		destinationImage = new Sprite(Assets.manager.get("teleporterDestination.png", Texture.class));
 
 		image.setPosition((startPos.x - radius) * MiniGolf.BOX_TO_WORLD, (startPos.y - radius) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(radius * 2 * MiniGolf.BOX_TO_WORLD, radius * 2 * MiniGolf.BOX_TO_WORLD);

@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
 public class MenuScreen implements Screen {
@@ -42,9 +43,9 @@ public class MenuScreen implements Screen {
 
 	public void show() {
 		batch = new SpriteBatch();
-		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		skin = Assets.manager.get("uiskin.json",Skin.class);
 		stage = new Stage();
-		background = new Sprite(new Texture("golfCourseBeach.jpg"));
+		background = new Sprite(Assets.manager.get("golfCourseBeach.jpg", Texture.class));
 		ObjectSet<Texture> objs = skin.getAtlas().getTextures();
 
 		for (Texture t : objs) {
@@ -163,9 +164,9 @@ public class MenuScreen implements Screen {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		skin.dispose();
+	 
 		stage.dispose();
-		background.getTexture().dispose();
+	 
 	}
 
 }

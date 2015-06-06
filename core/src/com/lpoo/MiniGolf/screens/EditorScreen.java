@@ -8,8 +8,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -25,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.geometry.Geometry;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
@@ -63,7 +62,8 @@ public class EditorScreen implements Screen {
 	@Override
 	public void show() {
 
-		skin = new Skin(Gdx.files.internal("uiskin.json"));
+		 
+		skin = Assets.manager.get("uiskin.json",Skin.class);
 		stage = new Stage();
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
@@ -359,7 +359,7 @@ public class EditorScreen implements Screen {
 		scene.add(spaceLabel).width(10);
 		scene.add(selectElement).width(200f);
 		scene.row();
-		scene.setPosition(MiniGolf.WIDTH - 700f, MiniGolf.HEIGHT -50f);
+		scene.setPosition(MiniGolf.WIDTH - 700f, MiniGolf.HEIGHT - 50f);
 
 		Floor grass1 = new Floor(new Vector2(0, 0), MiniGolf.getWidth() / MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
 		grass1.createBody(MiniGolf.getW());
@@ -558,7 +558,7 @@ public class EditorScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		skin.dispose();
+		 
 		stage.dispose();
 	}
 

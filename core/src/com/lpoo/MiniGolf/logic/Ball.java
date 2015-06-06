@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.screens.GameScreen;
 
 public class Ball extends Element {
@@ -40,10 +41,8 @@ public class Ball extends Element {
 		lastPos = pos.cpy();
 
 		createBody(w, player, pos);
+		image = new Sprite(Assets.manager.get("bola" + player.getPlayerID() + ".png", Texture.class));
 
-		String imageName = "bola" + player.getPlayerID() + ".png";
-
-		image = new Sprite(new Texture(imageName));
 
 	}
 

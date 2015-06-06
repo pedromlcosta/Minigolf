@@ -8,14 +8,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.logic.MiniGolf;
-
 
 //TODO bug do reset com bolas
 public class LoadScreen implements Screen {
 	Image loadingImg;
 	Stage stage;
 	private Texture texture;
+	private MiniGolf game;
+
+	public LoadScreen(MiniGolf game) {
+		this.game = game;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -23,6 +28,9 @@ public class LoadScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act();
 		stage.draw();
+		if (Assets.update()) {
+			game.setScreen(new MenuScreen(game));
+		}
 
 	}
 
@@ -32,6 +40,8 @@ public class LoadScreen implements Screen {
 
 	@Override
 	public void show() {
+		
+
 		texture = new Texture(Gdx.files.internal("loading.png"));
 		loadingImg = new Image(texture);
 		loadingImg.setPosition(MiniGolf.WIDTH / 4, MiniGolf.HEIGHT / 4 + 100f);
@@ -41,9 +51,10 @@ public class LoadScreen implements Screen {
 		loadingImg.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1.5f), Actions.run(new Runnable() {
 			@Override
 			public void run() {
-				((Game) Gdx.app.getApplicationListener()).setScreen(new LoadScreen());
+			//	((Game) Gdx.app.getApplicationListener()).setScreen(new LoadScreen(game));
 			}
 		})));
+		Assets.queueLoading();
 	}
 
 	@Override

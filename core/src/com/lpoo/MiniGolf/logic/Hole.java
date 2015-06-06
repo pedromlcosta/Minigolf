@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.lpoo.MiniGolf.data.Assets;
 
 public class Hole extends Element {
 
@@ -20,7 +21,8 @@ public class Hole extends Element {
 
 	public Hole() {
 		super();
-		image = new Sprite(new Texture("hole.png"));
+		image = new Sprite(Assets.manager.get("hole.png", Texture.class));
+
 	}
 
 	public float getRadius() {
@@ -35,7 +37,7 @@ public class Hole extends Element {
 		super(pos, radius * 2, radius * 2);
 
 		this.radius = radius;
-		image = new Sprite(new Texture("hole.png"));
+		image = new Sprite(Assets.manager.get("hole.png", Texture.class));
 
 	}
 

@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.lpoo.MiniGolf.data.Assets;
 
 public class Floor extends Element {
 
@@ -26,8 +27,7 @@ public class Floor extends Element {
 	public Floor(Vector2 pos, float width, float height, elementType type) {
 
 		super(pos, width, height, type);
-
-		image = new Sprite(new Texture(type.toString() + ".png"));
+		image = new Sprite( Assets.manager.get(type.toString() + ".png", Texture.class));
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		image.setPosition((pos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (pos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
@@ -37,7 +37,7 @@ public class Floor extends Element {
 
 		super(type);
 
-		image = new Sprite(new Texture(type.toString() + ".png"));
+		image = new Sprite( Assets.manager.get(type.toString() + ".png", Texture.class));
 
 	}
 
@@ -90,7 +90,8 @@ public class Floor extends Element {
 	}
 
 	public void draw() {
-		//MiniGolf.batch.draw(image.getTexture(), image.getOriginX(), image.getOriginY(),image.getWidth(), image.getHeight(), 0, 0, 2, 1);
+		// MiniGolf.batch.draw(image.getTexture(), image.getOriginX(),
+		// image.getOriginY(),image.getWidth(), image.getHeight(), 0, 0, 2, 1);
 		image.draw(MiniGolf.batch);
 	}
 

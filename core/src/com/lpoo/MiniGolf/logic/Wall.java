@@ -11,13 +11,13 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.lpoo.MiniGolf.data.Assets;
 
 public class Wall extends Element {
 	public Wall(Vector2 pos, float width, float height, elementType type) {
 
 		super(pos, width, height, type);
-
-		image = new Sprite(new Texture(type.toString() + ".png"));
+		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		image.setPosition((pos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (pos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
@@ -27,7 +27,7 @@ public class Wall extends Element {
 
 		super(type);
 
-		image = new Sprite(new Texture(type.toString() + ".png"));
+		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
 
 	}
 
