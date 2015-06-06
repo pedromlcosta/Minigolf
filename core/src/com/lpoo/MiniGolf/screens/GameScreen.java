@@ -62,6 +62,8 @@ public class GameScreen implements Screen, InputProcessor {
 	public static int ballsInsideIllusion = 0;
 	static boolean allBallsStopped = true;
 	float mouseX, mouseY;
+	
+	boolean invertedPointMode = false;
 
 	public GameScreen(MiniGolf game) {
 		this.game = game;
@@ -280,24 +282,38 @@ public class GameScreen implements Screen, InputProcessor {
 
 		// RENDER A LINE BETWEEN MOUSE POSITION AND BALL
 		if (allBallsStopped) {
-
+			
+			shapeRenderer.begin(ShapeType.Filled);
+			
 			shapeRenderer.setColor(Color.BLACK);
 			shapeRenderer.setProjectionMatrix(cam.combined);
-
-			shapeRenderer.begin(ShapeType.Filled);
-
 			// Transforms mouse screen coordinates to camera World coordinates
 			// (using camera width and height)
 			Vector3 vec = MiniGolf.viewport.unproject(new Vector3((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0));
 
 			float mouseX = vec.x;
 			float mouseY = vec.y;
+			
+			float ballX = currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD;
+			float ballY = currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD;
 			// System.out.println(currentPlayer.getBallPosX() *
 			// MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() *
 			// MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
-			shapeRenderer.rectLine(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD, currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD, mouseX, mouseY, 5);
-			// shapeRenderer.rectLine(p1, p2, width);
+			
+			
+			if(!invertedPointMode){
+			shapeRenderer.rectLine(ballX, ballY, mouseX, mouseY, 5);
+			}else{ // Ball + (Ball-Mouse)
+				shapeRenderer.rectLine(ballX, ballY, ballX+(ballX-mouseX),ballY+(ballY-mouseY), 5);
+				shapeRenderer.setColor(Color.RED);
+				shapeRenderer.rectLine(ballX, ballY, mouseX, mouseY, 5);
+			}
 
+			shapeRenderer.end();
+			
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(Color.BLACK);
+			shapeRenderer.circle(ballX, ballY , MiniGolf.HEIGHT /2f);
 			shapeRenderer.end();
 		}
 	}
@@ -406,6 +422,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		}
 		allBallsStopped = true;
+		invertedPointMode = false;
 	}
 
 	public void removeBalls() {
@@ -557,10 +574,15 @@ public class GameScreen implements Screen, InputProcessor {
 
 				float mouseX = vec.x;
 				float mouseY = vec.y;
-
+				
 				float forceX = (mouseX / MiniGolf.BOX_TO_WORLD - currentPlayer.getBallPosX());
 				float forceY = (mouseY / MiniGolf.BOX_TO_WORLD) - currentPlayer.getBallPosY();
 
+				if(invertedPointMode){
+					forceX*=-1;
+					forceY*=-1;
+				}
+				
 				// (forceX/W_STEP) is as if the force where applied during 1
 				// second instead of 1/60 seconds
 
@@ -568,6 +590,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 			}
 		}
+
 		return false;
 	}
 
@@ -579,7 +602,9 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
+		if (button == Buttons.RIGHT){
+			invertedPointMode = !invertedPointMode;
+		}
 		return false;
 	}
 
