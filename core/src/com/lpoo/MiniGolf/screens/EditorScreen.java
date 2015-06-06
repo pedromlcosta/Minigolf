@@ -55,7 +55,6 @@ public class EditorScreen implements Screen {
 	private int nPlayersPlaced = 0;
 	private int nTeleporters = 0;
 	public static boolean middleMouseButtonPressed;
-	public Sprite temp;
 
 	public EditorScreen(MiniGolf game) {
 		this.game = game;
@@ -66,8 +65,6 @@ public class EditorScreen implements Screen {
 
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		stage = new Stage();
-		temp = new Sprite();
-		temp.setTexture(new Texture("bola1.png"));
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
 		elementToAdd = new Element(Element.elementType.ball);
@@ -356,11 +353,12 @@ public class EditorScreen implements Screen {
 		scene.add(doneButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
 		scene.add(spaceLabel).width(50f);
 		scene.add(goBackButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
-		scene.add(spaceLabel).width(50);
+		scene.add(spaceLabel).width(60);
 		scene.add(tableLabel);
+		scene.add(spaceLabel).width(10);
 		scene.add(selectElement).width(200f);
 		scene.row();
-		scene.setPosition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
+		scene.setPosition(MiniGolf.WIDTH - 700f, MiniGolf.HEIGHT -50f);
 
 		Floor grass1 = new Floor(new Vector2(0, 0), MiniGolf.getWidth() / MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
 		grass1.createBody(MiniGolf.getW());
@@ -465,7 +463,14 @@ public class EditorScreen implements Screen {
 	public void overrideStageListener() {
 
 		stage.addListener(new InputListener() {
-
+			//
+			// public Actor hit(float stageX, float stageY, boolean touchable) {
+			// stage.getRoot().parentToLocalCoordinates(tempCoords.set(stageX,
+			// stageY));
+			// return stage.getRoot().hit(tempCoords.x, tempCoords.y,
+			// touchable);
+			// }
+			//
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 
@@ -487,20 +492,22 @@ public class EditorScreen implements Screen {
 			public void touchUp(InputEvent Event, float screenX, float screenY, int pointer, int button) {
 				if (button == Buttons.LEFT && !pressedResetbutton) {
 
-					if (elementToAdd.getType() == elementType.ball) {
-						if (nPlayersPlaced < 4) {
-							created.addPosition(new Vector2(screenX, screenY));
-							nPlayersPlaced++;
-							pressedLeftButton = false;
-							drawElement = false;
-							pressedRightButton = true;
+					if (elementToAdd != null) {
+
+						if (elementToAdd.getType() == elementType.ball) {
+							if (nPlayersPlaced < 4) {
+								created.addPosition(new Vector2(screenX, screenY));
+								nPlayersPlaced++;
+								pressedLeftButton = false;
+								drawElement = false;
+								pressedRightButton = true;
+								return;
+							}
 							return;
 						}
-
-					} else {
-						drawElement = true;
-						addElement();
 					}
+					drawElement = true;
+					addElement();
 				}
 			}
 
@@ -545,7 +552,6 @@ public class EditorScreen implements Screen {
 				}
 				return false;
 			}
-
 		});
 	}
 
@@ -573,5 +579,4 @@ public class EditorScreen implements Screen {
 	@Override
 	public void resume() {
 	}
-
 }
