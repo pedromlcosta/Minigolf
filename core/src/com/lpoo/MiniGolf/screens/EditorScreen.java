@@ -222,6 +222,7 @@ public class EditorScreen implements Screen {
 				}
 				nTeleporters = 0;
 				nPlayersPlaced = 0;
+				created.getPositions().clear();
 
 			}
 		});
