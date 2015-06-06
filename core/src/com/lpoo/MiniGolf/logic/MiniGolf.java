@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.lpoo.MiniGolf.data.Assets;
+import com.lpoo.MiniGolf.data.GameIO;
 import com.lpoo.MiniGolf.logic.Element.elementType;
 import com.lpoo.MiniGolf.screens.MenuScreen;
 
@@ -49,7 +50,8 @@ public class MiniGolf extends Game {
 	}
 
 	public void create() {
-
+		
+		GameIO io = new GameIO();
 		Assets.queueLoading();
 
 		// INITIALIZING SINGLETONS
@@ -135,14 +137,19 @@ public class MiniGolf extends Game {
 		addToSelectedCourses(Course1);
 		addToSelectedCourses(Course2);
 
+		
+		//io.saveAllCourses(allCourses); 
+		
+		// ///////////////////////////////////////////////////////////////////
+		// ///					END OF TEST COURSE 						 /////
+		// ///////////////////////////////////////////////////////////////////
+		
 		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
 		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
 		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT / BOX_TO_WORLD);
 		createEdge(0.0f, HEIGHT / BOX_TO_WORLD, 0.0f, 0.0f);
 
-		// ///////////////////////////////////////////////////////////////////
-		// /// END OF TEST COURSE /////
-		// ///////////////////////////////////////////////////////////////////
+		
 
 		cam.update();
 		cam.translate(new Vector2(WIDTH / 2, HEIGHT / 2));

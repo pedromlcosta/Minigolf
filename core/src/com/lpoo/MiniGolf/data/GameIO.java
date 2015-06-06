@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.lpoo.MiniGolf.logic.Course;
@@ -16,10 +17,12 @@ public class GameIO {
 	Course course = new Course();
 	ArrayList<Course> courses = new ArrayList<Course>();
 
-	public GameIO(Course course) {
+	public GameIO() {
 		out = null;
 		in = null;
-		this.course = course;
+		this.course = null;
+		this.courses = null;
+		System.out.print(Paths.get(".").toAbsolutePath().normalize().toString());
 	}
 
 	public GameIO(ArrayList<Course> courses) {
@@ -60,7 +63,7 @@ public class GameIO {
 		this.courses = courses;
 	}
 
-	public void saveIndividualCourses(Course course) {
+	public void saveIndividualCourse(Course course) {
 
 		try {
 			// Serializing data object to a file
@@ -70,6 +73,23 @@ public class GameIO {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+
+	}
+
+	public void saveAllIndividualCourses(ArrayList<Course> courses) {
+
+		for (int i = 0; i < courses.size(); i++) {
+			try {
+				// Serializing data object to a file
+				out = new ObjectOutputStream(new FileOutputStream(courses.get(i).getNome()));
+				out.writeObject(courses.get(i));
+				out.close();
+
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -84,30 +104,30 @@ public class GameIO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 
-	public Course loadIndividualCourses() {
-		//
-		// try {
-		// for(int i=0;i<5;i++)
-		// File test = new File("Courses.sav");
-		// if (!test.exists()) {
-		// break;
-		// }
-		// FileInputStream stuff = new FileInputStream("Courses.sav");
-		// in = new ObjectInputStream(stuff);
-		// this.course = (Course) in.readObject();
-		// return course;
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// } catch (ClassNotFoundException e) {
-		// e.printStackTrace();
-		// }
-		// return course;
-		return null;
+	public ArrayList<Course> loadAllIndividualCourses() throws ClassNotFoundException {
+		int i = 0;
+		try {
+			while (true) {
+				String fileName = "course" + i + ".sav";
+				File test = new File(fileName);
+				if (test.exists()) {
+					FileInputStream stuff = new FileInputStream(fileName);
+					in = new ObjectInputStream(stuff);
+					this.courses = (ArrayList<Course>) in.readObject();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return courses;
+
 	}
 
-	public Course loadAllCourses() throws ClassNotFoundException {
+	public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
 
 		try {
 			File test = new File("Maze.sav");
@@ -116,11 +136,11 @@ public class GameIO {
 			}
 			FileInputStream stuff = new FileInputStream("Maze.sav");
 			in = new ObjectInputStream(stuff);
-
+			this.courses = (ArrayList<Course>) in.readObject();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return courses;
 
 	}
 
