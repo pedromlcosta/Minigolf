@@ -151,20 +151,22 @@ public class GameScreen implements Screen, InputProcessor {
 			// END OF COURSE
 			// System.out.println("Reseting Course nr. " + (courseIndex - 1));
 			// System.out.println("Derp");
-			if (courseIndex == selectedCourses.size()) {
+			if (courseIndex == selectedCourses.size()-1) {
 				// WAS THE LAST COURSE - ENDING GAME
 				// resetPlayers();
 				if (selectedCourses.isEmpty())
 					game.setScreen(new MenuScreen(game));
 
-				resetCourse(selectedCourses.get(courseIndex - 1));
+				resetCourse(selectedCourses.get(courseIndex));
 				game.setScreen(new MenuScreen(game));
 				this.dispose();
 			} else {
 				// CHANGING COURSE
-				resetPlayers(selectedCourses.get(courseIndex));
-				resetCourse(selectedCourses.get(courseIndex - 1));
-				initializeCourse(selectedCourses.get(courseIndex));
+				System.out.println("Reseting players from course nr." + courseIndex);
+				//resetPlayers takes the next course Index
+				resetPlayers(selectedCourses.get(courseIndex+1));
+				resetCourse(selectedCourses.get(courseIndex));
+				initializeCourse(selectedCourses.get(courseIndex+1));
 
 				// System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
@@ -285,7 +287,7 @@ public class GameScreen implements Screen, InputProcessor {
 																// point,
 																// courseIndex
 																// is 0
-			courseIndex++;
+			
 			turnStart = System.currentTimeMillis();
 
 			Gdx.input.setInputProcessor(this);
@@ -769,7 +771,7 @@ public class GameScreen implements Screen, InputProcessor {
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				resetCourse(selectedCourses.get(courseIndex - 1));
+				resetCourse(selectedCourses.get(courseIndex));
 				game.setScreen(new MenuScreen(game));
 			}
 		});
