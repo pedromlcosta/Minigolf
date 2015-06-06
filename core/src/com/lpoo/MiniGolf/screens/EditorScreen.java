@@ -46,7 +46,7 @@ public class EditorScreen implements Screen {
 	private static final float BUTTON_WIDTH = 200f;
 	private static final float BUTTON_HEIGHT = 50f;
 	private MiniGolf game;
-	private static  Course created;
+	private static Course created;
 	private Element elementToAdd;
 	private static final float HOLE_RADIUS = 0.3f;
 	Vector2 posInit;
@@ -434,9 +434,9 @@ public class EditorScreen implements Screen {
 				}
 			}
 
-			posInicialX = getPosInitial(cursorPosX, leftX);
+			posInicialX = getPosInitial(cursorPosX, leftX) + width / 2;
 
-			posInicialY = getPosInitial(cursorPosY, leftY);
+			posInicialY = getPosInitial(cursorPosY, leftY) + height / 2;
 
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
@@ -501,7 +501,7 @@ public class EditorScreen implements Screen {
 				// if (EditorScreen.middleMouseButtonPressed) {
 				// System.out.println("Middle");
 				if (fromActor instanceof Element) {
-//					System.out.println("Ele");
+					// System.out.println("Ele");
 				}
 
 			}
@@ -515,9 +515,9 @@ public class EditorScreen implements Screen {
 					if (elementToAdd != null) {
 
 						if (elementToAdd.getType() == elementType.ball) {
-//							System.out.println("Update Ball");
+							// System.out.println("Update Ball");
 							if (nPlayersPlaced < MiniGolf.MAX_PLAYERS) {
-//								System.out.println("Teste");
+								// System.out.println("Teste");
 								created.addPosition(new Vector2(screenX, screenY));
 								nPlayersPlaced++;
 
@@ -579,7 +579,7 @@ public class EditorScreen implements Screen {
 	// draws the number of starting positions already placed
 	public void drawBall() {
 
-//		System.out.println(created.getPositions().size());
+		// System.out.println(created.getPositions().size());
 		for (int i = 0; i < nPlayersPlaced; i++) {
 			Vector2 pos = created.getPositions().get(i);
 			shapeRenderer.begin();
@@ -648,5 +648,5 @@ public class EditorScreen implements Screen {
 		posVec.remove(index);
 		nPlayersPlaced--;
 	}
- 
+
 }

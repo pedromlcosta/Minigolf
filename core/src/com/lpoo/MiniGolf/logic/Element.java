@@ -239,7 +239,6 @@ public class Element extends Actor implements Serializable {
 	}
 
 	public void createBody(World w) {
-
 		System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
 	}
 
