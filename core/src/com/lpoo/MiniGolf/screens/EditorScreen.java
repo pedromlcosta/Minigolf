@@ -50,7 +50,7 @@ public class EditorScreen implements Screen {
 	private Element elementToAdd;
 	private static final float HOLE_RADIUS = 0.3f;
 	Vector2 posInit;
-	private boolean drawElement, pressedLeftButton, pressedRightButton, pressedResetbutton, changedItem;
+	private boolean drawElement, pressedLeftButton, pressedRightButton, pressedResetbutton, changedItem, circleElement;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera cam;
 	private float cursorPosX, cursorPosY, leftX, leftY;
@@ -69,6 +69,7 @@ public class EditorScreen implements Screen {
 		stage = new Stage();
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
+		shapeRenderer.setAutoShapeType(true);
 		elementToAdd = new Element(Element.elementType.ball);
 		// first value
 		// of drop
@@ -77,7 +78,7 @@ public class EditorScreen implements Screen {
 		// value for
 		// elementToAdd
 		pressedResetbutton = drawElement = pressedLeftButton = pressedRightButton = false;
-		changedItem = true;
+		changedItem = circleElement = true;
 		createActors();
 		addListeners();
 
@@ -114,23 +115,18 @@ public class EditorScreen implements Screen {
 			createAuxiliarSquare();
 			shapeRenderer.end();
 
-			// shapeRenderer.rectLine(leftX, leftY, leftX, cursorPosY, 5);
-			// shapeRenderer.rectLine(leftX, leftY, cursorPosX, leftY, 5);
-			// shapeRenderer.rectLine(cursorPosX, leftY, cursorPosX, cursorPosY,
-			// 5);
-			// shapeRenderer.rectLine(leftX, cursorPosY, cursorPosX, cursorPosY,
-			// 5);
-			shapeRenderer.end();
 		}
 
 		cam.update();
 	}
 
 	public void createAuxiliarSquare() {
-		shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, leftX, cursorPosY, true);
-		shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, cursorPosX, leftY, true);
-		shapeRendererDraw(Color.RED, shapes.line, cursorPosX, leftY, cursorPosX, cursorPosY, true);
-		shapeRendererDraw(Color.RED, shapes.line, leftX, cursorPosY, cursorPosX, cursorPosY, true);
+		if (!circleElement) {
+			shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, leftX, cursorPosY, true);
+			shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, cursorPosX, leftY, true);
+			shapeRendererDraw(Color.RED, shapes.line, cursorPosX, leftY, cursorPosX, cursorPosY, true);
+			shapeRendererDraw(Color.RED, shapes.line, leftX, cursorPosY, cursorPosX, cursorPosY, true);
+		}
 	}
 
 	// TODO
@@ -423,8 +419,10 @@ public class EditorScreen implements Screen {
 				width = getNewElementPosValue(true, 0, 0, 0, 0);
 				height = width;
 				elementToAdd.setRadius(HOLE_RADIUS);
+				circleElement = true;
 
 			} else {
+				circleElement = false;
 				width = getNewElementPosValue(false, leftX, leftY, cursorPosX, leftY) / MiniGolf.BOX_TO_WORLD;
 				height = getNewElementPosValue(false, leftX, leftY, leftX, cursorPosY) / MiniGolf.BOX_TO_WORLD;
 				if (width * height <= 0.04) {
