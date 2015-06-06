@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -36,7 +37,7 @@ import com.lpoo.MiniGolf.logic.Teleporter;
 public class EditorScreen implements Screen {
 	private Skin skin;
 	private Stage stage;
-	private SelectBox<String> selectElement;
+	private SelectBox2<String> selectElement;
 	private Table scene;
 
 	private TextButton goBackButton, doneButton, revertLastMoveButton, reseteButton;
@@ -47,7 +48,7 @@ public class EditorScreen implements Screen {
 	private Element elementToAdd;
 	private static final float HOLE_RADIUS = 0.3f;
 	Vector2 posInit;
-	private boolean drawElement, pressedLeftButton, pressedRightButton, pressedResetbutton;
+	private boolean drawElement, pressedLeftButton, pressedRightButton, pressedResetbutton, changedItem;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera cam;
 	private float cursorPosX, cursorPosY, leftX, leftY;
@@ -73,7 +74,7 @@ public class EditorScreen implements Screen {
 		// default
 		// value for
 		// elementToAdd
-		pressedResetbutton = drawElement = pressedLeftButton = pressedRightButton = false;
+		changedItem = pressedResetbutton = drawElement = pressedLeftButton = pressedRightButton = false;
 		createActors();
 		addListeners();
 
@@ -82,7 +83,7 @@ public class EditorScreen implements Screen {
 		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
 		stage.getViewport().setCamera(secondaryCamera);
 		cam = (OrthographicCamera) stage.getViewport().getCamera();
-		stage.addActor(scene);
+
 		Gdx.input.setInputProcessor(stage);
 
 		shapeRenderer.setColor(Color.RED);
@@ -212,7 +213,9 @@ public class EditorScreen implements Screen {
 
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
+				drawElement = false;
 				getElement(selectElement.getSelected());
+				changedItem = true;
 			}
 
 		});
@@ -220,11 +223,13 @@ public class EditorScreen implements Screen {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				pressedResetbutton = true;
+				drawElement = false;
 			}
 
 			@Override
 			public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				pressedResetbutton = false;
+				drawElement = false;
 			}
 
 		});
@@ -232,19 +237,22 @@ public class EditorScreen implements Screen {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				pressedResetbutton = true;
+				drawElement = false;
+				pressedLeftButton = false;
 			}
 
 			@Override
 			public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				pressedResetbutton = false;
+				drawElement = false;
+				pressedLeftButton = false;
 			}
 
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				pressedResetbutton = true;
 				pressedLeftButton = false;
-				pressedRightButton = true;
-
+				drawElement = false;
 			}
 		});
 	}
@@ -319,9 +327,9 @@ public class EditorScreen implements Screen {
 		goBackButton.setWidth(BUTTON_WIDTH);
 		goBackButton.setHeight(BUTTON_HEIGHT);
 
-		selectElement = new SelectBox<String>(skin);
+		selectElement = new SelectBox2<String>(skin);
 		selectElement.setItems(new String[] { "Ball", "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "SquareOne", "Teleporter", "VoidFloor" });
-		selectElement.setMaxListCount(1);
+		selectElement.setMaxListCount(3);
 
 		scene = new Table();
 		scene.add(reseteButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
@@ -347,6 +355,7 @@ public class EditorScreen implements Screen {
 		grass1.createBody(MiniGolf.getW());
 		created.addCourseElement(grass1);
 		stage.addActor(grass1);
+		stage.addActor(scene);
 	}
 
 	private boolean notOverlapping() {
@@ -359,16 +368,26 @@ public class EditorScreen implements Screen {
 	}
 
 	private void addElement() {
+		if (elementToAdd == null)
+			return;
 		if (drawElement && !pressedRightButton) {
-			getElement(selectElement.getSelected());
+			elementType eleType = elementToAdd.getType();
+			if (eleType != elementType.teleporter)
+				getElement(selectElement.getSelected());
 
 			float width = 0;
 			float height = 0;
 			float posInicialX = 0;
 			float posInicialY = 0;
-			elementType eleType = elementToAdd.getType();
+			eleType = elementToAdd.getType();
 
 			if (eleType == elementType.hole || eleType == elementType.teleporter || eleType == elementType.squareOne) {
+				if (changedItem) {
+					changedItem = false;
+					drawElement = false;
+					pressedLeftButton = false;
+					return;
+				}
 				width = 2 * HOLE_RADIUS;
 				height = width;
 				elementToAdd.setRadius(HOLE_RADIUS);
@@ -406,20 +425,17 @@ public class EditorScreen implements Screen {
 				}
 
 			} else if (nTeleporters % 2 != 0 && elementToAdd.getType() == elementType.teleporter) {
-				System.out.println("Here");
 				elementToAdd.setDestination(new Vector2(posInicialX, posInicialY));
-				System.out.println(nTeleporters);
 				nTeleporters++;
+				getElement(selectElement.getSelected());
 
 			} else {
-				if (elementToAdd == null)
-					return;
+
 				elementToAdd.createElement(posInicialX, posInicialY, width, height);
 
 				if (notOverlapping()) {
 					if (elementToAdd.getType() == elementType.teleporter)
 						nTeleporters++;
-
 					stage.addActor(elementToAdd);
 					this.created.addEle(elementToAdd);
 
@@ -431,7 +447,7 @@ public class EditorScreen implements Screen {
 			pressedLeftButton = false;
 			drawElement = false;
 			pressedRightButton = false;
-			elementToAdd = null;
+
 		}
 		pressedRightButton = false;
 	}
@@ -460,7 +476,7 @@ public class EditorScreen implements Screen {
 			@Override
 			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
 
-				if (button == Buttons.LEFT && !pressedLeftButton && !pressedResetbutton) {
+				if (button == Buttons.LEFT && !pressedLeftButton) {
 					posInit.x = posX;
 					posInit.y = posY;
 					pressedLeftButton = true;
@@ -485,41 +501,32 @@ public class EditorScreen implements Screen {
 				}
 				return false;
 			}
-
 		});
-
 	}
 
 	@Override
 	public void dispose() {
 		skin.dispose();
 		stage.dispose();
-
 	}
 
 	@Override
 	public void hide() {
 		dispose();
-
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 		cam.update();
-
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -7,6 +7,7 @@ com.badlogic.gdx.graphics.Color: {
 	black: { a: 1 },
 	grey: { r: 0.7, g: 0.7, b: 0.7, a: 1 }
 },
+
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	default-font: { file: default.fnt }
 },
@@ -80,6 +81,13 @@ com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 		vScroll: default-scroll,
 		vScrollKnob: default-round-large
 	}
+},
+com.badlogic.gdx.scenes.scene2d.ui.SelectBox2$SelectBoxStyle: {
+ default: {
+  font: default-font, fontColor: white, background: default-select,
+  scrollStyle: default,
+  listStyle: { font: default-font, selection: default-select-selection }
+ }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	optional: {

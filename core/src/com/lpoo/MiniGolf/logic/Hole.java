@@ -58,7 +58,6 @@ public class Hole extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
-
 	public void draw() {
 		// System.out.println((body.getPosition().x-width/2f)*MiniGolf.BOX_TO_WORLD
 		// + " " + (body.getPosition().y-width/2f)*MiniGolf.BOX_TO_WORLD + " " +
@@ -76,7 +75,8 @@ public class Hole extends Element {
 	@Override
 	public void draw(Batch batch, float parentAlfa) {
 
-		batch.draw(image, (body.getPosition().x) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
+		batch.draw(image, (body.getPosition().x - width / 2) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
+				* MiniGolf.BOX_TO_WORLD);
 
 	}
 

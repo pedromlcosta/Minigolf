@@ -131,7 +131,9 @@ public class Teleporter extends Element {
 	@Override
 	public void draw(Batch batch, float parentAlfa) {
 
-		batch.draw(image, (body.getPosition().x) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
-		batch.draw(destinationImage, (destination.x) * MiniGolf.BOX_TO_WORLD, (destination.y) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
+		batch.draw(image, (body.getPosition().x - width / 2) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
+				* MiniGolf.BOX_TO_WORLD);
+		batch.draw(destinationImage, (destination.x - width / 2) * MiniGolf.BOX_TO_WORLD, (destination.y - height / 2) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
+				* MiniGolf.BOX_TO_WORLD);
 	}
 }
