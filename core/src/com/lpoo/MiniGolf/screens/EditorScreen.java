@@ -2,6 +2,8 @@ package com.lpoo.MiniGolf.screens;
 
 import java.util.ArrayList;
 
+import javax.lang.model.util.Elements;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Screen;
@@ -54,7 +56,7 @@ public class EditorScreen implements Screen {
 	private float cursorPosX, cursorPosY, leftX, leftY;
 	private int nPlayersPlaced = 0;
 	private int nTeleporters = 0;
-	public static boolean middleMouseButtonPressed;
+	Floor grassFloor;
 
 	public EditorScreen(MiniGolf game) {
 		this.game = game;
@@ -79,14 +81,18 @@ public class EditorScreen implements Screen {
 		createActors();
 		addListeners();
 
+		initStageCamera();
+
+		Gdx.input.setInputProcessor(stage);
+
+	}
+
+	public void initStageCamera() {
 		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
 		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
 		stage.getViewport().setCamera(secondaryCamera);
 		cam = (OrthographicCamera) stage.getViewport().getCamera();
-
-		Gdx.input.setInputProcessor(stage);
-
 	}
 
 	@Override
@@ -97,7 +103,7 @@ public class EditorScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		updateBall();
+		drawBall();
 
 		if (pressedLeftButton && !pressedResetbutton) {
 
@@ -105,10 +111,7 @@ public class EditorScreen implements Screen {
 			leftY = posInit.y;// leftButtonVec.y;
 			// TODO
 			shapeRenderer.begin(ShapeType.Filled);
-			shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, leftX, cursorPosY, true);
-			shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, cursorPosX, leftY, true);
-			shapeRendererDraw(Color.RED, shapes.line, cursorPosX, leftY, cursorPosX, cursorPosY, true);
-			shapeRendererDraw(Color.RED, shapes.line, leftX, cursorPosY, cursorPosX, cursorPosY, true);
+			createAuxiliarSquare();
 			shapeRenderer.end();
 
 			// shapeRenderer.rectLine(leftX, leftY, leftX, cursorPosY, 5);
@@ -123,6 +126,13 @@ public class EditorScreen implements Screen {
 		cam.update();
 	}
 
+	public void createAuxiliarSquare() {
+		shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, leftX, cursorPosY, true);
+		shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, cursorPosX, leftY, true);
+		shapeRendererDraw(Color.RED, shapes.line, cursorPosX, leftY, cursorPosX, cursorPosY, true);
+		shapeRendererDraw(Color.RED, shapes.line, leftX, cursorPosY, cursorPosX, cursorPosY, true);
+	}
+
 	// TODO
 	private void removeActorFromEditor(ArrayList<Element> ele, int index, Element removed) {
 		ele.remove(index);
@@ -135,7 +145,7 @@ public class EditorScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 
-				if (nPlayersPlaced == 4) {
+				if (nPlayersPlaced == MiniGolf.MAX_PLAYERS) {
 					for (Element ele : created.getElementos()) {
 						ele.destroyBody();
 					}
@@ -198,17 +208,24 @@ public class EditorScreen implements Screen {
 				pressedRightButton = false;
 				nTeleporters = 0;
 				nPlayersPlaced = 0;
+
+				// deletes all the starting positions
 				created.getPositions().clear();
 				ArrayList<Element> elementsArray = created.getElementos();
 				int index = elementsArray.size() - 1;
 				if (index <= 0)
 					return;
+				// deletes all elements with the exepction of the grass Floor,
+				// the default floor
 				for (; index >= 1; index--) {
 
 					Element eleRemoved = elementsArray.get(index);
-					eleRemoved.destroyBody();
-					eleRemoved.remove();
-					elementsArray.remove(index);
+					if (eleRemoved.getType() != elementType.grassFloor) {
+						eleRemoved.destroyBody();
+						eleRemoved.remove();
+						elementsArray.remove(index);
+
+					}
 				}
 			}
 		});
@@ -217,9 +234,10 @@ public class EditorScreen implements Screen {
 
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
-				drawElement = false;
+
 				getElement(selectElement.getSelected());
 				changedItem = true;
+				drawElement = false;
 			}
 
 		});
@@ -261,6 +279,7 @@ public class EditorScreen implements Screen {
 		});
 	}
 
+	// replaces the current elementToAdd with the one selected in the drop down
 	public void getElement(String selected) {
 		switch (selected) {
 		case "Ball":
@@ -305,6 +324,7 @@ public class EditorScreen implements Screen {
 
 	}
 
+	// creates the actor of the screen, buttons,table
 	private void createActors() {
 		created = new Course();
 		overrideStageListener();
@@ -347,19 +367,17 @@ public class EditorScreen implements Screen {
 		scene.row();
 		scene.setPosition(MiniGolf.WIDTH - 700f, MiniGolf.HEIGHT - 50f);
 
-		Floor grass1 = new Floor(new Vector2(0, 0), MiniGolf.getWidth() / MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
-		grass1.createBody(MiniGolf.getW());
-		// Floor grass1 = new Floor(new Vector2((MiniGolf.WIDTH / 2f /
-		// MiniGolf.BOX_TO_WORLD), (MiniGolf.HEIGHT / 2f /
-		// MiniGolf.BOX_TO_WORLD)), MiniGolf.WIDTH / MiniGolf.BOX_TO_WORLD,
-		// MiniGolf.HEIGHT
-		// / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
-		grass1.createBody(MiniGolf.getW());
-		created.addCourseElement(grass1);
-		stage.addActor(grass1);
+		grassFloor = new Floor(new Vector2(0, 0), MiniGolf.getWidth() / MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
+		grassFloor.createBody(MiniGolf.getW());
+
+		grassFloor.createBody(MiniGolf.getW());
+		created.addCourseElement(grassFloor);
+		stage.addActor(grassFloor);
 		stage.addActor(scene);
 	}
 
+	// see if the elementToAdd is not overlapping any of the already placed
+	// elements
 	private boolean notOverlapping() {
 		for (Element ele : created.getElementos()) {
 			if (ele.overlap(elementToAdd)) {
@@ -369,6 +387,23 @@ public class EditorScreen implements Screen {
 		return true;
 	}
 
+	// return the a new value be it for width or height depending whether if the
+	// element is a circle and/or of the points selected by the user
+	public float getNewElementPosValue(boolean circle, float pos1, float pos2, float pos3, float pos4) {
+		if (circle) {
+			if (changedItem) {
+				changedItem = false;
+				drawElement = false;
+				pressedLeftButton = false;
+			}
+			return 2 * HOLE_RADIUS;
+		}
+		return Geometry.distance(pos1, pos2, pos3, pos4);
+	}
+
+	// add an element to the course if he meets the requirements:
+	// Not being null
+	// Not overlapping any of the current Elements
 	private void addElement() {
 		if (elementToAdd == null)
 			return;
@@ -384,19 +419,14 @@ public class EditorScreen implements Screen {
 			eleType = elementToAdd.getType();
 
 			if (eleType == elementType.hole || eleType == elementType.teleporter || eleType == elementType.squareOne) {
-				if (changedItem) {
-					changedItem = false;
-					drawElement = false;
-					pressedLeftButton = false;
-					return;
-				}
-				width = 2 * HOLE_RADIUS;
+
+				width = getNewElementPosValue(true, 0, 0, 0, 0);
 				height = width;
 				elementToAdd.setRadius(HOLE_RADIUS);
 
 			} else {
-				width = (float) (Geometry.distance(leftX, leftY, cursorPosX, leftY) / MiniGolf.BOX_TO_WORLD);
-				height = (float) (Geometry.distance(leftX, leftY, leftX, cursorPosY) / MiniGolf.BOX_TO_WORLD);
+				width = getNewElementPosValue(false, leftX, leftY, cursorPosX, leftY) / MiniGolf.BOX_TO_WORLD;
+				height = getNewElementPosValue(false, leftX, leftY, leftX, cursorPosY) / MiniGolf.BOX_TO_WORLD;
 				if (width * height <= 0.04) {
 
 					pressedLeftButton = false;
@@ -406,15 +436,9 @@ public class EditorScreen implements Screen {
 				}
 			}
 
-			if (cursorPosX - leftX < 0) {
-				posInicialX = cursorPosX;
-			} else
-				posInicialX = leftX;
+			posInicialX = getPosInitial(cursorPosX, leftX);
 
-			if (cursorPosY - leftY < 0) {
-				posInicialY = cursorPosY;
-			} else
-				posInicialY = leftY;
+			posInicialY = getPosInitial(cursorPosY, leftY);
 
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
@@ -447,6 +471,19 @@ public class EditorScreen implements Screen {
 		pressedRightButton = false;
 	}
 
+	// returns a new Pos depending on the placement of the element
+	public float getPosInitial(float cursor, float left) {
+		if (cursor - left < 0) {
+			return cursor;
+		} else
+			return left;
+	}
+
+	// Overrides the stage listeners:
+	// touchUp
+	// touchDown
+	// touchDragged
+	// mouseMoved
 	public void overrideStageListener() {
 
 		stage.addListener(new InputListener() {
@@ -483,7 +520,7 @@ public class EditorScreen implements Screen {
 
 						if (elementToAdd.getType() == elementType.ball) {
 							System.out.println("Update Ball");
-							if (nPlayersPlaced < 4) {
+							if (nPlayersPlaced < MiniGolf.MAX_PLAYERS) {
 								System.out.println("Teste");
 								created.addPosition(new Vector2(screenX, screenY));
 								nPlayersPlaced++;
@@ -520,7 +557,9 @@ public class EditorScreen implements Screen {
 					return true;
 				} else if (button == Buttons.RIGHT) {
 					pressedLeftButton = false;
-					elementToAdd = null;
+
+					// TODO CHECK
+					// elementToAdd = null;
 					drawElement = false;
 					pressedRightButton = true;
 				}
@@ -541,7 +580,8 @@ public class EditorScreen implements Screen {
 		});
 	}
 
-	public void updateBall() {
+	// draws the number of starting positions already placed
+	public void drawBall() {
 
 		System.out.println(created.getPositions().size());
 		for (int i = 0; i < nPlayersPlaced; i++) {
@@ -550,9 +590,10 @@ public class EditorScreen implements Screen {
 			shapeRendererDraw(Color.GREEN, shapes.circle, pos.x, pos.y, 0, 0, true);
 			shapeRenderer.end();
 		}
-
 	}
 
+	// draw using the shape Renderer, must be given color, an enum shap , and
+	// the positions
 	public void shapeRendererDraw(Color color, shapes shape, float pos1, float pos2, float pos3, float pos4, boolean autoShape) {
 		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
 		shapeRenderer.setColor(color);
@@ -564,14 +605,11 @@ public class EditorScreen implements Screen {
 		case circle:
 			shapeRenderer.circle(pos1, pos2, 0.5f * MiniGolf.BOX_TO_WORLD);
 			break;
-
 		}
-
 	}
 
 	@Override
 	public void dispose() {
-
 		stage.dispose();
 	}
 
@@ -595,20 +633,20 @@ public class EditorScreen implements Screen {
 	}
 
 	// TODO
+	// Removes the last Element from the Elements Array from course, used by
+	// button revertLastMoveButton
 	public void removeLastElement(ArrayList<Element> ele) {
 
 		int index = ele.size() - 1;
-		// System.out.println(index);
 		if (index == 0)
 			return;
 		Element removed = ele.get(index);
 		removeActorFromEditor(ele, index, removed);
 	}
 
+	// removes the ball placed last
 	public void removeLastBall(ArrayList<Vector2> posVec) {
-
 		int index = posVec.size() - 1;
-		// System.out.println(index);
 		if (index < 0)
 			return;
 		posVec.remove(index);
