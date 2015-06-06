@@ -139,10 +139,13 @@ public class GameScreen implements Screen, InputProcessor {
 
 			// END OF COURSE
 			// System.out.println("Reseting Course nr. " + (courseIndex - 1));
-
+			// System.out.println("Derp");
 			if (courseIndex == selectedCourses.size()) {
 				// WAS THE LAST COURSE - ENDING GAME
 				// resetPlayers();
+				if (selectedCourses.isEmpty())
+					game.setScreen(new MenuScreen(game));
+
 				resetCourse(selectedCourses.get(courseIndex - 1));
 				game.setScreen(new MenuScreen(game));
 				this.dispose();
@@ -181,66 +184,72 @@ public class GameScreen implements Screen, InputProcessor {
 		stage.getViewport().setCamera(secondaryCamera);
 
 		selectedCourses = game.getSelectedCourses();
+		System.out.println("derp");
+		if (!selectedCourses.isEmpty()) {
 
-		initializePlayers(selectedCourses.get(courseIndex));
-		initializeCourse(selectedCourses.get(courseIndex)); // At this point,
-															// courseIndex is 0
-		courseIndex++;
-		turnStart = System.currentTimeMillis();
+			initializePlayers(selectedCourses.get(courseIndex));
+			initializeCourse(selectedCourses.get(courseIndex)); // At this
+																// point,
+																// courseIndex
+																// is 0
+			courseIndex++;
+			turnStart = System.currentTimeMillis();
 
-		Gdx.input.setInputProcessor(this);
-		// Setting body contact handling functions
-		MiniGolf.getW().setContactListener(new ContactListener() {
+			Gdx.input.setInputProcessor(this);
+			// Setting body contact handling functions
+			MiniGolf.getW().setContactListener(new ContactListener() {
 
-			public void beginContact(Contact arg0) {
+				public void beginContact(Contact arg0) {
 
-				ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
-				ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
+					ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
+					ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
 
-				// Check if the body has no user data
-				if (elementA == null || elementB == null) {
-					return;
+					// Check if the body has no user data
+					if (elementA == null || elementB == null) {
+						return;
+					}
+
+					// Collisions between ball and something else
+					if ((elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball)) {
+
+						elementA.player.getBall().beginContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
+
+					} else if ((elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball)) {
+
+						elementB.player.getBall().beginContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
+
+					}
+
 				}
 
-				// Collisions between ball and something else
-				if ((elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball)) {
+				public void endContact(Contact arg0) {
+					ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
+					ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
 
-					elementA.player.getBall().beginContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
+					if (elementA == null || elementB == null) {
+						return;
+					}
+					// Ending Contact: Ball returns to stepping on grass
+					if (elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball) {
 
-				} else if ((elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball)) {
+						elementA.player.getBall().endContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
 
-					elementB.player.getBall().beginContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
+					} else if (elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball) {
 
+						elementB.player.getBall().endContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
+					}
 				}
 
-			}
-
-			public void endContact(Contact arg0) {
-				ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
-				ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
-
-				if (elementA == null || elementB == null) {
-					return;
+				public void postSolve(Contact arg0, ContactImpulse arg1) {
 				}
-				// Ending Contact: Ball returns to stepping on grass
-				if (elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball) {
 
-					elementA.player.getBall().endContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
-
-				} else if (elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball) {
-
-					elementB.player.getBall().endContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
+				public void preSolve(Contact arg0, Manifold arg1) {
 				}
-			}
 
-			public void postSolve(Contact arg0, ContactImpulse arg1) {
-			}
-
-			public void preSolve(Contact arg0, Manifold arg1) {
-			}
-
-		});
-
+			});
+		}else{
+			game.setScreen(new MenuScreen(game));
+		}
 	}
 
 	@Override
@@ -471,6 +480,13 @@ public class GameScreen implements Screen, InputProcessor {
 			Player player = new Player(i + 1);
 			player.createBall(course.getPositions().get(i), w, 0.25f);
 			playerID = new Label("ID: " + (i + 1), skin);
+			/*
+			 * switch(i){ case 0: playerID.setColor(Color.RED); break; case 1:
+			 * playerID.setColor(Color.CYAN); break; case 2:
+			 * playerID.setColor(Color.YELLOW); break; case 3:
+			 * playerID.setColor(Color.PURPLE); break; default:
+			 * playerID.setColor(Color.BLACK); break; }
+			 */
 			tacadas.add(new Label("Tacadas: " + 0, skin));
 
 			players.add(player);
@@ -484,6 +500,7 @@ public class GameScreen implements Screen, InputProcessor {
 		stage.addActor(score);
 		// TODO see position stuff
 		score.setPosition(MiniGolf.WIDTH - 1100f, MiniGolf.HEIGHT + 300f);
+
 		players.get(0).setJustPlayed(true);
 		currentPlayer = players.get(0);
 		actualPlayers = players;
