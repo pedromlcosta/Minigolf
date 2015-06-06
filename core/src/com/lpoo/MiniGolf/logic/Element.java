@@ -2,6 +2,7 @@ package com.lpoo.MiniGolf.logic;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -118,7 +119,7 @@ public class Element extends Actor implements Serializable {
 				System.out.println("TOUCHED: " + type);
 				return false;
 			}
-		 
+
 		});
 	}
 
@@ -130,16 +131,17 @@ public class Element extends Actor implements Serializable {
 		Shape shapeToAdd = eleToBeAdded.getBody().getFixtureList().get(0).getShape();
 		Shape shapeEle = body.getFixtureList().get(0).getShape();
 
+		Vector2 temp = new Vector2(startPos.x, startPos.y);
 		if (shapeToAdd.getType() == Type.Circle && shapeEle.getType() == Type.Circle) {
-			return Geometry.overlapCircles((CircleShape) shapeEle, startPos, (CircleShape) shapeToAdd, eleToBeAdded.getStartPos());
+			return Geometry.overlapCircles((CircleShape) shapeEle, temp, (CircleShape) shapeToAdd, eleToBeAdded.getStartPos());
 		} else if (shapeToAdd.getType() == Type.Polygon && shapeEle.getType() == Type.Polygon) {
 
-			return Geometry.overlapPloygons(this, startPos, eleToBeAdded, eleToBeAdded.getStartPos());
+			return Geometry.overlapPloygons(this, temp, eleToBeAdded, eleToBeAdded.getStartPos());
 		} else {
 			if (shapeToAdd.getType() == Type.Polygon) {
-				return Geometry.overlap(this, startPos, shapeEle.getRadius(), eleToBeAdded, eleToBeAdded.getStartPos());
+				return Geometry.overlap(this, temp, shapeEle.getRadius(), eleToBeAdded, eleToBeAdded.getStartPos());
 			} else {
-				return Geometry.overlap(eleToBeAdded, eleToBeAdded.getStartPos(), shapeToAdd.getRadius(), this, startPos);
+				return Geometry.overlap(eleToBeAdded, eleToBeAdded.getStartPos(), shapeToAdd.getRadius(), this, temp);
 			}
 
 		}
@@ -246,6 +248,12 @@ public class Element extends Actor implements Serializable {
 
 	}
 
+	public void setImagePos() {
+		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
+		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
+	}
+
 	public void setRadius(float holeRadius) {
 	}
 
@@ -257,7 +265,7 @@ public class Element extends Actor implements Serializable {
 
 	public void createElement(float posInicialX, float posInicialY, float width, float height) {
 
-		this.setStartPos(new Vector2(posInicialX, posInicialY));
+		this.setStartPos(new Vector2(posInicialX + width / 2, posInicialY + height / 2));
 		this.setHeight(height);
 		this.setWidth(width);
 		this.createBody(MiniGolf.getW());

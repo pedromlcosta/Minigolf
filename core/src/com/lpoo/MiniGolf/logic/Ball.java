@@ -30,6 +30,7 @@ public class Ball extends Element {
 
 	public Ball() {
 		super();
+		
 	}
 
 	// Constructor that also creates the body
@@ -42,7 +43,6 @@ public class Ball extends Element {
 
 		createBody(w, player, pos);
 		image = new Sprite(Assets.manager.get("bola" + player.getPlayerID() + ".png", Texture.class));
-
 
 	}
 
@@ -155,9 +155,11 @@ public class Ball extends Element {
 			ballUserData.endContacts++;
 
 			if (ballUserData.readyToCheckEnd) { // was ready to be checked
-				//if the type from the last begin is the same as the one in this end
-				if (ballUserData.typeToCheck == obstacleUserData.type){
-					//Checks criteria to have entered something and went back to grass after
+				// if the type from the last begin is the same as the one in
+				// this end
+				if (ballUserData.typeToCheck == obstacleUserData.type) {
+					// Checks criteria to have entered something and went back
+					// to grass after
 					steppingOn = Element.elementType.grassFloor;
 					ballUserData.accel = Floor.GRASS_DRAG;
 					ballUserData.readyToCheckEnd = false;

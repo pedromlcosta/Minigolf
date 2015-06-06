@@ -46,7 +46,7 @@ public class EditorScreen implements Screen {
 	private static final float BUTTON_WIDTH = 200f;
 	private static final float BUTTON_HEIGHT = 50f;
 	private MiniGolf game;
-	private static Course created;
+	private Course created;
 	private Element elementToAdd;
 	private static final float HOLE_RADIUS = 0.3f;
 	Vector2 posInit;
@@ -363,7 +363,8 @@ public class EditorScreen implements Screen {
 		scene.row();
 		scene.setPosition(MiniGolf.WIDTH - 700f, MiniGolf.HEIGHT - 50f);
 
-		grassFloor = new Floor(new Vector2(0, 0), MiniGolf.getWidth() / MiniGolf.BOX_TO_WORLD, MiniGolf.getHeight() / MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
+		grassFloor = new Floor(new Vector2((MiniGolf.WIDTH / 2f / MiniGolf.BOX_TO_WORLD), (MiniGolf.HEIGHT / 2f / MiniGolf.BOX_TO_WORLD)), MiniGolf.WIDTH / MiniGolf.BOX_TO_WORLD, MiniGolf.HEIGHT
+				/ MiniGolf.BOX_TO_WORLD, elementType.grassFloor);
 		grassFloor.createBody(MiniGolf.getW());
 
 		grassFloor.createBody(MiniGolf.getW());
@@ -434,17 +435,18 @@ public class EditorScreen implements Screen {
 				}
 			}
 
-			posInicialX = getPosInitial(cursorPosX, leftX) + width / 2;
+			posInicialX = getPosInitial(cursorPosX, leftX);
 
-			posInicialY = getPosInitial(cursorPosY, leftY) + height / 2;
+			posInicialY = getPosInitial(cursorPosY, leftY);
 
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
 
 			if (nTeleporters % 2 != 0 && elementToAdd.getType() == elementType.teleporter) {
-				elementToAdd.setDestination(new Vector2(posInicialX, posInicialY));
+				elementToAdd.setDestination(new Vector2(posInicialX + width / 2, posInicialY + height / 2));
 				nTeleporters++;
 				getElement(selectElement.getSelected());
+				
 
 			} else {
 
@@ -453,6 +455,7 @@ public class EditorScreen implements Screen {
 				if (notOverlapping()) {
 					if (elementToAdd.getType() == elementType.teleporter)
 						nTeleporters++;
+
 					stage.addActor(elementToAdd);
 					this.created.addEle(elementToAdd);
 
@@ -485,12 +488,14 @@ public class EditorScreen implements Screen {
 	public void overrideStageListener() {
 
 		stage.addListener(new InputListener() {
+			//
 			// public Actor hit(float stageX, float stageY, boolean touchable) {
 			// stage.getRoot().parentToLocalCoordinates(tempCoords.set(stageX,
 			// stageY));
 			// return stage.getRoot().hit(tempCoords.x, tempCoords.y,
 			// touchable);
 			// }
+			//
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 
@@ -518,7 +523,7 @@ public class EditorScreen implements Screen {
 							// System.out.println("Update Ball");
 							if (nPlayersPlaced < MiniGolf.MAX_PLAYERS) {
 								// System.out.println("Teste");
-								created.addPosition(new Vector2(screenX, screenY));
+								created.addPosition(new Vector2((screenX + elementToAdd.getWidth() / 2) / MiniGolf.BOX_TO_WORLD, (screenY + elementToAdd.getHeight() / 2) / MiniGolf.BOX_TO_WORLD));
 								nPlayersPlaced++;
 
 							}
@@ -583,7 +588,7 @@ public class EditorScreen implements Screen {
 		for (int i = 0; i < nPlayersPlaced; i++) {
 			Vector2 pos = created.getPositions().get(i);
 			shapeRenderer.begin();
-			shapeRendererDraw(Color.GREEN, shapes.circle, pos.x, pos.y, 0, 0, true);
+			shapeRendererDraw(Color.GREEN, shapes.circle, pos.x * MiniGolf.BOX_TO_WORLD, pos.y * MiniGolf.BOX_TO_WORLD, 0, 0, true);
 			shapeRenderer.end();
 		}
 	}
@@ -649,4 +654,6 @@ public class EditorScreen implements Screen {
 		nPlayersPlaced--;
 	}
 
+	public static void removeFromArrayElement(Element ele) {
+	}
 }
