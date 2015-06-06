@@ -35,14 +35,10 @@ public class OptionsScreen implements Screen {
 	private Slider maxTacadasSlider;
 	private Label maxTacadasLabel;
 	private Sprite background;
-	private CheckBox userPicksCheck;
-	private Label userPicksLabel;
 	private TextField numberOfPlayers;
 	private TextField numberOfCourses;
 	private TextButton goBackButton;
-	private SelectBox<String> selectGame;
 	private Table gameOptionsTable;
-	private Table pickCourseTable;
 	private MiniGolf game;
 
 	private final float DELTA_WIDTH = 200f;
@@ -78,8 +74,8 @@ public class OptionsScreen implements Screen {
 		maxTacadasSlider = new Slider(1f, 30f, 1f, false, skin);
 		numberOfPlayers = new TextField("Number of Players", skin);
 		numberOfCourses = new TextField("Number of Courses", skin);
-		userPicksCheck = new CheckBox("", skin, "default");
-		userPicksLabel = new Label("Pick Map", skin);
+
+		 
 
 		String[] newItems;
 		newItems = new String[game.getSelectedCourses().size()];
@@ -91,11 +87,6 @@ public class OptionsScreen implements Screen {
 				i++;
 			}
 		}
-
-		selectGame = new SelectBox<String>(skin);
-		if (newItems.length >= 1)
-			selectGame.setItems(newItems);
-		selectGame.setMaxListCount(0);
 
 		goBackButton = new TextButton("Back", skin);
 		goBackButton.setWidth(BUTTON_WIDTH);
@@ -113,9 +104,6 @@ public class OptionsScreen implements Screen {
 	// TODO ver funções sem numero de argumentos;
 	private void createTable() {
 		gameOptionsTable = new Table();
-		pickCourseTable = new Table();
-
-		stage.addActor(pickCourseTable);
 
 		Label maxNameTimeLabel = new Label("Max Time:", skin);
 		maxTimeLabel = new Label("Time: 0", skin);
@@ -144,19 +132,12 @@ public class OptionsScreen implements Screen {
 		gameOptionsTable.add(numberOfCoursesLabel);
 		gameOptionsTable.add(numberOfCourses);
 		gameOptionsTable.row();
-		gameOptionsTable.add(userPicksLabel);
-		gameOptionsTable.add(userPicksCheck).left();
+
 		// TODO MiniGolf.WIDTH
 		// TODO MiniGolf.HEIGHT
 		gameOptionsTable.setPosition(MiniGolf.WIDTH / 2, MiniGolf.HEIGHT / 2 + 60f);
 
-		pickCourseTable.defaults().width(200f);
-		pickCourseTable.add(selectGame);
-		pickCourseTable.row();
 		stage.addActor(gameOptionsTable);
-
-		selectGame.setVisible(false);
-		pickCourseTable.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH + 100f, MiniGolf.HEIGHT / 2);
 
 		// General table
 
@@ -242,35 +223,14 @@ public class OptionsScreen implements Screen {
 				maxTacadasLabel.setText(new StringBuilder(" Tacadas Max: " + (int) maxTacadasSlider.getValue()));
 			}
 		});
-		userPicksCheck.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent arg0, Actor arg1) {
-				if (userPicksCheck.isChecked()) {
-					MiniGolf.setRandomCourse(false);
-					Course temp = game.getSelectedCourses().get(selectGame.getSelectedIndex());
-					if (temp != null)
-						game.getSelectedCourses().set(0, temp);
 
-					selectGame.setVisible(true);
-				} else {
-					MiniGolf.setRandomCourse(true);
-					selectGame.setVisible(false);
-					game.getSelectedCourses().set(0, new Course());
-				}
-			}
-		});
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				game.setScreen(new MenuScreen(game));
 			}
 		});
-		selectGame.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent arg0, Actor arg1) {
-				game.getSelectedCourses().set(0, game.getSelectedCourses().get(selectGame.getSelectedIndex()));
-			}
-		});
+
 	}
 
 	@Override
