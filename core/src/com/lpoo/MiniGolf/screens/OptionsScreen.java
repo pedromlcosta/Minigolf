@@ -63,10 +63,8 @@ public class OptionsScreen implements Screen {
 		createMenuElements();
 
 		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
-		OrthographicCamera secondaryCamera = new OrthographicCamera(
-				Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		secondaryCamera.translate(Gdx.graphics.getWidth() / 2,
-				Gdx.graphics.getHeight() / 2);
+		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		secondaryCamera.translate(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		stage.getViewport().setCamera(secondaryCamera);
 
 		Gdx.input.setInputProcessor(stage);
@@ -101,8 +99,7 @@ public class OptionsScreen implements Screen {
 		goBackButton = new TextButton("Back", skin);
 		goBackButton.setWidth(BUTTON_WIDTH);
 		goBackButton.setHeight(BUTTON_HEIGHT);
-		goBackButton.setPosition(Gdx.graphics.getWidth() / 2 - DELTA_WIDTH
-				+ 350f, Gdx.graphics.getHeight() / 2 - 100f);
+		goBackButton.setPosition(MiniGolf.WIDTH / 2- 150f, MiniGolf.HEIGHT / 2 - 100f);
 		stage.addActor(goBackButton);
 		addListeners();
 		createTable();
@@ -148,9 +145,9 @@ public class OptionsScreen implements Screen {
 		gameOptionsTable.row();
 		gameOptionsTable.add(userPicksLabel);
 		gameOptionsTable.add(userPicksCheck).left();
-
-		gameOptionsTable.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH
-				+ 100f, Gdx.graphics.getHeight() / 2 + 60f);
+		// TODO MiniGolf.WIDTH
+		// TODO MiniGolf.HEIGHT
+		gameOptionsTable.setPosition(MiniGolf.WIDTH / 2, MiniGolf.HEIGHT / 2 + 60f);
 
 		pickCourseTable.defaults().width(200f);
 		pickCourseTable.add(selectGame);
@@ -158,8 +155,7 @@ public class OptionsScreen implements Screen {
 		stage.addActor(gameOptionsTable);
 
 		selectGame.setVisible(false);
-		pickCourseTable.setPosition(Gdx.graphics.getWidth() / 2 - DELTA_WIDTH
-				+ 100f, Gdx.graphics.getHeight() / 2);
+		pickCourseTable.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH + 100f, MiniGolf.HEIGHT / 2);
 
 		// General table
 
@@ -235,16 +231,14 @@ public class OptionsScreen implements Screen {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				game.setTempoMax((int) maxTimeSlider.getValue());
-				maxTimeLabel.setText(new StringBuilder(" Time Max: "
-						+ (int) maxTimeSlider.getValue()));
+				maxTimeLabel.setText(new StringBuilder(" Time Max: " + (int) maxTimeSlider.getValue()));
 			}
 		});
 		maxTacadasSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				game.setTacadasMax((int) maxTacadasSlider.getValue());
-				maxTacadasLabel.setText(new StringBuilder(" Tacadas Max: "
-						+ (int) maxTacadasSlider.getValue()));
+				maxTacadasLabel.setText(new StringBuilder(" Tacadas Max: " + (int) maxTacadasSlider.getValue()));
 			}
 		});
 		userPicksCheck.addListener(new ChangeListener() {
@@ -252,8 +246,7 @@ public class OptionsScreen implements Screen {
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				if (userPicksCheck.isChecked()) {
 					MiniGolf.setRandomCourse(false);
-					Course temp = game.getSelectedCourses().get(
-							selectGame.getSelectedIndex());
+					Course temp = game.getSelectedCourses().get(selectGame.getSelectedIndex());
 					if (temp != null)
 						game.getSelectedCourses().set(0, temp);
 
@@ -274,10 +267,7 @@ public class OptionsScreen implements Screen {
 		selectGame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
-				game.getSelectedCourses().set(
-						0,
-						game.getSelectedCourses().get(
-								selectGame.getSelectedIndex()));
+				game.getSelectedCourses().set(0, game.getSelectedCourses().get(selectGame.getSelectedIndex()));
 			}
 		});
 	}
