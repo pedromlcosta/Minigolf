@@ -1,6 +1,6 @@
 package com.lpoo.MiniGolf.logic;
 
-import geometry.Geometrey;
+import java.io.Serializable;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,20 +11,29 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+ 
+import com.lpoo.MiniGolf.geometry.Geometry;
+ 
 
-public class Element extends Actor {
+public class Element extends Actor implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public enum elementType {
 		nothing, hole, ball, glueWall, waterFloor, iceFloor, illusionWall, regularWall, sandFloor, bouncyWall, voidFloor, teleporter, acceleratorFloor, squareOne, grassFloor
 	};
 
-	protected Body body;
+	transient protected Body body;
 	protected Vector2 startPos;
 	protected float width;
 	protected float height;
 	protected elementType type;
 
-	protected Sprite image;
+	transient protected Sprite image;
 
 	public boolean overlap(Element eleToBeAdded) {
 
@@ -35,15 +44,15 @@ public class Element extends Actor {
 		Shape shapeEle = body.getFixtureList().get(0).getShape();
 
 		if (shapeToAdd.getType() == Type.Circle && shapeEle.getType() == Type.Circle) {
-			return Geometrey.overlapCircles((CircleShape) shapeEle, startPos, (CircleShape) shapeToAdd, eleToBeAdded.getStartPos());
+			return Geometry.overlapCircles((CircleShape) shapeEle, startPos, (CircleShape) shapeToAdd, eleToBeAdded.getStartPos());
 		} else if (shapeToAdd.getType() == Type.Polygon && shapeEle.getType() == Type.Polygon) {
 
-			return Geometrey.overlapPloygons(this, startPos, eleToBeAdded, eleToBeAdded.getStartPos());
+			return Geometry.overlapPloygons(this, startPos, eleToBeAdded, eleToBeAdded.getStartPos());
 		} else {
 			if (shapeToAdd.getType() == Type.Polygon) {
-				return Geometrey.overlap(this, startPos, shapeEle.getRadius(), eleToBeAdded, eleToBeAdded.getStartPos());
+				return Geometry.overlap(this, startPos, shapeEle.getRadius(), eleToBeAdded, eleToBeAdded.getStartPos());
 			} else {
-				return Geometrey.overlap(eleToBeAdded, eleToBeAdded.getStartPos(), shapeToAdd.getRadius(), this, startPos);
+				return Geometry.overlap(eleToBeAdded, eleToBeAdded.getStartPos(), shapeToAdd.getRadius(), this, startPos);
 			}
 
 		}

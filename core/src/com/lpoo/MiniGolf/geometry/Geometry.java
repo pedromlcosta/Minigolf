@@ -1,4 +1,4 @@
-package geometry;
+package com.lpoo.MiniGolf.geometry;
 
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
@@ -7,11 +7,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.lpoo.MiniGolf.logic.Element;
 
-public class Geometrey {
+public class Geometry {
 
 	private final static float tolerance = 0.2f;
 
-	public Geometrey() {
+	public Geometry() {
 
 	}
 

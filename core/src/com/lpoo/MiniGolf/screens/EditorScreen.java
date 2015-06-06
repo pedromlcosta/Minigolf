@@ -1,7 +1,5 @@
 package com.lpoo.MiniGolf.screens;
 
-import geometry.Geometrey;
-
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -10,6 +8,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.lpoo.MiniGolf.geometry.Geometry;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
 import com.lpoo.MiniGolf.logic.Element.elementType;
@@ -54,6 +54,8 @@ public class EditorScreen implements Screen {
 	private float cursorPosX, cursorPosY, leftX, leftY;
 	private int nPlayersPlaced = 0;
 	private int nTeleporters = 0;
+	public static boolean middleMouseButtonPressed;
+	public Sprite temp;
 
 	public EditorScreen(MiniGolf game) {
 		this.game = game;
@@ -64,7 +66,8 @@ public class EditorScreen implements Screen {
 
 		skin = new Skin(Gdx.files.internal("uiskin.json"));
 		stage = new Stage();
-
+		temp = new Sprite();
+		temp.setTexture(new Texture("bola1.png"));
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
 		elementToAdd = new Floor(Element.elementType.bouncyWall);
@@ -106,7 +109,7 @@ public class EditorScreen implements Screen {
 
 			leftX = posInit.x;// leftButtonVec.x;
 			leftY = posInit.y;// leftButtonVec.y;
-
+			// TODO
 			shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.rectLine(leftX, leftY, leftX, cursorPosY, 5);
@@ -136,6 +139,7 @@ public class EditorScreen implements Screen {
 						ele.destroyBody();
 					}
 
+					created.setNome("CreadtedCourse" + game.getSelectedCourses().size());
 					game.addToSelectedCourses(created);
 				}
 				// add course to thingy
@@ -165,6 +169,7 @@ public class EditorScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				pressedResetbutton = true;
 				pressedLeftButton = false;
+				pressedRightButton = false;
 				ArrayList<Element> ele = created.getElementos();
 				int index = ele.size() - 1;
 				// System.out.println(index);
@@ -191,7 +196,8 @@ public class EditorScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				pressedResetbutton = true;
 				pressedLeftButton = false;
-				elementToAdd = null;
+				pressedRightButton = false;
+
 				ArrayList<Element> elementsArray = created.getElementos();
 				int index = elementsArray.size() - 1;
 				if (index == 0)
@@ -205,6 +211,7 @@ public class EditorScreen implements Screen {
 
 				}
 				nTeleporters = 0;
+				nPlayersPlaced = 0;
 
 			}
 		});
@@ -284,16 +291,12 @@ public class EditorScreen implements Screen {
 		case "RegularWall":
 			elementToAdd = new Floor(Element.elementType.regularWall);
 			break;
-		case "SquareOne":
-			// elementToAdd = new Floor(Element.elementType.squareOne);
-			break;
 		case "SandFloor":
 			elementToAdd = new Floor(Element.elementType.sandFloor);
 			break;
 		case "Teleporter":
 			elementToAdd = new Teleporter(Element.elementType.teleporter);
 			elementToAdd.changeColor(nTeleporters + 1);
-
 			break;
 		case "VoidFloor":
 			elementToAdd = new Floor(Element.elementType.voidFloor);
@@ -331,6 +334,7 @@ public class EditorScreen implements Screen {
 		selectElement.setItems(new String[] { "Ball", "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "SquareOne", "Teleporter", "VoidFloor" });
 		selectElement.setMaxListCount(3);
 
+		// TODO ADD PLAYER STATUS TO GAME; CHANGE LETTER COLOR
 		scene = new Table();
 		scene.add(reseteButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
 		scene.add(spaceLabel).width(50f);
@@ -393,8 +397,8 @@ public class EditorScreen implements Screen {
 				elementToAdd.setRadius(HOLE_RADIUS);
 
 			} else {
-				width = (float) (Geometrey.distance(leftX, leftY, cursorPosX, leftY) / MiniGolf.BOX_TO_WORLD);
-				height = (float) (Geometrey.distance(leftX, leftY, leftX, cursorPosY) / MiniGolf.BOX_TO_WORLD);
+				width = (float) (Geometry.distance(leftX, leftY, cursorPosX, leftY) / MiniGolf.BOX_TO_WORLD);
+				height = (float) (Geometry.distance(leftX, leftY, leftX, cursorPosY) / MiniGolf.BOX_TO_WORLD);
 				if (width * height <= 0.04) {
 
 					pressedLeftButton = false;
@@ -420,7 +424,26 @@ public class EditorScreen implements Screen {
 			if (eleType == elementType.ball) {
 				if (nPlayersPlaced < 4) {
 					created.addPosition(new Vector2(posInicialX, posInicialY));
+					// TODO
+					// shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+					// shapeRenderer.setAutoShapeType(true);
+					// shapeRenderer.begin();
+					// shapeRenderer.setColor(Color.GREEN);
+					// shapeRenderer.circle(MiniGolf.WIDTH *
+					// MiniGolf.BOX_TO_WORLD / 2, MiniGolf.HEIGHT *
+					// MiniGolf.BOX_TO_WORLD / 2, 10.5f *
+					// MiniGolf.BOX_TO_WORLD);
+					// System.out.println("Here draw ball: " + posInicialX *
+					// MiniGolf.BOX_TO_WORLD + "  " + posInicialY *
+					// MiniGolf.BOX_TO_WORLD + "  " + 1.5f *
+					// MiniGolf.BOX_TO_WORLD);
+					// shapeRenderer.end();
+					// shapeRenderer.setColor(Color.RED);
+					// shapeRenderer.setAutoShapeType(false);
+					 
 					nPlayersPlaced++;
+
+					cam.update();
 
 				}
 
@@ -458,7 +481,6 @@ public class EditorScreen implements Screen {
 
 			@Override
 			public void touchUp(InputEvent Event, float screenX, float screenY, int pointer, int button) {
-				// Event.getRelatedActor().getClass().getName();
 				if (button == Buttons.LEFT && !pressedResetbutton) {
 					drawElement = true;
 					addElement();
@@ -476,11 +498,15 @@ public class EditorScreen implements Screen {
 			@Override
 			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
 
+				if (button == Buttons.MIDDLE) {
+					middleMouseButtonPressed = true;
+				}
 				if (button == Buttons.LEFT && !pressedLeftButton) {
 					posInit.x = posX;
 					posInit.y = posY;
 					pressedLeftButton = true;
 					pressedRightButton = false;
+					middleMouseButtonPressed = false;
 					return true;
 				} else if (button == Buttons.RIGHT) {
 					pressedLeftButton = false;
@@ -488,6 +514,7 @@ public class EditorScreen implements Screen {
 					drawElement = false;
 					pressedRightButton = true;
 				}
+				middleMouseButtonPressed = false;
 				return false;
 			}
 
@@ -501,6 +528,7 @@ public class EditorScreen implements Screen {
 				}
 				return false;
 			}
+
 		});
 	}
 

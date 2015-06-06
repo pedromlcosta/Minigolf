@@ -1,11 +1,16 @@
 package com.lpoo.MiniGolf.logic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector2;
 
-public class Course {
+public class Course implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Element> elementos;
 	private ArrayList<Vector2> positions;
 	private String nome;

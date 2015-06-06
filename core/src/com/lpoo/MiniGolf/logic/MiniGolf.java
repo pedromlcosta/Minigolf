@@ -33,8 +33,8 @@ public class MiniGolf extends Game {
 	public static final int MAX_PLAYERS = 4;
 
 	private static boolean randomCourse;
-	private Point endPoint;
-	private Point startPoint;
+	private Vector2 endPoint;
+	private Vector2 startPoint;
 	private int tacadasMax;
 	private int tempoMax = 10;
 	private int courseHeight;
@@ -92,7 +92,8 @@ public class MiniGolf extends Game {
 
 		Teleporter teleporter1 = new Teleporter(new Vector2(7f, 5f), new Vector2(7f, 3f), 0.3f, 1);
 
-		// Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
+		// Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f /
+		// BOX_TO_WORLD),
 		// 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
 		// HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
 
@@ -205,19 +206,19 @@ public class MiniGolf extends Game {
 		fixt.setFriction(1.0f);
 	}
 
-	public Point getEndPoint() {
+	public Vector2 getEndPoint() {
 		return endPoint;
 	}
 
-	public void setEndPoint(Point endPoint) {
+	public void setEndPoint(Vector2 endPoint) {
 		this.endPoint = endPoint;
 	}
 
-	public Point getStartPoint() {
+	public Vector2 getStartPoint() {
 		return startPoint;
 	}
 
-	public void setStartPoint(Point startPoint) {
+	public void setStartPoint(Vector2 startPoint) {
 		this.startPoint = startPoint;
 	}
 

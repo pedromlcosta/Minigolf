@@ -13,6 +13,10 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Floor extends Element {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final float GRASS_DRAG = 1.5f;
 	public static final float SAND_DRAG = 6.0f;
 	public static final float ICE_DRAG = 0.3f;

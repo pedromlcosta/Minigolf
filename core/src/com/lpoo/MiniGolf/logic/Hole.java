@@ -12,6 +12,10 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Hole extends Element {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private float radius;
 
 	public Hole() {

@@ -13,6 +13,10 @@ import com.badlogic.gdx.graphics.Color;
 
 public class Teleporter extends Element {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private float radius;
 	private Vector2 destination = new Vector2();
 	private Sprite destinationImage;
