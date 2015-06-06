@@ -308,7 +308,6 @@ public class EditorScreen implements Screen {
 			break;
 		case "Teleporter":
 			elementToAdd = new Teleporter(Element.elementType.teleporter);
-			elementToAdd.changeColor(nTeleporters + 1);
 			break;
 		case "VoidFloor":
 			elementToAdd = new Floor(Element.elementType.voidFloor);
@@ -446,17 +445,22 @@ public class EditorScreen implements Screen {
 				elementToAdd.setDestination(new Vector2(posInicialX + width / 2, posInicialY + height / 2));
 				nTeleporters++;
 				getElement(selectElement.getSelected());
-				
 
 			} else {
 
-				elementToAdd.createElement(posInicialX, posInicialY, width, height);
+				if (!circleElement)
+					elementToAdd.createElement(posInicialX, posInicialY, width, height);
 
 				if (notOverlapping()) {
-					if (elementToAdd.getType() == elementType.teleporter)
-						nTeleporters++;
 
-					stage.addActor(elementToAdd);
+					if (elementToAdd.getType() != elementType.teleporter)
+						stage.addActor(elementToAdd);
+					else {
+						if (nTeleporters < 10) {
+							nTeleporters++;
+							stage.addActor(elementToAdd);
+						}
+					}
 					this.created.addEle(elementToAdd);
 
 				} else {
