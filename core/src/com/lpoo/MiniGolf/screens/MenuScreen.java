@@ -30,8 +30,11 @@ public class MenuScreen implements Screen {
 	private MiniGolf game;
 	private Sprite background;
 
-	private final float DELTA_WIDTH = 200f;
-	//private final static Logger LOGGER = Logger.getLogger(MenuScreen.class.getName());
+	private final float DELTA_WIDTH = 100f;
+	private final float DELTA_HEIGHT = 50f;
+
+	// private final static Logger LOGGER =
+	// Logger.getLogger(MenuScreen.class.getName());
 
 	public MenuScreen(MiniGolf game) {
 		this.game = game;
@@ -86,10 +89,10 @@ public class MenuScreen implements Screen {
 		editorButton.setWidth(BUTTON_WIDTH);
 		editorButton.setHeight(BUTTON_HEIGHT);
 
-		playButton.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 300f);
-		editorButton.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 200f);
-		OptionsButton.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2 + 100f);
-		exitButton.setPosition(Gdx.graphics.getWidth() / 2 + DELTA_WIDTH, Gdx.graphics.getHeight() / 2);
+		playButton.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH, MiniGolf.HEIGHT / 2 + DELTA_HEIGHT * 3);
+		editorButton.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH, MiniGolf.HEIGHT / 2 + DELTA_HEIGHT);
+		OptionsButton.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH, MiniGolf.HEIGHT / 2 - DELTA_HEIGHT);
+		exitButton.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH, MiniGolf.HEIGHT / 2 - DELTA_HEIGHT * 3);
 
 		addListener();
 	}
@@ -102,7 +105,7 @@ public class MenuScreen implements Screen {
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new GameScreen(game));
+				game.setScreen(new LoadScreen());
 			}
 		});
 
