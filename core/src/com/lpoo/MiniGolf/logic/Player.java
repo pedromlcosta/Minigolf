@@ -188,6 +188,13 @@ public class Player {
 	public void setPlayerID(int playerID) {
 		this.playerID = playerID;
 	}
-
+	
+	public void addTacadaTotal(){
+		tacadaTotal++;
+	}
+	
+	public void addTacadaJogada(){
+		tacadasJogada++;
+	}
 
 }

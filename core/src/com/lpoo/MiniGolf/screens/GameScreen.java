@@ -421,6 +421,7 @@ public class GameScreen implements Screen, InputProcessor {
 			if (playerDecisionList.get(i).isJustPlayed()) {
 
 				playerDecisionList.get(i).setJustPlayed(false);
+				playerDecisionList.get(i).addTacadaTotal();
 
 				if (i != playerDecisionList.size() - 1) {
 					currentPlayer = playerDecisionList.get(i + 1);
