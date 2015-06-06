@@ -717,7 +717,7 @@ public class GameScreen implements Screen, InputProcessor {
 		score.defaults().width(100);
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 
-			playerID = new Label("ID: " + (i + 1), skin);
+			playerID = new Label("ID:  " + (i + 1), skin);
 
 			switch (i) {
 			case 0:
@@ -737,7 +737,7 @@ public class GameScreen implements Screen, InputProcessor {
 				break;
 			}
 
-			tacadas.add(new Label("Tacadas: " + 0, skin));
+			tacadas.add(new Label("Tacadas:  " + 0, skin));
 			score.add(playerID, tacadas.get(i));
 			score.row();
 
