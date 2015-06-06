@@ -34,7 +34,7 @@ public class MiniGolf extends Game {
 	private static boolean randomCourse;
 	private Vector2 endPoint;
 	private Vector2 startPoint;
-	private int tacadasMax;
+	private int tacadasMax = 3;
 	private int tempoMax = 10;
 	private int courseHeight;
 	private int courseWidth;
