@@ -137,6 +137,7 @@ public class MiniGolf extends Game {
 		addToSelectedCourses(Course1);
 		addToSelectedCourses(Course2);
 
+		
 		//io.saveAllCourses(allCourses); 
 		
 		// ///////////////////////////////////////////////////////////////////

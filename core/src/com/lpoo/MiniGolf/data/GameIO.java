@@ -86,6 +86,7 @@ public class GameIO {
 				out.writeObject(courses.get(i));
 				out.close();
 
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
