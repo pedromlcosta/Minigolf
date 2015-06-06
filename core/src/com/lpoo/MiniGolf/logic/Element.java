@@ -131,17 +131,18 @@ public class Element extends Actor implements Serializable {
 		Shape shapeToAdd = eleToBeAdded.getBody().getFixtureList().get(0).getShape();
 		Shape shapeEle = body.getFixtureList().get(0).getShape();
 
-		Vector2 temp = new Vector2(startPos.x, startPos.y);
+		Vector2 temp = new Vector2(startPos.x - width / 2, startPos.y - height / 2);
+		Vector2 temp2 = new Vector2(eleToBeAdded.getPosX() - eleToBeAdded.getWidth() / 2, eleToBeAdded.getPosY() - eleToBeAdded.getHeight() / 2);
 		if (shapeToAdd.getType() == Type.Circle && shapeEle.getType() == Type.Circle) {
-			return Geometry.overlapCircles((CircleShape) shapeEle, temp, (CircleShape) shapeToAdd, eleToBeAdded.getStartPos());
+			return Geometry.overlapCircles((CircleShape) shapeEle, temp, (CircleShape) shapeToAdd, temp2);
 		} else if (shapeToAdd.getType() == Type.Polygon && shapeEle.getType() == Type.Polygon) {
 
-			return Geometry.overlapPloygons(this, temp, eleToBeAdded, eleToBeAdded.getStartPos());
+			return Geometry.overlapPloygons(this, temp, eleToBeAdded, temp2);
 		} else {
 			if (shapeToAdd.getType() == Type.Polygon) {
-				return Geometry.overlap(this, temp, shapeEle.getRadius(), eleToBeAdded, eleToBeAdded.getStartPos());
+				return Geometry.overlap(this, temp, shapeEle.getRadius(), eleToBeAdded, temp2);
 			} else {
-				return Geometry.overlap(eleToBeAdded, eleToBeAdded.getStartPos(), shapeToAdd.getRadius(), this, temp);
+				return Geometry.overlap(eleToBeAdded, temp2, shapeToAdd.getRadius(), this, temp);
 			}
 
 		}
