@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -27,12 +28,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.lpoo.MiniGolf.logic.Ball;
-import com.lpoo.MiniGolf.logic.Course;
-import com.lpoo.MiniGolf.logic.Element;
-import com.lpoo.MiniGolf.logic.ElementType;
-import com.lpoo.MiniGolf.logic.MiniGolf;
-import com.lpoo.MiniGolf.logic.Player;
+import com.lpoo.MiniGolf.logic.*;
+import com.lpoo.MiniGolf.logic.Element.elementType;
 
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
 public class GameScreen implements Screen, InputProcessor {
@@ -40,6 +37,9 @@ public class GameScreen implements Screen, InputProcessor {
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 	static final float W_STEP = 1f / 60f;
 	static final float FORCE_AUGMENT = 3.0f;
+	static final float BOX_TO_WORLD = MiniGolf.BOX_TO_WORLD;
+	static final int WIDTH = (int) MiniGolf.WIDTH;
+	static final int HEIGHT = (int) MiniGolf.HEIGHT;
 
 	public final float units = 1.0f / 32.0f;
 
@@ -88,12 +88,12 @@ public class GameScreen implements Screen, InputProcessor {
 		stage.draw();
 		ElementType element;
 
-		if (currentPlayer.getBallBody() != null) {
-			if ((element = (ElementType) currentPlayer.getBallBody().getUserData()) != null) {
-				System.out.println("Ball acceleration is: " + element.accel);
-
-			}
-		}
+//		if (currentPlayer.getBallBody() != null) {
+//			if ((element = (ElementType) currentPlayer.getBallBody().getUserData()) != null) {
+//				System.out.println("Ball acceleration is: " + element.accel);
+//
+//			}
+//		}
 
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
@@ -104,10 +104,11 @@ public class GameScreen implements Screen, InputProcessor {
 			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped) {
 				updateCurrentPlayer();
 			}
-
 			checkFallenBalls();
 
 			cam.update();
+			stage.getCamera().update();
+		
 
 			MiniGolf.batch.setProjectionMatrix(cam.combined);
 			debugMatrix = MiniGolf.batch.getProjectionMatrix().cpy().scale(MiniGolf.BOX_TO_WORLD, MiniGolf.BOX_TO_WORLD, 0);
@@ -139,10 +140,13 @@ public class GameScreen implements Screen, InputProcessor {
 
 			// END OF COURSE
 			// System.out.println("Reseting Course nr. " + (courseIndex - 1));
-
+			// System.out.println("Derp");
 			if (courseIndex == selectedCourses.size()) {
 				// WAS THE LAST COURSE - ENDING GAME
 				// resetPlayers();
+				if (selectedCourses.isEmpty())
+					game.setScreen(new MenuScreen(game));
+
 				resetCourse(selectedCourses.get(courseIndex - 1));
 				game.setScreen(new MenuScreen(game));
 				this.dispose();
@@ -175,72 +179,161 @@ public class GameScreen implements Screen, InputProcessor {
 		shapeRenderer = new ShapeRenderer();
 		score = new Table();
 
+		// ///////////////////////////////////////////////////////////////////
+		// /// TEST COURSE /////
+		// ///////////////////////////////////////////////////////////////////
+
+		// Course 1
+
+		Course Course1 = new Course();
+		Course1.setNome("Course 1");
+
+		Vector2 pos1 = new Vector2(1.0f, 1.0f);
+		Vector2 pos2 = new Vector2(2.0f, 2.0f);
+		Vector2 pos3 = new Vector2(3.0f, 3.0f);
+		Vector2 pos4 = new Vector2(4.0f, 4.0f);
+
+		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
+
+		Hole hole1 = new Hole(new Vector2(5f, 5f), 0.3f);
+
+		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
+
+		Floor water1 = new Floor(new Vector2(7 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.waterFloor);
+
+		Wall glue1 = new Wall(new Vector2(5 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.glueWall);
+
+		Floor void1 = new Floor(new Vector2(9 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.voidFloor);
+
+		Floor illusion1 = new Floor(new Vector2(11 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
+
+		Floor accel1 = new Floor(new Vector2(1 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.acceleratorFloor);
+
+		Teleporter teleporter1 = new Teleporter(new Vector2(7f, 5f), new Vector2(7f, 3f), 0.3f, 1);
+
+		// Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f /
+		// BOX_TO_WORLD),
+		// 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+		// HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
+
+		Course1.addEle(grass1);
+		Course1.addEle(accel1);
+		Course1.addEle(glue1);
+		Course1.addEle(hole1);
+		Course1.addEle(void1);
+		Course1.addEle(water1);
+		Course1.addEle(sand1);
+		Course1.addEle(illusion1);
+		Course1.addEle(teleporter1);
+		Course1.addPosition(pos1);
+		Course1.addPosition(pos2);
+		Course1.addPosition(pos3);
+		Course1.addPosition(pos4);
+
+		// Course 2
+		Course Course2 = new Course();
+		Course2.setNome("Course 2");
+		Vector2 pos5 = new Vector2(1.0f, 2.0f);
+		Vector2 pos6 = new Vector2(2.0f, 3.0f);
+		Vector2 pos7 = new Vector2(3.0f, 4.0f);
+		Vector2 pos8 = new Vector2(4.0f, 5.0f);
+		Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
+		Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD), 1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
+		Hole hole2 = new Hole(new Vector2(7f, 7f), 0.3f);
+		Course2.addEle(grass2);
+		Course2.addEle(sand2);
+		Course2.addEle(hole2);
+		Course2.addPosition(pos5);
+		Course2.addPosition(pos6);
+		Course2.addPosition(pos7);
+		Course2.addPosition(pos8);
+
+		// Adding to all and selected
+		game.addToAllCourses(Course1);
+		game.addToAllCourses(Course2);
+		game.addToSelectedCourses(Course1);
+		game.addToSelectedCourses(Course2);
+
+		// io.saveAllCourses(allCourses);
+
+		// //
+		// ///////////////////////////////////////////////////////////////////
+		// // /// END OF TEST COURSE /////
+		// //
+		// ///////////////////////////////////////////////////////////////////
+
 		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
 		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
 		stage.getViewport().setCamera(secondaryCamera);
 
 		selectedCourses = game.getSelectedCourses();
+		System.out.println("derp");
+		if (!selectedCourses.isEmpty()) {
 
-		initializePlayers(selectedCourses.get(courseIndex));
-		initializeCourse(selectedCourses.get(courseIndex)); // At this point,
-															// courseIndex is 0
-		courseIndex++;
-		turnStart = System.currentTimeMillis();
+			initializePlayers(selectedCourses.get(courseIndex));
+			initializeCourse(selectedCourses.get(courseIndex)); // At this
+																// point,
+																// courseIndex
+																// is 0
+			courseIndex++;
+			turnStart = System.currentTimeMillis();
 
-		Gdx.input.setInputProcessor(this);
-		// Setting body contact handling functions
-		MiniGolf.getW().setContactListener(new ContactListener() {
+			Gdx.input.setInputProcessor(this);
+			// Setting body contact handling functions
+			MiniGolf.getW().setContactListener(new ContactListener() {
 
-			public void beginContact(Contact arg0) {
+				public void beginContact(Contact arg0) {
 
-				ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
-				ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
+					ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
+					ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
 
-				// Check if the body has no user data
-				if (elementA == null || elementB == null) {
-					return;
+					// Check if the body has no user data
+					if (elementA == null || elementB == null) {
+						return;
+					}
+
+					// Collisions between ball and something else
+					if ((elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball)) {
+
+						elementA.player.getBall().beginContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
+
+					} else if ((elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball)) {
+
+						elementB.player.getBall().beginContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
+
+					}
+
 				}
 
-				// Collisions between ball and something else
-				if ((elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball)) {
+				public void endContact(Contact arg0) {
+					ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
+					ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
 
-					elementA.player.getBall().beginContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
+					if (elementA == null || elementB == null) {
+						return;
+					}
+					// Ending Contact: Ball returns to stepping on grass
+					if (elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball) {
 
-				} else if ((elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball)) {
+						elementA.player.getBall().endContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
 
-					elementB.player.getBall().beginContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
+					} else if (elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball) {
 
+						elementB.player.getBall().endContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
+					}
 				}
 
-			}
-
-			public void endContact(Contact arg0) {
-				ElementType elementA = (ElementType) arg0.getFixtureA().getBody().getUserData();
-				ElementType elementB = (ElementType) arg0.getFixtureB().getBody().getUserData();
-
-				if (elementA == null || elementB == null) {
-					return;
+				public void postSolve(Contact arg0, ContactImpulse arg1) {
 				}
-				// Ending Contact: Ball returns to stepping on grass
-				if (elementA.type == Element.elementType.ball && elementB.type != Element.elementType.ball) {
 
-					elementA.player.getBall().endContactListener(elementA, elementB, arg0.getFixtureA().isSensor());
-
-				} else if (elementB.type == Element.elementType.ball && elementA.type != Element.elementType.ball) {
-
-					elementB.player.getBall().endContactListener(elementB, elementA, arg0.getFixtureB().isSensor());
+				public void preSolve(Contact arg0, Manifold arg1) {
 				}
-			}
 
-			public void postSolve(Contact arg0, ContactImpulse arg1) {
-			}
-
-			public void preSolve(Contact arg0, Manifold arg1) {
-			}
-
-		});
-
+			});
+		} else {
+			game.setScreen(new MenuScreen(game));
+		}
 	}
 
 	@Override
@@ -421,7 +514,7 @@ public class GameScreen implements Screen, InputProcessor {
 			if (playerDecisionList.get(i).isJustPlayed()) {
 
 				playerDecisionList.get(i).setJustPlayed(false);
-				playerDecisionList.get(i).addTacadaTotal();
+				
 
 				if (i != playerDecisionList.size() - 1) {
 					currentPlayer = playerDecisionList.get(i + 1);
@@ -471,8 +564,28 @@ public class GameScreen implements Screen, InputProcessor {
 			Player player = new Player(i + 1);
 			player.createBall(course.getPositions().get(i), w, 0.25f);
 			playerID = new Label("ID: " + (i + 1), skin);
-			tacadas.add(new Label("Tacadas: " + 0, skin));
 
+			
+			switch (i) {
+			case 0:
+				playerID.setColor(Color.RED);
+				break;
+			case 1:
+				playerID.setColor(Color.CYAN);
+				break;
+			case 2:
+				playerID.setColor(Color.YELLOW);
+				break;
+			case 3:
+				playerID.setColor(Color.PURPLE);
+				break;
+			default:
+				playerID.setColor(Color.BLACK);
+				break;
+			}
+
+			tacadas.add(new Label("Tacadas: " + 0, skin));
+			
 			players.add(player);
 
 			score.defaults().width(100);
@@ -484,6 +597,7 @@ public class GameScreen implements Screen, InputProcessor {
 		stage.addActor(score);
 		// TODO see position stuff
 		score.setPosition(MiniGolf.WIDTH - 1100f, MiniGolf.HEIGHT + 300f);
+
 		players.get(0).setJustPlayed(true);
 		currentPlayer = players.get(0);
 		actualPlayers = players;
@@ -603,7 +717,10 @@ public class GameScreen implements Screen, InputProcessor {
 
 				// (forceX/W_STEP) is as if the force where applied during 1
 				// second instead of 1/60 seconds
-
+				currentPlayer.addTacadaTotal();
+				int playerID = currentPlayer.getPlayerID()-1;
+				tacadas.get(playerID).setText("Tacadas: "  + currentPlayer.getTacadaTotal());
+				
 				currentPlayer.getBallBody().applyForceToCenter((forceX / W_STEP) * FORCE_AUGMENT, (forceY / W_STEP) * FORCE_AUGMENT, true);
 
 			}
