@@ -27,7 +27,7 @@ public class Floor extends Element {
 	public Floor(Vector2 pos, float width, float height, elementType type) {
 
 		super(pos, width, height, type);
-		image = new Sprite( Assets.manager.get(type.toString() + ".png", Texture.class));
+		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		image.setPosition((pos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (pos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
@@ -37,7 +37,7 @@ public class Floor extends Element {
 
 		super(type);
 
-		image = new Sprite( Assets.manager.get(type.toString() + ".png", Texture.class));
+		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
 
 	}
 
@@ -79,6 +79,8 @@ public class Floor extends Element {
 			body.setUserData(new ElementType(type, 0, this));
 			break;
 		}
+
+		System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
 
 	}
 

@@ -54,6 +54,9 @@ public class Hole extends Element {
 		body = w.createBody(bodyDef);
 		body.setUserData(new ElementType(elementType.hole, 0, this));
 		this.body.createFixture(fixDef);
+
+		System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
+
 	}
 
 	public void destroyBody() {

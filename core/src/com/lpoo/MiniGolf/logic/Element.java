@@ -11,6 +11,8 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.lpoo.MiniGolf.geometry.Geometry;
 
@@ -33,6 +35,93 @@ public class Element extends Actor implements Serializable {
 
 	transient protected Sprite image;
 
+	public Element() {
+		startPos = new Vector2();
+		height = 0;
+		width = 0;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
+
+		this.addCaptureListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
+				System.out.println("TOUCHED: " + type);
+				return false;
+			}
+
+		});
+
+	}
+
+	public Element(Vector2 pos, float width, float height) {
+		this.startPos = pos;
+		this.width = width;
+		this.height = height;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
+
+		this.addCaptureListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
+				System.out.println("TOUCHED: " + type);
+				return false;
+			}
+
+		});
+	}
+
+	public Element(Vector2 pos, float width, float height, elementType type) {
+		this.startPos = pos;
+		this.width = width;
+		this.height = height;
+		this.type = type;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
+
+		this.addCaptureListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
+				System.out.println("TOUCHED: " + type);
+				return false;
+			}
+
+		});
+
+	}
+
+	public Element(float width, float height, elementType type) {
+
+		this.width = width;
+		this.height = height;
+		this.type = type;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
+
+		this.addCaptureListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
+				System.out.println("TOUCHED: " + type);
+				return false;
+			}
+
+		});
+	}
+
+	public Element(elementType type) {
+		this.type = type;
+		this.setVisible(true);
+		this.setTouchable(Touchable.enabled);
+
+		this.addCaptureListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
+				System.out.println("TOUCHED: " + type);
+				return false;
+			}
+		 
+		});
+	}
+
 	public boolean overlap(Element eleToBeAdded) {
 
 		if (type == Element.elementType.grassFloor)
@@ -54,47 +143,6 @@ public class Element extends Actor implements Serializable {
 			}
 
 		}
-	}
-
-	public Element() {
-		startPos = new Vector2();
-		height = 0;
-		width = 0;
-		this.setVisible(true);
-		this.setTouchable(Touchable.enabled);
-
-	}
-
-	public Element(Vector2 pos, float width, float height) {
-		this.startPos = pos;
-		this.width = width;
-		this.height = height;
-		this.setVisible(true);
-		this.setTouchable(Touchable.enabled);
-	}
-
-	public Element(Vector2 pos, float width, float height, elementType type) {
-		this.startPos = pos;
-		this.width = width;
-		this.height = height;
-		this.type = type;
-		this.setVisible(true);
-		this.setTouchable(Touchable.enabled);
-	}
-
-	public Element(float width, float height, elementType type) {
-
-		this.width = width;
-		this.height = height;
-		this.type = type;
-		this.setVisible(true);
-		this.setTouchable(Touchable.enabled);
-	}
-
-	public Element(elementType type) {
-		this.type = type;
-		this.setVisible(true);
-		this.setTouchable(Touchable.enabled);
 	}
 
 	public void draw() {
@@ -192,6 +240,7 @@ public class Element extends Actor implements Serializable {
 
 	public void createBody(World w) {
 
+		System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
 	}
 
 	public void destroyBody() {

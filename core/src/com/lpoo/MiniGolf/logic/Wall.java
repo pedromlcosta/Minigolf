@@ -66,6 +66,9 @@ public class Wall extends Element {
 			break;
 
 		}
+
+		System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
+
 	}
 
 	public void destroyBody() {
