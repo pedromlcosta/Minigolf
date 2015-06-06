@@ -25,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.geometry.Geometry;
+import com.lpoo.MiniGolf.geometry.Geometry.shapes;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
 import com.lpoo.MiniGolf.logic.Element.elementType;
@@ -62,8 +63,7 @@ public class EditorScreen implements Screen {
 	@Override
 	public void show() {
 
-		 
-		skin = Assets.manager.get("uiskin.json",Skin.class);
+		skin = Assets.manager.get("uiskin.json", Skin.class);
 		stage = new Stage();
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
@@ -74,7 +74,8 @@ public class EditorScreen implements Screen {
 		// default
 		// value for
 		// elementToAdd
-		changedItem = pressedResetbutton = drawElement = pressedLeftButton = pressedRightButton = false;
+		pressedResetbutton = drawElement = pressedLeftButton = pressedRightButton = false;
+		changedItem = true;
 		createActors();
 		addListeners();
 
@@ -86,8 +87,6 @@ public class EditorScreen implements Screen {
 
 		Gdx.input.setInputProcessor(stage);
 
-		shapeRenderer.setColor(Color.RED);
-
 	}
 
 	@Override
@@ -98,34 +97,26 @@ public class EditorScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-		shapeRenderer.setAutoShapeType(true);
-		shapeRenderer.setColor(Color.GREEN);
-		shapeRenderer.begin();
-		for (int i = 0; i < nPlayersPlaced; i++) {
-			Vector2 pos = created.getPositions().get(i);
-			// System.out.println(pos);
-			shapeRenderer.circle(pos.x, pos.y, 0.5f * MiniGolf.BOX_TO_WORLD);
-		}
-		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.end();
-		shapeRenderer.setAutoShapeType(false);
+		updateBall();
 
 		if (pressedLeftButton && !pressedResetbutton) {
-			// Vector3 mouseVec = stage.getViewport().unproject(new
-			// Vector3((float) cursorPosX, (float) cursorPosY, 0));
-			// Vector3 leftButtonVec = stage.getViewport().unproject(new
-			// Vector3((float) posInit.x, (float) posInit.y, 0));
 
 			leftX = posInit.x;// leftButtonVec.x;
 			leftY = posInit.y;// leftButtonVec.y;
 			// TODO
-			shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
 			shapeRenderer.begin(ShapeType.Filled);
-			shapeRenderer.rectLine(leftX, leftY, leftX, cursorPosY, 5);
-			shapeRenderer.rectLine(leftX, leftY, cursorPosX, leftY, 5);
-			shapeRenderer.rectLine(cursorPosX, leftY, cursorPosX, cursorPosY, 5);
-			shapeRenderer.rectLine(leftX, cursorPosY, cursorPosX, cursorPosY, 5);
+			shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, leftX, cursorPosY, true);
+			shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, cursorPosX, leftY, true);
+			shapeRendererDraw(Color.RED, shapes.line, cursorPosX, leftY, cursorPosX, cursorPosY, true);
+			shapeRendererDraw(Color.RED, shapes.line, leftX, cursorPosY, cursorPosX, cursorPosY, true);
+			shapeRenderer.end();
+
+			// shapeRenderer.rectLine(leftX, leftY, leftX, cursorPosY, 5);
+			// shapeRenderer.rectLine(leftX, leftY, cursorPosX, leftY, 5);
+			// shapeRenderer.rectLine(cursorPosX, leftY, cursorPosX, cursorPosY,
+			// 5);
+			// shapeRenderer.rectLine(leftX, cursorPosY, cursorPosX, cursorPosY,
+			// 5);
 			shapeRenderer.end();
 		}
 
@@ -153,7 +144,7 @@ public class EditorScreen implements Screen {
 					game.addToSelectedCourses(created);
 				}
 				// add course to thingy
-				// game.setScreen(new MenuScreen(game));
+				game.setScreen(new MenuScreen(game));
 			}
 		});
 
@@ -180,13 +171,11 @@ public class EditorScreen implements Screen {
 				pressedResetbutton = true;
 				pressedLeftButton = false;
 				pressedRightButton = false;
-				ArrayList<Element> ele = created.getElementos();
-				int index = ele.size() - 1;
-				// System.out.println(index);
-				if (index == 0)
-					return;
-				Element removed = ele.get(index);
-				removeActorFromEditor(ele, index, removed);
+
+				if (elementToAdd.getType() != elementType.ball)
+					removeLastElement(created.getElementos());
+				else
+					removeLastBall(created.getPositions());
 
 			}
 
@@ -207,10 +196,12 @@ public class EditorScreen implements Screen {
 				pressedResetbutton = true;
 				pressedLeftButton = false;
 				pressedRightButton = false;
-
+				nTeleporters = 0;
+				nPlayersPlaced = 0;
+				created.getPositions().clear();
 				ArrayList<Element> elementsArray = created.getElementos();
 				int index = elementsArray.size() - 1;
-				if (index == 0)
+				if (index <= 0)
 					return;
 				for (; index >= 1; index--) {
 
@@ -218,12 +209,7 @@ public class EditorScreen implements Screen {
 					eleRemoved.destroyBody();
 					eleRemoved.remove();
 					elementsArray.remove(index);
-
 				}
-				nTeleporters = 0;
-				nPlayersPlaced = 0;
-				created.getPositions().clear();
-
 			}
 		});
 
@@ -476,11 +462,11 @@ public class EditorScreen implements Screen {
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 
 				if (fromActor == null) {
-					System.out.println("null");
+					// System.out.println("null");
 					return;
 				}
 				// if (EditorScreen.middleMouseButtonPressed) {
-				System.out.println("Middle");
+				// System.out.println("Middle");
 				if (fromActor instanceof Element) {
 					System.out.println("Ele");
 				}
@@ -496,14 +482,17 @@ public class EditorScreen implements Screen {
 					if (elementToAdd != null) {
 
 						if (elementToAdd.getType() == elementType.ball) {
+							System.out.println("Update Ball");
 							if (nPlayersPlaced < 4) {
+								System.out.println("Teste");
 								created.addPosition(new Vector2(screenX, screenY));
 								nPlayersPlaced++;
-								pressedLeftButton = false;
-								drawElement = false;
-								pressedRightButton = true;
-								return;
+
 							}
+							pressedLeftButton = false;
+							drawElement = false;
+							pressedRightButton = true;
+
 							return;
 						}
 					}
@@ -522,16 +511,12 @@ public class EditorScreen implements Screen {
 
 			@Override
 			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
-
-				if (button == Buttons.MIDDLE) {
-					middleMouseButtonPressed = true;
-				}
 				if (button == Buttons.LEFT && !pressedLeftButton) {
 					posInit.x = posX;
 					posInit.y = posY;
 					pressedLeftButton = true;
 					pressedRightButton = false;
-					middleMouseButtonPressed = false;
+
 					return true;
 				} else if (button == Buttons.RIGHT) {
 					pressedLeftButton = false;
@@ -539,7 +524,7 @@ public class EditorScreen implements Screen {
 					drawElement = false;
 					pressedRightButton = true;
 				}
-				middleMouseButtonPressed = false;
+
 				return false;
 			}
 
@@ -556,9 +541,37 @@ public class EditorScreen implements Screen {
 		});
 	}
 
+	public void updateBall() {
+
+		System.out.println(created.getPositions().size());
+		for (int i = 0; i < nPlayersPlaced; i++) {
+			Vector2 pos = created.getPositions().get(i);
+			shapeRenderer.begin();
+			shapeRendererDraw(Color.GREEN, shapes.circle, pos.x, pos.y, 0, 0, true);
+			shapeRenderer.end();
+		}
+
+	}
+
+	public void shapeRendererDraw(Color color, shapes shape, float pos1, float pos2, float pos3, float pos4, boolean autoShape) {
+		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+		shapeRenderer.setColor(color);
+		shapeRenderer.setAutoShapeType(autoShape);
+		switch (shape) {
+		case line:
+			shapeRenderer.rectLine(pos1, pos2, pos3, pos4, 5);
+			break;
+		case circle:
+			shapeRenderer.circle(pos1, pos2, 0.5f * MiniGolf.BOX_TO_WORLD);
+			break;
+
+		}
+
+	}
+
 	@Override
 	public void dispose() {
-		 
+
 		stage.dispose();
 	}
 
@@ -579,5 +592,26 @@ public class EditorScreen implements Screen {
 
 	@Override
 	public void resume() {
+	}
+
+	// TODO
+	public void removeLastElement(ArrayList<Element> ele) {
+
+		int index = ele.size() - 1;
+		// System.out.println(index);
+		if (index == 0)
+			return;
+		Element removed = ele.get(index);
+		removeActorFromEditor(ele, index, removed);
+	}
+
+	public void removeLastBall(ArrayList<Vector2> posVec) {
+
+		int index = posVec.size() - 1;
+		// System.out.println(index);
+		if (index < 0)
+			return;
+		posVec.remove(index);
+		nPlayersPlaced--;
 	}
 }

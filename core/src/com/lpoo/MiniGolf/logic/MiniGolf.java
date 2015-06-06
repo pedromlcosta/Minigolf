@@ -14,11 +14,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.data.GameIO;
-import com.lpoo.MiniGolf.logic.Element.elementType;
 import com.lpoo.MiniGolf.screens.LoadScreen;
-import com.lpoo.MiniGolf.screens.MenuScreen;
 
 public class MiniGolf extends Game {
 

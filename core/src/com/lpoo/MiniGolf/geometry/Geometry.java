@@ -10,7 +10,9 @@ import com.lpoo.MiniGolf.logic.Element;
 public class Geometry {
 
 	private final static float tolerance = 0.2f;
-
+	public enum shapes {
+		 circle,line
+	};
 	public Geometry() {
 
 	}
