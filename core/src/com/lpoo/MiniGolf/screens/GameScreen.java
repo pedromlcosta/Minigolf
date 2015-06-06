@@ -359,7 +359,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		for (int i = 0; i < courseElements.size(); i++) {
 			Element e = courseElements.get(i);
-			e.draw();
+			e.draw(MiniGolf.batch, 1);
 		}
 
 		// Draw Players' balls
@@ -561,9 +561,7 @@ public class GameScreen implements Screen, InputProcessor {
 			Player player = new Player(i + 1);
 			player.createBall(course.getPositions().get(i), w, 0.25f);
 
-			
 			players.add(player);
-
 
 		}
 
@@ -712,16 +710,15 @@ public class GameScreen implements Screen, InputProcessor {
 		return false;
 	}
 
-	public void initializeTable(){
-		
+	public void initializeTable() {
+
 		// INITIALIZE PLAYERS
 		tacadas = new ArrayList<Label>();
-
+		score.defaults().width(100);
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 
 			playerID = new Label("ID: " + (i + 1), skin);
 
-			
 			switch (i) {
 			case 0:
 				playerID.setColor(Color.RED);
@@ -741,22 +738,19 @@ public class GameScreen implements Screen, InputProcessor {
 			}
 
 			tacadas.add(new Label("Tacadas: " + 0, skin));
-			score.defaults().width(100);
 			score.add(playerID, tacadas.get(i));
 			score.row();
-			
+
 		}
-		
-		
+
 		score.setSize(100, 100);
-		score.setPosition( score.getWidth(), -score.getHeight() + MiniGolf.HEIGHT);
+		score.setPosition(score.getWidth(), -score.getHeight() + MiniGolf.HEIGHT);
 		stage.addActor(score);
 		stage.getCamera().update();
 
-		
 	}
-	
-	public void initializeButtons(){
-		
+
+	public void initializeButtons() {
+
 	}
 }
