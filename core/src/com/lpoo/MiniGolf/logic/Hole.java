@@ -52,6 +52,7 @@ public class Hole extends Element {
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
+
 		bodyDef.position.set(startPos);
 		body = w.createBody(bodyDef);
 		body.setUserData(new ElementType(elementType.hole, 0, this));
@@ -74,23 +75,31 @@ public class Hole extends Element {
 		// + " " + (body.getPosition().y-width/2f)*MiniGolf.BOX_TO_WORLD + " " +
 		// width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD+
 		// " "+ body.getFixtureList().get(0).getShape().getRadius());
-//		MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - width / 2f) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-//				* MiniGolf.BOX_TO_WORLD);
+		// MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f) *
+		// MiniGolf.BOX_TO_WORLD, (body.getPosition().y - width / 2f) *
+		// MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
+		// * MiniGolf.BOX_TO_WORLD);
 		// image.setPosition(body.getPosition().x*MiniGolf.BOX_TO_WORLD,
 		// body.getPosition().y*MiniGolf.BOX_TO_WORLD);
 		// image.setSize(width*MiniGolf.BOX_TO_WORLD,
 		// height*MiniGolf.BOX_TO_WORLD);
 		// image.draw(MiniGolf.batch);
-	image.draw(MiniGolf.batch);
+		image.draw(MiniGolf.batch);
 	}
 
- 
-	
+	public void createElement(float posInicialX, float posInicialY, float width, float height) {
+
+		this.setStartPos(new Vector2(posInicialX, posInicialY));
+		this.setHeight(height);
+		this.setWidth(width);
+		this.createBody(MiniGolf.getW());
+	}
+
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get("hole.png", Texture.class));
-		
+
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
+		image.setPosition((startPos.x - width / 2) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		image.setOriginCenter();
 		image.setRotation(angle);

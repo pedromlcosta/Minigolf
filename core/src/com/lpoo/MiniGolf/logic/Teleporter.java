@@ -159,6 +159,14 @@ public class Teleporter extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
+	public void createElement(float posInicialX, float posInicialY, float width, float height) {
+
+		this.setStartPos(new Vector2(posInicialX, posInicialY));
+		this.setHeight(height);
+		this.setWidth(width);
+		this.createBody(MiniGolf.getW());
+	}
+
 	public void draw() {
 		// TODO: Shaperenderer, circulos a volta deles, de cores iguais entre
 		// elementos e diferentes
@@ -173,15 +181,6 @@ public class Teleporter extends Element {
 
 	public void setDestination(Vector2 destination) {
 		this.destination = destination;
-	}
-
-	public void initializeDestImage() {
-		destinationImage.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		destinationImage.setPosition((destination.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (destination.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
-		destinationImage.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
-		destinationImage.setOriginCenter();
-		destinationImage.setRotation(angle);
-
 	}
 
 	@Override
