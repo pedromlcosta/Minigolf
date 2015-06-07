@@ -61,6 +61,15 @@ public class MiniGolf extends Game {
 		W = new World(new Vector2(0, 0), false);
 		W.setContinuousPhysics(true);
 		W.setWarmStarting(true);
+		
+		//LOADING MAPS
+		try {
+			allCourses = loadSave.loadAllIndividualCourses();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		this.setScreen(new LoadScreen(this));
 		// ///////////////////////////////////////////////////////////////////
 		// /// TEST COURSE /////
@@ -173,6 +182,8 @@ public class MiniGolf extends Game {
 		// /// END OF TEST COURSE /////
 		// ///////////////////////////////////////////////////////////////////
 
+		selectedCourses = allCourses;
+		
 		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
 		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
 		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT / BOX_TO_WORLD);

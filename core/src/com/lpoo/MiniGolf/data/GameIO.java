@@ -121,50 +121,7 @@ public class GameIO {
 			}
 		}
 	}
-
-	// WORKS!! DO NOT REMOVE!
-	public void saveAllCourses(ArrayList<Course> courses) {
-		FileHandle file = Gdx.files.local("AllCourses.sav");
-		OutputStream output = null;
-		try {
-			file.writeBytes(serialize(courses), false);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println(e.toString());
-		} finally {
-			if (output != null)
-				try {
-					output.close();
-				} catch (Exception e) {
-
-				}
-		}
-
-	}
-
-	public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
-		ArrayList<Course> tempCourses = null;
-		FileHandle file = Gdx.files.local("AllCourses.sav");
-		try {
-			if (file.exists()) {
-				System.out.println("Haaaai");
-				tempCourses = (ArrayList<Course>) deserialize(file.readBytes());
-			} else {
-				System.out.println(Gdx.files.getLocalStoragePath());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return tempCourses;
-
-	}
-
-	// before version
-	// out = new ObjectOutputStream(new FileOutputStream("AllCourses.sav"));
-	// out.writeObject(courses);
-	// out.close();
-
+	
 	public ArrayList<Course> loadAllIndividualCourses() throws ClassNotFoundException {
 		ArrayList<Course> tempCourses = new ArrayList<Course>();
 
@@ -192,6 +149,50 @@ public class GameIO {
 		return tempCourses;
 
 	}
+
+	// WORKS!! DO NOT REMOVE!
+	public void saveAllCourses(ArrayList<Course> courses) {
+		FileHandle file = Gdx.files.local("AllCourses.sav");
+		OutputStream output = null;
+		try {
+			file.writeBytes(serialize(courses), false);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println(e.toString());
+		} finally {
+			if (output != null)
+				try {
+					output.close();
+				} catch (Exception e) {
+
+				}
+		}
+
+	}
+
+	public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
+		ArrayList<Course> tempCourses = null;
+		FileHandle file = Gdx.files.local("AllCourses.sav");
+		try {
+			if (file.exists()) {
+				tempCourses = (ArrayList<Course>) deserialize(file.readBytes());
+			} else {
+				System.out.println(Gdx.files.getLocalStoragePath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return tempCourses;
+
+	}
+
+	// before version
+	// out = new ObjectOutputStream(new FileOutputStream("AllCourses.sav"));
+	// out.writeObject(courses);
+	// out.close();
+
+	
 
 	// WORKS!! DO NOT REMOVE!
 	// public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
