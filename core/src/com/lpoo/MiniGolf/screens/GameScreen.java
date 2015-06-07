@@ -596,7 +596,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 		} else if (keycode == Keys.S) {
 			
-			
 			actualPlayers.clear();
 			
 			for (Player p : players) {
