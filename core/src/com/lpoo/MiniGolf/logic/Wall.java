@@ -28,7 +28,7 @@ public class Wall extends Element {
 		super(type);
 
 		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
-
+		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 	}
 
 	public void createBody(World w) {
