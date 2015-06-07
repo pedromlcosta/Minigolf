@@ -71,6 +71,9 @@ public class Teleporter extends Element {
 	}
 
 	public void initializeImage() {
+		image = new Sprite(Assets.manager.get("teleporter.png", Texture.class));
+		destinationImage = new Sprite(Assets.manager.get("teleporterDestination.png", Texture.class));
+		
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);

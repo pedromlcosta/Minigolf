@@ -296,5 +296,6 @@ public class Element extends Actor implements Serializable {
 	public void draw2() {
 
 	}
+	
 
 }
