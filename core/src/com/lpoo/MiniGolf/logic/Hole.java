@@ -1,6 +1,7 @@
 package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -22,6 +23,7 @@ public class Hole extends Element {
 	public Hole() {
 		super();
 		image = new Sprite(Assets.manager.get("hole.png", Texture.class));
+		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 
 	}
 

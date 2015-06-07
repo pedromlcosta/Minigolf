@@ -15,7 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.lpoo.MiniGolf.geometry.Geometry;
+import com.lpoo.MiniGolf.screens.OptionsScreen;
 
 public class Element extends Actor implements Serializable {
 
@@ -33,8 +35,16 @@ public class Element extends Actor implements Serializable {
 	protected float width;
 	protected float height;
 	protected elementType type;
-
 	transient protected Sprite image;
+	private float angle;
+
+	public float getAngle() {
+		return angle;
+	}
+
+	public void setAngle(float angle) {
+		this.angle = angle;
+	}
 
 	public Element() {
 		startPos = new Vector2();
@@ -113,13 +123,21 @@ public class Element extends Actor implements Serializable {
 		this.setVisible(true);
 		this.setTouchable(Touchable.enabled);
 
-		this.addCaptureListener(new InputListener() {
+		this.addListener(new ClickListener() {
 			@Override
-			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
-				System.out.println("TOUCHED: " + type);
-				return false;
+			public void clicked(InputEvent event, float x, float y) {
+				System.out.println("CLICKED: " + type);
 			}
-
+			// this.addCaptureListener(new InputListener() {
+			// @Override
+			// public boolean touchDown(InputEvent Event, float posX, float
+			// posY, int arg2, int button) {
+			// System.out.println("TOUCHED: " + type);
+			// return false;
+			// }
+			//
+			//
+			// });
 		});
 	}
 
@@ -270,6 +288,10 @@ public class Element extends Actor implements Serializable {
 		this.setHeight(height);
 		this.setWidth(width);
 		this.createBody(MiniGolf.getW());
+	}
+
+	public void draw2() {
+		
 	}
 
 }

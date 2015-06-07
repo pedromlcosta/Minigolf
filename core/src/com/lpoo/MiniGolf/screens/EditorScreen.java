@@ -35,6 +35,7 @@ import com.lpoo.MiniGolf.logic.Floor;
 import com.lpoo.MiniGolf.logic.Hole;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 import com.lpoo.MiniGolf.logic.Teleporter;
+import com.lpoo.MiniGolf.logic.Wall;
 
 public class EditorScreen implements Screen {
 	private Skin skin;
@@ -70,15 +71,15 @@ public class EditorScreen implements Screen {
 		posInit = new Vector2();
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
-		elementToAdd = new Element(Element.elementType.ball);
+		elementToAdd = new Element(Element.elementType.acceleratorFloor);
 		// first value
 		// of drop
 		// down and
 		// default
 		// value for
 		// elementToAdd
-		pressedResetbutton = drawElement = pressedLeftButton = pressedRightButton = false;
-		changedItem = circleElement = true;
+		pressedResetbutton = circleElement = drawElement = pressedLeftButton = pressedRightButton = false;
+		changedItem = true;
 		createActors();
 		addListeners();
 
@@ -278,14 +279,17 @@ public class EditorScreen implements Screen {
 	// replaces the current elementToAdd with the one selected in the drop down
 	public void getElement(String selected) {
 		switch (selected) {
+		case "AcceleratorFloor":
+			elementToAdd = new Floor(Element.elementType.acceleratorFloor);
+			break;
 		case "Ball":
 			elementToAdd = new Element(Element.elementType.ball);
 			break;
 		case "BouncyWall":
-			elementToAdd = new Floor(Element.elementType.bouncyWall);
+			elementToAdd = new Wall(Element.elementType.bouncyWall);
 			break;
 		case "GlueWall":
-			elementToAdd = new Floor(Element.elementType.glueWall);
+			elementToAdd = new Wall(Element.elementType.glueWall);
 			break;
 		case "Hole":
 			elementToAdd = new Hole();
@@ -301,13 +305,14 @@ public class EditorScreen implements Screen {
 			elementToAdd = new Floor(elementType.waterFloor);
 			break;
 		case "RegularWall":
-			elementToAdd = new Floor(Element.elementType.regularWall);
+			elementToAdd = new Wall(Element.elementType.regularWall);
 			break;
 		case "SandFloor":
 			elementToAdd = new Floor(Element.elementType.sandFloor);
 			break;
 		case "Teleporter":
 			elementToAdd = new Teleporter(Element.elementType.teleporter);
+			elementToAdd.changeColor(nTeleporters + 1);
 			break;
 		case "VoidFloor":
 			elementToAdd = new Floor(Element.elementType.voidFloor);
@@ -343,7 +348,8 @@ public class EditorScreen implements Screen {
 		goBackButton.setHeight(BUTTON_HEIGHT);
 
 		selectElement = new SelectBox2<String>(skin);
-		selectElement.setItems(new String[] { "Ball", "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "SquareOne", "Teleporter", "VoidFloor" });
+		selectElement.setItems(new String[] { "AcceleratorFloor", "Ball", "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "SquareOne",
+				"Teleporter", "VoidFloor" });
 		selectElement.setMaxListCount(0);
 
 		// TODO ADD PLAYER STATUS TO GAME; CHANGE LETTER COLOR
@@ -448,19 +454,13 @@ public class EditorScreen implements Screen {
 
 			} else {
 
-				if (!circleElement)
-					elementToAdd.createElement(posInicialX, posInicialY, width, height);
+				elementToAdd.createElement(posInicialX, posInicialY, width, height);
 
 				if (notOverlapping()) {
+					if (elementToAdd.getType() == elementType.teleporter)
+						nTeleporters++;
 
-					if (elementToAdd.getType() != elementType.teleporter)
-						stage.addActor(elementToAdd);
-					else {
-						if (nTeleporters < 10) {
-							nTeleporters++;
-							stage.addActor(elementToAdd);
-						}
-					}
+					stage.addActor(elementToAdd);
 					this.created.addEle(elementToAdd);
 
 				} else {
@@ -519,6 +519,7 @@ public class EditorScreen implements Screen {
 
 			@Override
 			public void touchUp(InputEvent Event, float screenX, float screenY, int pointer, int button) {
+				System.out.println(screenX + "  " + screenY);
 				if (button == Buttons.LEFT && !pressedResetbutton) {
 
 					if (elementToAdd != null) {
@@ -540,6 +541,13 @@ public class EditorScreen implements Screen {
 					}
 					drawElement = true;
 					addElement();
+					return;
+				}
+
+				Actor obj = stage.hit(screenX, screenY, true);
+
+				if (obj instanceof Element) {
+					System.out.println("Rebelo Rocks");
 				}
 			}
 
@@ -553,6 +561,7 @@ public class EditorScreen implements Screen {
 
 			@Override
 			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
+
 				if (button == Buttons.LEFT && !pressedLeftButton) {
 					posInit.x = posX;
 					posInit.y = posY;
@@ -582,6 +591,7 @@ public class EditorScreen implements Screen {
 				}
 				return false;
 			}
+
 		});
 	}
 

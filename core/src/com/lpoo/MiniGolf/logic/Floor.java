@@ -38,7 +38,7 @@ public class Floor extends Element {
 		super(type);
 
 		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
-
+		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 	}
 
 	public void createBody(World w) {
@@ -52,9 +52,9 @@ public class Floor extends Element {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(startPos);
-
 		body = w.createBody(bodyDef);
 		body.createFixture(fixDef);
+		body.setTransform(startPos, 0);
 
 		switch (type) {
 		case grassFloor:
@@ -119,6 +119,11 @@ public class Floor extends Element {
 
 	public void decrementBallsIllusion() {
 		ballsInsideIllusion--;
+	}
+
+	public void draw2() {
+		image.draw(MiniGolf.batch);
+
 	}
 
 }
