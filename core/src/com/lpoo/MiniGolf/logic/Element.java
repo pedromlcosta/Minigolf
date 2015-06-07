@@ -2,10 +2,12 @@ package com.lpoo.MiniGolf.logic;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Shape;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.lpoo.MiniGolf.geometry.Geometry;
+import com.lpoo.MiniGolf.screens.EditorScreen;
 import com.lpoo.MiniGolf.screens.OptionsScreen;
 
 public class Element extends Actor implements Serializable {
@@ -64,23 +67,34 @@ public class Element extends Actor implements Serializable {
 
 	}
 
+	// TODO
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
 		if (touchable && this.getTouchable() != Touchable.enabled)
 			return null;
-		if (type == elementType.grassFloor)
+	
+		if (type == elementType.grassFloor) {
+			EditorScreen.middleMousebutton = false;
 			return null;
+		}
+
 		float newX = x / MiniGolf.BOX_TO_WORLD;
 		float newY = y / MiniGolf.BOX_TO_WORLD;
-		System.out.println(newX + "  " + newY + "   " + width + "   " + height);
 
-		if (newX >= 0 && newX < width && newY >= 0 && newY < height + startPos.y) {
-			System.out.println("TOUCHED: " + type);
-
-			return this;
-
-		} else
-			return null;
+		 
+		if (EditorScreen.middleMousebutton) {
+			if (newX >= (startPos.x - width / 2) && newX < startPos.x + width / 2 && newY >= (startPos.y - height / 2) && newY < (startPos.y + height / 2)) {
+				System.out.println("TOUCHED: " + type);
+				EditorScreen.removeFromArrayElement(this);
+				this.destroyBody();
+				this.remove();
+				EditorScreen.middleMousebutton = false;
+				return this;
+			} else {
+				return null;
+			}
+		}
+		return null;
 	}
 
 	public Element(Vector2 pos, float width, float height) {
@@ -311,9 +325,35 @@ public class Element extends Actor implements Serializable {
 		this.setWidth(width);
 		this.createBody(MiniGolf.getW());
 	}
-
-	public void draw2() {
-
-	}
-
+	// TODO
+	// if (touchable && this.getTouchable() != Touchable.enabled)
+	// return null;
+	// if (type == elementType.grassFloor)
+	// return null;
+	// float newX = x;
+	// float newY = y;
+	// // Vector3 pos = this.getStage().getCamera().project(new Vector3(x, y,
+	// // 0));
+	// // Vector2 coords = this.getStage().screenToStageCoordinates(new
+	// // Vector2(Gdx.input.getX(), Gdx.input.getY()));
+	// System.out.println(newX + "  " + newY + "   " + width + "   " + height);
+	//
+	// // this.getStage().stageToScreenCoordinates(coords);
+	// // Vector2 teste = this.getStage().getViewport().unproject(coords);
+	// // System.out.println(coords);
+	// // System.out.println(teste);
+	//
+	// float teste = (float) Math.sqrt(Math.pow(width, 2) + Math.pow(height,
+	// 2));
+	// if (x > (startPos.x +teste)* MiniGolf.BOX_TO_WORLD && x < startPos.x *
+	// MiniGolf.BOX_TO_WORLD + width * MiniGolf.BOX_TO_WORLD) {
+	//
+	// if (y > startPos.y * MiniGolf.BOX_TO_WORLD && y < startPos.y *
+	// MiniGolf.BOX_TO_WORLD + height * MiniGolf.BOX_TO_WORLD) {
+	// System.out.println("TOUCHED: " + type);
+	// return this;
+	// }
+	// } else
+	// return null;
+	// return null;
 }
