@@ -576,7 +576,8 @@ public class GameScreen implements Screen, InputProcessor {
 			currentCourseElements.get(i).createBody(w);
 			currentCourseElements.get(i).initializeImage();
 			if(currentCourseElements.get(i) instanceof Teleporter){
-				currentCourseElements.get(i).changeColor(teleporterCounter);
+				System.out.println("Changed color to nr." + teleporterColor.get(teleporterCounter));
+				currentCourseElements.get(i).changeColor(teleporterColor.get(teleporterCounter));
 				teleporterCounter++;
 				
 			}
@@ -601,6 +602,7 @@ public class GameScreen implements Screen, InputProcessor {
 	// InputProcessor Functions //
 	// ///////////////////////////////////////////
 
+	
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO borked don´t know enough of the way transitions between games
@@ -609,19 +611,20 @@ public class GameScreen implements Screen, InputProcessor {
 		if (keycode == Keys.ESCAPE) {
 
 			resetCourse(selectedCourses.get(courseIndex));
-			for (Player p : players) {
+			for (Player p : actualPlayers) {
 				p.getBall().destroyBody();
 			}
 			game.setScreen(new MenuScreen(game));
 
 		} else if (keycode == Keys.S) {
 			
-			actualPlayers.clear();
 			
-			for (Player p : players) {
+			
+			for (Player p : actualPlayers) {
 				if(p.getBallBody()!=null)
 				p.getBall().destroyBody();
 			}
+			actualPlayers.clear();
 		}
 		return false;
 	}

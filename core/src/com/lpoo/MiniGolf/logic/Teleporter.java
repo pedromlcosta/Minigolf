@@ -110,12 +110,12 @@ public class Teleporter extends Element {
 			image.setColor(Color.YELLOW);
 			break;
 		case 6:
-			destinationImage.setColor(Color.GRAY);
-			image.setColor(Color.GRAY);
+			destinationImage.setColor(Color.CYAN);
+			image.setColor(Color.CYAN);
 			break;
 		case 7:
-			destinationImage.setColor(Color.BLACK);
-			image.setColor(Color.BLACK);
+			destinationImage.setColor(Color.WHITE);
+			image.setColor(Color.WHITE);
 			break;
 		case 8:
 			destinationImage.setColor(Color.GREEN);
@@ -184,4 +184,5 @@ public class Teleporter extends Element {
 				* MiniGolf.BOX_TO_WORLD);
 
 	}
+
 }
