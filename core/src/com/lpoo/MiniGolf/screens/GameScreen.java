@@ -41,6 +41,8 @@ import com.lpoo.MiniGolf.logic.ElementType;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 import com.lpoo.MiniGolf.logic.Player;
 import com.lpoo.MiniGolf.logic.Teleporter;
+import com.lpoo.MiniGolf.geometry.*;
+
 
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
 public class GameScreen implements Screen, InputProcessor {
@@ -314,7 +316,7 @@ public class GameScreen implements Screen, InputProcessor {
 		// stage.dispose();
 	}
 
-	private void courseDraw() {
+	public void courseDraw() {
 		ArrayList<Element> courseElements = currentCourse.getElementos();
 
 		for (int i = 0; i < courseElements.size(); i++) {
@@ -336,7 +338,7 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
-	private void renderLine() {
+	public void renderLine() {
 
 		// RENDER A LINE BETWEEN MOUSE POSITION AND BALL
 		if (allBallsStopped) {
@@ -362,23 +364,23 @@ public class GameScreen implements Screen, InputProcessor {
 
 			// NORMAL MOUSE MODE
 			if (!invertedPointMode) {
-				if (inside(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
+				if (Geometry.insideCircle(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
 					shapeRenderer.rectLine(ball.x, ball.y, mouse.x, mouse.y, 5);
 				} else {
-					Vector2 intersection = intersectLineCircle(ball, mouse, PLAY_RADIUS);
+					Vector2 intersection = Geometry.intersectLineCircle(ball, mouse, PLAY_RADIUS);
 					shapeRenderer.rectLine(ball.x, ball.y, intersection.x, intersection.y, 5);
 				}
 
 			} else { // INVERTED MODE (RIGHT CLICK TO CHANGE)
 
 
-				if (inside(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
+				if (Geometry.insideCircle(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
 					shapeRenderer.rectLine(ballX, ballY, ballX + (ballX - mouseX), ballY + (ballY - mouseY), 5);
 					shapeRenderer.setColor(Color.RED);
 					shapeRenderer.end();
 					drawDottedLine(shapeRenderer, 10, ball.x, ball.y, mouse.x, mouse.y);
 				} else {
-					Vector2 intersection = intersectLineCircle(ball, mouse, PLAY_RADIUS);
+					Vector2 intersection = Geometry.intersectLineCircle(ball, mouse, PLAY_RADIUS);
 
 					shapeRenderer.rectLine(ballX, ballY, ballX - (intersection.x - ballX), ballY - (intersection.y - ballY), 5);
 					shapeRenderer.setColor(Color.RED);
@@ -397,7 +399,7 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
-	private void checkBallsStopped() {
+	public void checkBallsStopped() {
 		for (int i = 0; i < actualPlayers.size(); i++) {
 			if (actualPlayers.get(i).getBallSpeedLen() != 0) {
 				allBallsStopped = false;
@@ -413,21 +415,7 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
-	private boolean inside(float ballX, float ballY, float mouseX, float mouseY, float radius) {
-		return Geometry.distance(mouseX, mouseY, ballX, ballY) <= radius;
-
-	}
-
-	private Vector2 intersectLineCircle(Vector2 ball, Vector2 mouse, float radius) {
-
-		Vector2 ballToMouse = new Vector2(mouse.x - ball.x, mouse.y - ball.y);
-		float intersectPointX = ball.x + (ballToMouse.x / ballToMouse.len()) * radius;
-		float intersectPointY = ball.y + (ballToMouse.y / ballToMouse.len()) * radius;
-
-		return new Vector2(intersectPointX, intersectPointY);
-	}
-
-	private void dragHandler() {
+	public void dragHandler() {
 
 		for (int i = 0; i < actualPlayers.size(); i++) {
 
@@ -506,13 +494,13 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
-	private void checkFallenBalls() {
+	public void checkFallenBalls() {
 		for (int i = 0; i < actualPlayers.size(); i++) {
 			actualPlayers.get(i).getBall().checkElementsTouched();
 		}
 	}
 
-	private void updateCurrentPlayer() {
+	public void updateCurrentPlayer() {
 		ArrayList<Player> playerDecisionList = new ArrayList<Player>();
 
 		for (int i = 0; i < players.size(); i++) {
@@ -739,7 +727,7 @@ public class GameScreen implements Screen, InputProcessor {
 				// LIMITS FORCE AS IF MOUSE WERE ON RADIUS LIMIT
 				// Normalizes the vector (to have the direction) and multiplies
 				// by the radius
-				if (!inside(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
+				if (!Geometry.insideCircle(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
 					forceX = (forceX / force.len()) * (PLAY_RADIUS / BOX_TO_WORLD);
 					forceY = (forceY / force.len()) * (PLAY_RADIUS / BOX_TO_WORLD);
 				}

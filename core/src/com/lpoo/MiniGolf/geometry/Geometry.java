@@ -53,4 +53,18 @@ public class Geometry {
 		Rectangle r2 = new Rectangle(posSq2.x, posSq2.y, eleToBeAdded.getWidth(), eleToBeAdded.getHeight());
 		return r1.overlaps(r2);
 	}
+	
+	public static boolean insideCircle(float centerX, float centerY, float x, float y, float radius) {
+		return Geometry.distance(x, y, centerX, centerY) <= radius;
+
+	}
+	
+	public static Vector2 intersectLineCircle(Vector2 center, Vector2 point, float radius) {
+
+		Vector2 centerToPoint = new Vector2(point.x - center.x, point.y - center.y);
+		float intersectPointX = center.x + (centerToPoint.x / centerToPoint.len()) * radius;
+		float intersectPointY = center.y + (centerToPoint.y / centerToPoint.len()) * radius;
+
+		return new Vector2(intersectPointX, intersectPointY);
+	}
 }
