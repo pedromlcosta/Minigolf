@@ -83,13 +83,7 @@ public class Hole extends Element {
 		// image.draw(MiniGolf.batch);
 	}
 
-	@Override
-	public void draw(Batch batch, float parentAlfa) {
-
-		batch.draw(image, (body.getPosition().x - width / 2) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-				* MiniGolf.BOX_TO_WORLD);
-
-	}
+ 
 	
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get("hole.png", Texture.class));

@@ -2,12 +2,10 @@ package com.lpoo.MiniGolf.logic;
 
 import java.io.Serializable;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Shape;
@@ -20,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.lpoo.MiniGolf.geometry.Geometry;
 import com.lpoo.MiniGolf.screens.EditorScreen;
-import com.lpoo.MiniGolf.screens.OptionsScreen;
 
 public class Element extends Actor implements Serializable {
 
@@ -33,6 +30,7 @@ public class Element extends Actor implements Serializable {
 		nothing, hole, ball, glueWall, waterFloor, iceFloor, illusionWall, regularWall, sandFloor, bouncyWall, voidFloor, teleporter, acceleratorFloor, squareOne, grassFloor
 	};
 
+	private final float DEG_TO_RAD = (float) (180 / Math.PI);
 	transient protected Body body;
 	protected Vector2 startPos;
 	protected float width;
@@ -70,28 +68,38 @@ public class Element extends Actor implements Serializable {
 	// TODO
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
-		if (touchable && this.getTouchable() != Touchable.enabled)
-			return null;
-	
-		if (type == elementType.grassFloor) {
+		if ((touchable && this.getTouchable() != Touchable.enabled) || type == elementType.grassFloor) {
 			EditorScreen.middleMousebutton = false;
+			EditorScreen.rKeyPressed = false;
 			return null;
 		}
 
 		float newX = x / MiniGolf.BOX_TO_WORLD;
 		float newY = y / MiniGolf.BOX_TO_WORLD;
+		if (newX >= (startPos.x - width / 2) && newX < startPos.x + width / 2 && newY >= (startPos.y - height / 2) && newY < (startPos.y + height / 2)) {
+			if (EditorScreen.middleMousebutton) {
 
-		 
-		if (EditorScreen.middleMousebutton) {
-			if (newX >= (startPos.x - width / 2) && newX < startPos.x + width / 2 && newY >= (startPos.y - height / 2) && newY < (startPos.y + height / 2)) {
 				System.out.println("TOUCHED: " + type);
 				EditorScreen.removeFromArrayElement(this);
 				this.destroyBody();
 				this.remove();
 				EditorScreen.middleMousebutton = false;
 				return this;
-			} else {
-				return null;
+			} else if (type == elementType.acceleratorFloor) {
+				// System.out.println(type);
+				if (EditorScreen.rKeyPressed) {
+
+					System.out.println("Rotate");
+					Vector2 bodyPos = body.getPosition();
+					Float angle = body.getAngle() + (90 * DEG_TO_RAD);
+					angle = (float) (angle % (2 * Math.PI));
+
+					image.setOriginCenter();
+					image.rotate90(false);
+					body.setTransform(bodyPos.x, bodyPos.y, angle);
+					this.angle = angle;
+					EditorScreen.rKeyPressed = false;
+				}
 			}
 		}
 		return null;
@@ -211,13 +219,7 @@ public class Element extends Actor implements Serializable {
 
 	@Override
 	public void draw(Batch batch, float parentAlfa) {
-		// System.out.println("Walrus");
-		// System.out.println(body.getPosition().x + " " + body.getPosition().y
-		// + " " + width*MiniGolf.BOX_TO_WORLD + " " +
-		// height*MiniGolf.BOX_TO_WORLD);
-		// MiniGolf.batch.draw(image, body.getPosition().x,
-		// body.getPosition().y, width*MiniGolf.BOX_TO_WORLD ,
-		// height*MiniGolf.BOX_TO_WORLD );
+		image.draw(batch);
 	}
 
 	public Sprite getImage() {

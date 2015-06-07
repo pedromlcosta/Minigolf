@@ -97,13 +97,7 @@ public class Floor extends Element {
 		image.draw(MiniGolf.batch);
 	}
 
-	@Override
-	public void draw(Batch batch, float parentAlfa) {
-
-		batch.draw(image, (body.getPosition().x - width / 2) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-				* MiniGolf.BOX_TO_WORLD);
-
-	}
+ 
 
 	public int getBallsInsideIllusion() {
 		return ballsInsideIllusion;
@@ -121,11 +115,7 @@ public class Floor extends Element {
 		ballsInsideIllusion--;
 	}
 
-	public void draw2() {
-		image.draw(MiniGolf.batch);
-
-	}
-	
+ 
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
 		

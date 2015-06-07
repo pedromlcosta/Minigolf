@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -56,7 +57,7 @@ public class EditorScreen implements Screen {
 	private int nPlayersPlaced = 0;
 	private int nTeleporters = 0;
 	Floor grassFloor;
-	public static boolean middleMousebutton;
+	public static boolean middleMousebutton, rKeyPressed;
 
 	public EditorScreen(MiniGolf game) {
 		this.game = game;
@@ -310,7 +311,6 @@ public class EditorScreen implements Screen {
 			break;
 		case "Teleporter":
 			elementToAdd = new Teleporter(Element.elementType.teleporter);
-			elementToAdd.changeColor(nTeleporters + 1);
 			break;
 		case "VoidFloor":
 			elementToAdd = new Floor(Element.elementType.voidFloor);
@@ -447,6 +447,7 @@ public class EditorScreen implements Screen {
 
 			if (nTeleporters % 2 != 0 && elementToAdd.getType() == elementType.teleporter) {
 				elementToAdd.setDestination(new Vector2(posInicialX + width / 2, posInicialY + height / 2));
+				elementToAdd.changeColor(nTeleporters);
 				nTeleporters++;
 				getElement(selectElement.getSelected());
 
@@ -459,8 +460,8 @@ public class EditorScreen implements Screen {
 						nTeleporters++;
 
 					stage.addActor(elementToAdd);
-					this.created.addEle(elementToAdd);
-
+					created.addEle(elementToAdd);
+					elementToAdd.initializeImage();
 				} else {
 					elementToAdd.destroyBody();
 				}
@@ -490,9 +491,20 @@ public class EditorScreen implements Screen {
 	public void overrideStageListener() {
 
 		stage.addListener(new InputListener() {
+
+			@Override
+			public boolean keyUp(InputEvent event, int keycode) {
+				if (keycode == Keys.R) {
+					System.out.println("Left Shift Pressed");
+					rKeyPressed = true;
+				} else
+					rKeyPressed = false;
+
+				return true;
+			}
+
 			@Override
 			public void touchUp(InputEvent Event, float screenX, float screenY, int pointer, int button) {
-				System.out.println(screenX + "  " + screenY);
 				if (button == Buttons.LEFT && !pressedResetbutton) {
 
 					if (elementToAdd != null) {
@@ -517,15 +529,6 @@ public class EditorScreen implements Screen {
 					return;
 				}
 
-				Actor obj = stage.hit(screenX, screenY, false);
-
-				if (obj == null) {
-					System.out.println("null");
-				} else
-					System.out.println("OBJECT");
-				if (obj instanceof Element) {
-					System.out.println("Rebelo Rocks");
-				}
 			}
 
 			@Override
@@ -538,8 +541,11 @@ public class EditorScreen implements Screen {
 
 			@Override
 			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
+
 				middleMousebutton = false;
-				if (button == Buttons.MIDDLE) {
+				if (button == Buttons.BACK) {
+					System.out.println("BACK BUTTON");
+				} else if (button == Buttons.MIDDLE) {
 					middleMousebutton = true;
 					return false;
 				} else if (button == Buttons.LEFT && !pressedLeftButton) {
