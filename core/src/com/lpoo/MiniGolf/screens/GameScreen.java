@@ -399,7 +399,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 		for (int i = 0; i < courseElements.size(); i++) {
 			Element e = courseElements.get(i);
-			if (e.getType() != elementType.illusionWall)
 				e.draw();
 
 		}

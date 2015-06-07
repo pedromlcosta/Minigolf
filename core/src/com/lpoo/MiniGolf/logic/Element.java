@@ -187,7 +187,6 @@ public class Element extends Actor implements Serializable {
 		// height*MiniGolf.BOX_TO_WORLD );
 	}
 
-	
 	public Sprite getImage() {
 		return image;
 	}
@@ -274,6 +273,7 @@ public class Element extends Actor implements Serializable {
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		image.setOriginCenter();
 		image.setRotation(angle);
+		image.setAlpha(1);
 	}
 
 	public void setRadius(float holeRadius) {
@@ -294,7 +294,7 @@ public class Element extends Actor implements Serializable {
 	}
 
 	public void draw2() {
-		
+
 	}
 
 }

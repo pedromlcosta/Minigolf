@@ -20,7 +20,7 @@ public class Teleporter extends Element {
 	 */
 	private static final long serialVersionUID = 1L;
 	private float radius;
-	private Vector2 destination = new Vector2();
+	private Vector2 destination = new Vector2(1, 1);
 	private Sprite destinationImage;
 
 	public Teleporter() {
@@ -76,14 +76,14 @@ public class Teleporter extends Element {
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		image.setOriginCenter();
 		image.setRotation(angle);
-		
+
 		destinationImage.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		destinationImage.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
+		destinationImage.setPosition((destination.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (destination.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		destinationImage.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		destinationImage.setOriginCenter();
 		destinationImage.setRotation(angle);
 	}
-	
+
 	public void changeColor(int colorID) {
 		switch (colorID) {
 		case 1:
