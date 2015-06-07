@@ -66,11 +66,17 @@ public class Element extends Actor implements Serializable {
 
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
-		// if (touchable && this.getTouchable() != Touchable.enabled)
-		// return null;
-		System.out.println(x + "  " + y + "   " + width + "   " + height);
-		if (x >= 0 && x < width && y >= 0 && y < height) {
+		if (touchable && this.getTouchable() != Touchable.enabled)
+			return null;
+		if (type == elementType.grassFloor)
+			return null;
+		float newX = x / MiniGolf.BOX_TO_WORLD;
+		float newY = y / MiniGolf.BOX_TO_WORLD;
+		System.out.println(newX + "  " + newY + "   " + width + "   " + height);
+
+		if (newX >= 0 && newX < width && newY >= 0 && newY < height + startPos.y) {
 			System.out.println("TOUCHED: " + type);
+
 			return this;
 
 		} else

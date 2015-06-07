@@ -2,6 +2,7 @@ package com.lpoo.MiniGolf.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -67,6 +68,7 @@ public class OptionsScreen implements Screen {
 	private void createMenuElements() {
 
 		maxTimeSlider = new Slider(10f, 60f, 1f, false, skin);
+		maxTimeSlider.setValue(game.getTempoMax());
 		numberOfPlayers = new TextField("Number of Players", skin);
 		numberOfCourses = new TextField("Number of Courses", skin);
 
@@ -99,12 +101,15 @@ public class OptionsScreen implements Screen {
 		gameOptionsTable = new Table();
 
 		Label maxNameTimeLabel = new Label("Max Time:", skin);
-		maxTimeLabel = new Label("Time: 0", skin);
+		maxTimeLabel = new Label("Time: " + game.getTempoMax(), skin);
 
 		Label numberOfPlayersLabel = new Label(" Number Of Players: ", skin);
 		Label numberOfCoursesLabel = new Label(" Number Of Courses: ", skin);
 		Label spaceLabel = new Label("", skin);
-
+		numberOfCoursesLabel.setColor(Color.BLACK);
+		numberOfPlayersLabel.setColor(Color.BLACK);
+		maxNameTimeLabel.setColor(Color.BLACK);
+		maxTimeLabel.setColor(Color.BLACK);
 		gameOptionsTable.defaults().width(200);
 
 		gameOptionsTable.add(maxNameTimeLabel);
