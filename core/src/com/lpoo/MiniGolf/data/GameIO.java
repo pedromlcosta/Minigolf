@@ -108,22 +108,8 @@ public class GameIO {
 	}
 
 	public ArrayList<Course> loadAllIndividualCourses() throws ClassNotFoundException {
-		int i = 0;
-		try {
-			while (true) {
-				String fileName = "course" + i + ".sav";
-				File test = new File(fileName);
-				if (test.exists()) {
-					FileInputStream stuff = new FileInputStream(fileName);
-					in = new ObjectInputStream(stuff);
-					this.courses = (ArrayList<Course>) in.readObject();
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return courses;
+		return null;
+		
 
 	}
 

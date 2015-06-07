@@ -788,7 +788,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		stage.addActor(goBackButton);
 		stage.addActor(nextMapButton);
-
+addListeners();
 	}
 
 	private void addListeners() {
