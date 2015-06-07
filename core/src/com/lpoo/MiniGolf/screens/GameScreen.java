@@ -226,7 +226,9 @@ public class GameScreen implements Screen, InputProcessor {
 		stage.getViewport().setCamera(secondaryCamera);
 
 		selectedCourses = game.getSelectedCourses();
-		System.out.println("Selected Size: " + selectedCourses.size());
+		
+		
+		System.out.println("Selected Size: " + game.getSelectedCourses().size());
 		if (!selectedCourses.isEmpty()) {
 
 			initializePlayers(selectedCourses.get(courseIndex));
