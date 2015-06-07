@@ -21,7 +21,7 @@ public class Teleporter extends Element {
 	private static final long serialVersionUID = 1L;
 	private float radius;
 	private Vector2 destination = new Vector2(1, 1);
-	private Sprite destinationImage;
+	transient private Sprite destinationImage;
 
 	public Teleporter() {
 		super();
