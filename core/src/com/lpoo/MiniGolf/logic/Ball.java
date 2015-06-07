@@ -96,7 +96,7 @@ public class Ball extends Element {
 			ballUserData.readyToCheckEnd = true;
 			ballUserData.typeToCheck = obstacleUserData.type;
 
-			System.out.println("Begin Contact: " + ballUserData.type + " " + obstacleUserData.type);
+			//System.out.println("Begin Contact: " + ballUserData.type + " " + obstacleUserData.type);
 			steppingOn = obstacleUserData.type;
 			getBodyUserData().accel = obstacleUserData.accel;
 			onSpeedPad = false;
@@ -173,7 +173,7 @@ public class Ball extends Element {
 			if (obstacleUserData.type == Element.elementType.acceleratorFloor) {
 				onSpeedPad = false;
 			}
-			System.out.println("End Contact: " + ballUserData.type + " " + obstacleUserData.type);
+			//System.out.println("End Contact: " + ballUserData.type + " " + obstacleUserData.type);
 			// No inner sensor does anything particular to it when leaving yet
 		} else { // else if outerSensor
 

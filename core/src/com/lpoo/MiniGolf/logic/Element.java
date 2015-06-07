@@ -36,7 +36,7 @@ public class Element extends Actor implements Serializable {
 	protected float height;
 	protected elementType type;
 	transient protected Sprite image;
-	protected float angle = 0;
+	protected float angle = 0; //in radians
 
 	public float getAngle() {
 		return angle;
@@ -89,16 +89,18 @@ public class Element extends Actor implements Serializable {
 				if (EditorScreen.rKeyPressed) {
 
 					//TODO tentar converter angulo
-					System.out.println("Rotate");
 					Vector2 bodyPos = body.getPosition();
-					Float angle = body.getAngle() + (90 * Geometry.DEG_TO_RAD);
-					angle = (float) (angle % (2 * Math.PI));
+					
+					angle = body.getAngle() + (90 * Geometry.DEG_TO_RAD);
+					angle = (float) (angle % (2 * Math.PI)); //Between 0 and 2*pi
+					
+					//System.out.println("Angle to be inserted in body: " + angle + " and in deg: " + angle/Geometry.DEG_TO_RAD);
 					//TODO tentar converter angulo
 					image.setOriginCenter();
 					image.rotate90(false);
-					System.out.println(angle * 1 / Geometry.DEG_TO_RAD);
-					body.setTransform(bodyPos.x, bodyPos.y, angle * 1 / (Geometry.DEG_TO_RAD));
-					this.angle = angle;
+					//System.out.println(angle * 1 / Geometry.DEG_TO_RAD);
+					body.setTransform(bodyPos.x, bodyPos.y, angle);
+					//System.out.println("Body Angle After Transform: " +body.getAngle()+ " and in deg: " + body.getAngle()/Geometry.DEG_TO_RAD);
 					EditorScreen.rKeyPressed = false;
 				}
 			}
@@ -282,7 +284,7 @@ public class Element extends Actor implements Serializable {
 	}
 
 	public void createBody(World w) {
-		System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
+		//System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
 	}
 
 	public void destroyBody() {
@@ -294,7 +296,8 @@ public class Element extends Actor implements Serializable {
 		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		image.setOriginCenter();
-		image.setRotation(angle);
+		//System.out.println("INITIALIZING IMAGE, ANGLE IN RADS IS: " + angle + " AND IN DEG: " + angle/Geometry.DEG_TO_RAD);
+		image.setRotation(angle/Geometry.DEG_TO_RAD); // -> radians to degree
 		image.setAlpha(1);
 	}
 

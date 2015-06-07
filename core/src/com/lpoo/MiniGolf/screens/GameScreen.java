@@ -109,6 +109,8 @@ public class GameScreen implements Screen, InputProcessor {
 			Gdx.input.setInputProcessor(this);
 		}
 
+		
+		
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 
@@ -159,7 +161,6 @@ public class GameScreen implements Screen, InputProcessor {
 			if (!playerRemovalList.isEmpty())
 				removeBalls();
 		} else {
-			System.out.println(courseIndex);
 			// END OF COURSE
 			// System.out.println("Reseting Course nr. " + (courseIndex - 1));
 			// System.out.println("Derp");
@@ -174,7 +175,6 @@ public class GameScreen implements Screen, InputProcessor {
 				this.dispose();
 			} else {
 				// CHANGING COURSE
-				System.out.println("Reseting players from course nr." + courseIndex);
 				// resetPlayers takes the next course Index
 				resetPlayers(selectedCourses.get(courseIndex + 1));
 				resetCourse(selectedCourses.get(courseIndex));
@@ -227,7 +227,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 		selectedCourses = game.getSelectedCourses();
 
-		System.out.println("Selected Size: " + game.getSelectedCourses().size());
 		if (!selectedCourses.isEmpty()) {
 
 			initializePlayers(selectedCourses.get(courseIndex));
@@ -367,7 +366,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 			} else { // INVERTED MODE (RIGHT CLICK TO CHANGE)
 
-				System.out.println(mouseX + " " + mouseY + " " + ballX + " " + ballY + " " + PLAY_RADIUS);
 
 				if (inside(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
 					shapeRenderer.rectLine(ballX, ballY, ballX + (ballX - mouseX), ballY + (ballY - mouseY), 5);
@@ -486,6 +484,17 @@ public class GameScreen implements Screen, InputProcessor {
 					if (newXSpeed == 0f && newYSpeed == 0f) {
 						ball.setLastPos(ballBody.getPosition());
 					}
+				}else{
+//					float rad = (float) Math.atan2(newXSpeed, newYSpeed);
+//					Vector2 newVel = new Vector2((float)newXSpeed, (float)newYSpeed);
+//					System.out.println("The X speed is: " + currentPlayer.getBallBody().getLinearVelocity().x);
+//					System.out.println("The Y speed is: " + currentPlayer.getBallBody().getLinearVelocity().y);
+//					System.out.println("The total speed is: " + currentPlayer.getBallBody().getLinearVelocity().len());
+//					System.out.println("The angle of the speed is: " + ball.accelAngle);
+//					if (rad == ball.accelAngle && newVel.len() < 0.5f){
+//						newXSpeed = 0f;
+//						newYSpeed = 0f;
+//					}
 				}
 				ballBody.setLinearVelocity((float) newXSpeed, (float) newYSpeed);
 			}
@@ -587,7 +596,6 @@ public class GameScreen implements Screen, InputProcessor {
 
 		// Reseting the actual an current players
 		currentPlayer = players.get(0);
-		System.out.println("Current player reset to 0, with player id = " + currentPlayer.getPlayerID());
 		actualPlayers = players;
 	}
 
@@ -736,7 +744,7 @@ public class GameScreen implements Screen, InputProcessor {
 					forceY *= -1;
 				}
 				Vector2 forceTest = new Vector2(forceX, forceY);
-				System.out.println("Force lenght: " + forceTest.len());
+				//System.out.println("Force lenght: " + forceTest.len());
 
 				// (forceX/W_STEP) is as if the force where applied during 1
 				// second instead of 1/60 seconds

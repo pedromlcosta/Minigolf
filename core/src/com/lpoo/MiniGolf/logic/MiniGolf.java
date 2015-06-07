@@ -246,8 +246,8 @@ public class MiniGolf extends Game {
 		fixtureDef.shape = shape;
 		Body body = W.createBody(bodyDef);
 		Fixture fixt = body.createFixture(fixtureDef);
-		fixt.setRestitution(1.0f);
-		fixt.setFriction(1.0f);
+		fixt.setRestitution(0.8f);
+		fixt.setFriction(0.5f);
 	}
 
 	public Vector2 getEndPoint() {
@@ -304,6 +304,8 @@ public class MiniGolf extends Game {
 
 	public void randomCourses() {
  
+		if(allCourses.isEmpty())
+			return;
 		
 		selectedCourses.clear();
 		

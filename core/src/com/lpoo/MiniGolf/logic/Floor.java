@@ -57,7 +57,8 @@ public class Floor extends Element {
 		body = w.createBody(bodyDef);
 		body.createFixture(fixDef);
 		//TODO tentar converter angulo
-		body.setTransform(startPos, angle * 1 / Geometry.DEG_TO_RAD);
+	//	System.out.println("INITIALIZING BODY, ANGLE IN RADS IS: " + angle + " AND IN DEG: " + angle/Geometry.DEG_TO_RAD);
+		body.setTransform(startPos, angle);
 
 		switch (type) {
 		case grassFloor:
@@ -83,7 +84,7 @@ public class Floor extends Element {
 			break;
 		}
 
-		System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
+		//System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
 
 	}
 
@@ -120,7 +121,7 @@ public class Floor extends Element {
 		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
 
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
+		//image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		image.setOriginCenter();
 		//TODO tentar converter angulo
