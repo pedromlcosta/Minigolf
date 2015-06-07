@@ -92,6 +92,7 @@ public class GameScreen implements Screen, InputProcessor {
 	// SCREEN FUNCTIONS //
 	// ///////////////////////////////////////////
 
+	
 	@Override
 	public void render(float delta) {
 

@@ -184,6 +184,7 @@ public class MiniGolf extends Game {
 		// /// END OF TEST COURSE /////
 		// ///////////////////////////////////////////////////////////////////
 
+		
 		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
 		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
 		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT / BOX_TO_WORLD);
