@@ -146,7 +146,7 @@ public class EditorScreen implements Screen {
 					}
 
 					created.setNome("Course" + game.getSelectedCourses().size());
-					game.addToSelectedCourses(created);
+					game.addToAllCourses(created);
 					game.getLoadSave().saveIndividualCourse(created);
 					game.setScreen(new MenuScreen(game));
 				}

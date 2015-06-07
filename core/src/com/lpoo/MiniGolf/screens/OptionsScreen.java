@@ -100,10 +100,9 @@ public class OptionsScreen implements Screen {
 
 		Label maxNameTimeLabel = new Label("Max Time:", skin);
 		maxTimeLabel = new Label("Time: 0", skin);
-		Label maxNameTacadasLabel = new Label("Max Tacadas: ", skin);
 
 		Label numberOfPlayersLabel = new Label(" Number Of Players: ", skin);
-		Label numberOfCoursesLabel = new Label(" Number Of Courses: ", skin);
+		Label numberOfCoursesLabel = new Label(" Number Of Courses: " + MiniGolf.getNrCourses(), skin);
 		Label spaceLabel = new Label("", skin);
 
 		gameOptionsTable.defaults().width(200);
@@ -112,7 +111,6 @@ public class OptionsScreen implements Screen {
 		gameOptionsTable.add(maxTimeSlider);
 		gameOptionsTable.add(maxTimeLabel);
 		gameOptionsTable.add(spaceLabel);
-		gameOptionsTable.add(maxNameTacadasLabel);
 		gameOptionsTable.row();
 
 		gameOptionsTable.add(numberOfPlayersLabel);
@@ -181,7 +179,7 @@ public class OptionsScreen implements Screen {
 					return false;
 				}
 				// TODO change for MAX_COURSES
-				if (valor > game.getSelectedCourses().size() || valor <= 0)
+				if (valor > MiniGolf.getAllCourses().size() || valor <= 0)
 					return false;
 				else {
 					MiniGolf.setNrCourses(valor);

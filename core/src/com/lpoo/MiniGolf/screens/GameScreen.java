@@ -105,7 +105,7 @@ public class GameScreen implements Screen, InputProcessor {
 		//
 		// }
 		// }
-
+	
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 			// CURRENT COURSE RENDER CYCLE
@@ -192,7 +192,7 @@ public class GameScreen implements Screen, InputProcessor {
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 		score = new Table();
-
+		game.randomCourses();
 		stage.addListener(new InputListener() {
 
 			@Override
