@@ -2,8 +2,6 @@ package com.lpoo.MiniGolf.screens;
 
 import java.util.ArrayList;
 
-import javax.lang.model.util.Elements;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Screen;

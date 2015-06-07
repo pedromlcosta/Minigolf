@@ -10,9 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -32,8 +30,6 @@ public class OptionsScreen implements Screen {
 	private Stage stage;
 	private Slider maxTimeSlider;
 	private Label maxTimeLabel;
-	private Slider maxTacadasSlider;
-	private Label maxTacadasLabel;
 	private Sprite background;
 	private TextField numberOfPlayers;
 	private TextField numberOfCourses;
@@ -71,11 +67,8 @@ public class OptionsScreen implements Screen {
 	private void createMenuElements() {
 
 		maxTimeSlider = new Slider(10f, 60f, 1f, false, skin);
-		maxTacadasSlider = new Slider(1f, 30f, 1f, false, skin);
 		numberOfPlayers = new TextField("Number of Players", skin);
 		numberOfCourses = new TextField("Number of Courses", skin);
-
-		 
 
 		String[] newItems;
 		newItems = new String[game.getSelectedCourses().size()];
@@ -108,7 +101,6 @@ public class OptionsScreen implements Screen {
 		Label maxNameTimeLabel = new Label("Max Time:", skin);
 		maxTimeLabel = new Label("Time: 0", skin);
 		Label maxNameTacadasLabel = new Label("Max Tacadas: ", skin);
-		maxTacadasLabel = new Label(" Tacadas Max: ", skin);
 
 		Label numberOfPlayersLabel = new Label(" Number Of Players: ", skin);
 		Label numberOfCoursesLabel = new Label(" Number Of Courses: ", skin);
@@ -121,8 +113,6 @@ public class OptionsScreen implements Screen {
 		gameOptionsTable.add(maxTimeLabel);
 		gameOptionsTable.add(spaceLabel);
 		gameOptionsTable.add(maxNameTacadasLabel);
-		gameOptionsTable.add(maxTacadasSlider);
-		gameOptionsTable.add(maxTacadasLabel);
 		gameOptionsTable.row();
 
 		gameOptionsTable.add(numberOfPlayersLabel);
@@ -214,13 +204,6 @@ public class OptionsScreen implements Screen {
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				game.setTempoMax((int) maxTimeSlider.getValue());
 				maxTimeLabel.setText(new StringBuilder(" Time Max: " + (int) maxTimeSlider.getValue()));
-			}
-		});
-		maxTacadasSlider.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent arg0, Actor arg1) {
-				game.setTacadasMax((int) maxTacadasSlider.getValue());
-				maxTacadasLabel.setText(new StringBuilder(" Tacadas Max: " + (int) maxTacadasSlider.getValue()));
 			}
 		});
 
