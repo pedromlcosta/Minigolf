@@ -80,11 +80,16 @@ public class Teleporter extends Element {
 		image.setOriginCenter();
 		image.setRotation(angle);
 
+		initializeDestImage();
+	}
+
+	public void initializeDestImage() {
 		destinationImage.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		destinationImage.setPosition((destination.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (destination.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		destinationImage.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		destinationImage.setOriginCenter();
 		destinationImage.setRotation(angle);
+
 	}
 
 	public void changeColor(int colorID) {
@@ -199,10 +204,9 @@ public class Teleporter extends Element {
 		// * MiniGolf.BOX_TO_WORLD);
 
 	}
-	
-	public Sprite getDestinationImage(){
+
+	public Sprite getDestinationImage() {
 		return destinationImage;
 	}
-
 
 }
