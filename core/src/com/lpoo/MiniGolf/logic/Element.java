@@ -30,14 +30,13 @@ public class Element extends Actor implements Serializable {
 		nothing, hole, ball, glueWall, waterFloor, iceFloor, illusionWall, regularWall, sandFloor, bouncyWall, voidFloor, teleporter, acceleratorFloor, squareOne, grassFloor
 	};
 
-	private final float DEG_TO_RAD = (float) (180 / Math.PI);
 	transient protected Body body;
 	protected Vector2 startPos;
 	protected float width;
 	protected float height;
 	protected elementType type;
 	transient protected Sprite image;
-	protected float angle;
+	protected float angle = 0;
 
 	public float getAngle() {
 		return angle;
@@ -89,14 +88,16 @@ public class Element extends Actor implements Serializable {
 				// System.out.println(type);
 				if (EditorScreen.rKeyPressed) {
 
+					//TODO tentar converter angulo
 					System.out.println("Rotate");
 					Vector2 bodyPos = body.getPosition();
-					Float angle = body.getAngle() + (90 * DEG_TO_RAD);
+					Float angle = body.getAngle() + (90 * Geometry.DEG_TO_RAD);
 					angle = (float) (angle % (2 * Math.PI));
-
+					//TODO tentar converter angulo
 					image.setOriginCenter();
 					image.rotate90(false);
-					body.setTransform(bodyPos.x, bodyPos.y, angle);
+					System.out.println(angle * 1 / Geometry.DEG_TO_RAD);
+					body.setTransform(bodyPos.x, bodyPos.y, angle * 1 / (Geometry.DEG_TO_RAD));
 					this.angle = angle;
 					EditorScreen.rKeyPressed = false;
 				}
@@ -169,16 +170,7 @@ public class Element extends Actor implements Serializable {
 			public void clicked(InputEvent event, float x, float y) {
 				System.out.println("CLICKED: " + type);
 			}
-			// this.addCaptureListener(new InputListener() {
-			// @Override
-			// public boolean touchDown(InputEvent Event, float posX, float
-			// posY, int arg2, int button) {
-			// System.out.println("TOUCHED: " + type);
-			// return false;
-			// }
-			//
-			//
-			// });
+
 		});
 	}
 
@@ -208,13 +200,7 @@ public class Element extends Actor implements Serializable {
 	}
 
 	public void draw() {
-		// System.out.println("Walrus");
-		// System.out.println(body.getPosition().x + " " + body.getPosition().y
-		// + " " + width*MiniGolf.BOX_TO_WORLD + " " +
-		// height*MiniGolf.BOX_TO_WORLD);
-		// MiniGolf.batch.draw(image, body.getPosition().x,
-		// body.getPosition().y, width*MiniGolf.BOX_TO_WORLD ,
-		// height*MiniGolf.BOX_TO_WORLD );
+
 		image.draw(MiniGolf.batch);
 	}
 
@@ -328,40 +314,8 @@ public class Element extends Actor implements Serializable {
 		this.setWidth(width);
 		this.createBody(MiniGolf.getW());
 	}
-	// TODO
-	// if (touchable && this.getTouchable() != Touchable.enabled)
-	// return null;
-	// if (type == elementType.grassFloor)
-	// return null;
-	// float newX = x;
-	// float newY = y;
-	// // Vector3 pos = this.getStage().getCamera().project(new Vector3(x, y,
-	// // 0));
-	// // Vector2 coords = this.getStage().screenToStageCoordinates(new
-	// // Vector2(Gdx.input.getX(), Gdx.input.getY()));
-	// System.out.println(newX + "  " + newY + "   " + width + "   " + height);
-	//
-	// // this.getStage().stageToScreenCoordinates(coords);
-	// // Vector2 teste = this.getStage().getViewport().unproject(coords);
-	// // System.out.println(coords);
-	// // System.out.println(teste);
-	//
-	// float teste = (float) Math.sqrt(Math.pow(width, 2) + Math.pow(height,
-	// 2));
-	// if (x > (startPos.x +teste)* MiniGolf.BOX_TO_WORLD && x < startPos.x *
-	// MiniGolf.BOX_TO_WORLD + width * MiniGolf.BOX_TO_WORLD) {
-	//
-	// if (y > startPos.y * MiniGolf.BOX_TO_WORLD && y < startPos.y *
-	// MiniGolf.BOX_TO_WORLD + height * MiniGolf.BOX_TO_WORLD) {
-	// System.out.println("TOUCHED: " + type);
-	// return this;
-	// }
-	// } else
-	// return null;
-	// return null;
 
 	public void initializeDestImage() {
-		// TODO Auto-generated method stub
-		
+
 	}
 }

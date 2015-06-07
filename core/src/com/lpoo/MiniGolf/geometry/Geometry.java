@@ -10,6 +10,7 @@ import com.lpoo.MiniGolf.logic.Element;
 public class Geometry {
 
 	private final static float tolerance = 0.2f;
+	public static final float DEG_TO_RAD = (float) (Math.PI / 180);
 	public enum shapes {
 		 circle,line
 	};

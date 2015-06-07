@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.data.Assets;
+import com.lpoo.MiniGolf.geometry.Geometry;
 
 public class Floor extends Element {
 
@@ -52,9 +53,11 @@ public class Floor extends Element {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(startPos);
+
 		body = w.createBody(bodyDef);
 		body.createFixture(fixDef);
-		body.setTransform(startPos, 0);
+		//TODO tentar converter angulo
+		body.setTransform(startPos, angle * 1 / Geometry.DEG_TO_RAD);
 
 		switch (type) {
 		case grassFloor:
@@ -97,8 +100,6 @@ public class Floor extends Element {
 		image.draw(MiniGolf.batch);
 	}
 
- 
-
 	public int getBallsInsideIllusion() {
 		return ballsInsideIllusion;
 	}
@@ -115,15 +116,15 @@ public class Floor extends Element {
 		ballsInsideIllusion--;
 	}
 
- 
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
-		
+
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		image.setOriginCenter();
-		image.setRotation(angle);
+		//TODO tentar converter angulo
+		image.setRotation(angle * (1 / Geometry.DEG_TO_RAD));
 
 	}
 
