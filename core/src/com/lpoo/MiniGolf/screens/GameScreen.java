@@ -587,7 +587,6 @@ public class GameScreen implements Screen, InputProcessor {
 			game.setScreen(new MenuScreen(game));
 
 		} else if (keycode == Keys.S) {
-			// resetCourse(selectedCourses.get(courseIndex));
 			for (Player p : players) {
 				p.getBall().destroyBody();
 			}
@@ -727,16 +726,21 @@ public class GameScreen implements Screen, InputProcessor {
 
 	public void initializeButtons() {
 
+		Label temp = new Label("Press ESC to quit or S to skip track", skin);
+		temp.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		temp.setPosition(BUTTON_WIDTH * 2, MiniGolf.HEIGHT - BUTTON_HEIGHT);
+		temp.setColor(Color.BLACK);
 		goBackButton = new TextButton("Back", skin);
 		goBackButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		goBackButton.setPosition(BUTTON_WIDTH * 2, MiniGolf.HEIGHT - BUTTON_HEIGHT);
+		goBackButton.setPosition(BUTTON_WIDTH, MiniGolf.HEIGHT - BUTTON_HEIGHT);
 
 		nextMapButton = new TextButton("Skip Map", skin);
 		nextMapButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		nextMapButton.setPosition(BUTTON_WIDTH * 3, MiniGolf.HEIGHT - BUTTON_HEIGHT);
 
-		stage.addActor(goBackButton);
-		stage.addActor(nextMapButton);
+		stage.addActor(temp);
+		// stage.addActor(goBackButton);
+		// stage.addActor(nextMapButton);
 		addListeners();
 	}
 
