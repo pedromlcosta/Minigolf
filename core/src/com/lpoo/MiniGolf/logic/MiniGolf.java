@@ -2,6 +2,7 @@ package com.lpoo.MiniGolf.logic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -61,15 +62,15 @@ public class MiniGolf extends Game {
 		W = new World(new Vector2(0, 0), false);
 		W.setContinuousPhysics(true);
 		W.setWarmStarting(true);
-		
-		//LOADING MAPS
+
+		// LOADING MAPS
 		try {
 			allCourses = loadSave.loadAllIndividualCourses();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		this.setScreen(new LoadScreen(this));
 		// ///////////////////////////////////////////////////////////////////
 		// /// TEST COURSE /////
@@ -183,7 +184,7 @@ public class MiniGolf extends Game {
 		// ///////////////////////////////////////////////////////////////////
 
 		selectedCourses = allCourses;
-		
+
 		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
 		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
 		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT / BOX_TO_WORLD);
@@ -304,22 +305,31 @@ public class MiniGolf extends Game {
 	public void randomCourses() {
 
 		int size = allCourses.size();
-		int temp[] = new int[size];
-		int pick;
-
+		Integer temp[] = new Integer[size];
+		Integer pick;
+		if (selectedCourses != null)
+			selectedCourses.clear();
+		else
+			return;
 		System.out.println(size);
 		if (size == 0)
 			return;
+
+		System.out.println(nrCourses);
+		Random rand = new Random();
+
 		for (int i = 0; i < nrCourses;) {
 
-			pick = (int) (Math.random() % size);
+			pick = rand.nextInt(size);
 
 			if (!Arrays.asList(temp).contains(pick)) {
+				System.out.println("Pick: " + pick);
 				selectedCourses.add(allCourses.get(pick));
 				temp[i] = pick;
 				i++;
 			}
 		}
+		System.out.println("SELECTED COURSE: " + selectedCourses.size());
 	}
 
 	public static void setRandomCourse(boolean randomCourse) {

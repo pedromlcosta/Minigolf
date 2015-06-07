@@ -84,6 +84,8 @@ public class GameScreen implements Screen, InputProcessor {
 
 	public GameScreen(MiniGolf game) {
 		this.game = game;
+		
+		this.game.randomCourses();
 	}
 
 	// ///////////////////////////////////////////
@@ -105,9 +107,9 @@ public class GameScreen implements Screen, InputProcessor {
 		//
 		// }
 		// }
-	
-		
-		System.out.println("Player nr. " + currentPlayer.getPlayerID() +" has tacadas = " +currentPlayer.getTacadaTotal());
+
+		// System.out.println("Player nr. " + currentPlayer.getPlayerID() +
+		// " has tacadas = " + currentPlayer.getTacadaTotal());
 
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
@@ -116,8 +118,10 @@ public class GameScreen implements Screen, InputProcessor {
 			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
 
 			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped) {
-				//Didn't play in time -> still gets a "tacada added", to be fair
-				//Because the winner is the one with the less "tacadas" in the end
+				// Didn't play in time -> still gets a "tacada added", to be
+				// fair
+				// Because the winner is the one with the less "tacadas" in the
+				// end
 				currentPlayer.addTacadaTotal();
 				int playerID = currentPlayer.getPlayerID() - 1;
 				tacadas.get(playerID).setText("Tacadas: " + currentPlayer.getTacadaTotal());
@@ -200,7 +204,7 @@ public class GameScreen implements Screen, InputProcessor {
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 		score = new Table();
-		game.randomCourses();
+
 		stage.addListener(new InputListener() {
 
 			@Override
@@ -222,7 +226,7 @@ public class GameScreen implements Screen, InputProcessor {
 		stage.getViewport().setCamera(secondaryCamera);
 
 		selectedCourses = game.getSelectedCourses();
-		System.out.println("derp");
+		System.out.println("Selected Size: " + selectedCourses.size());
 		if (!selectedCourses.isEmpty()) {
 
 			initializePlayers(selectedCourses.get(courseIndex));
