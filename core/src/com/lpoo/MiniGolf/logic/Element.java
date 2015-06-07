@@ -215,6 +215,7 @@ public class Element extends Actor implements Serializable {
 		// MiniGolf.batch.draw(image, body.getPosition().x,
 		// body.getPosition().y, width*MiniGolf.BOX_TO_WORLD ,
 		// height*MiniGolf.BOX_TO_WORLD );
+		image.draw(MiniGolf.batch);
 	}
 
 	@Override

@@ -346,8 +346,8 @@ public class EditorScreen implements Screen {
 		goBackButton.setHeight(BUTTON_HEIGHT);
 
 		selectElement = new SelectBox2<String>(skin);
-		selectElement.setItems(new String[] { "AcceleratorFloor", "Ball", "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "SquareOne",
-				"Teleporter", "VoidFloor" });
+		selectElement.setItems(new String[] { "AcceleratorFloor", "Ball", "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "Teleporter",
+				"VoidFloor" });
 		selectElement.setMaxListCount(0);
 
 		// TODO ADD PLAYER STATUS TO GAME; CHANGE LETTER COLOR
@@ -447,7 +447,7 @@ public class EditorScreen implements Screen {
 
 			if (nTeleporters % 2 != 0 && elementToAdd.getType() == elementType.teleporter) {
 				elementToAdd.setDestination(new Vector2(posInicialX + width / 2, posInicialY + height / 2));
-				elementToAdd.changeColor(nTeleporters);
+				elementToAdd.changeColor(nTeleporters % 10);
 				nTeleporters++;
 				getElement(selectElement.getSelected());
 
