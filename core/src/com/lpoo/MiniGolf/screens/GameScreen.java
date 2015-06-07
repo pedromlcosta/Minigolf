@@ -529,7 +529,7 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public void resetPlayers(Course course) {
-
+	
 		// Restoring booleans and the body to each ball
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 			players.get(i).setOver(false);
@@ -594,10 +594,14 @@ public class GameScreen implements Screen, InputProcessor {
 			game.setScreen(new MenuScreen(game));
 
 		} else if (keycode == Keys.S) {
+			
+			
+			actualPlayers.clear();
+			
 			for (Player p : players) {
+				if(p.getBallBody()!=null)
 				p.getBall().destroyBody();
 			}
-			actualPlayers.clear();
 		}
 		return false;
 	}
@@ -753,21 +757,20 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private void addListeners() {
 
-		goBackButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				resetCourse(selectedCourses.get(courseIndex));
-				game.setScreen(new MenuScreen(game));
-			}
-		});
+//		goBackButton.addListener(new ClickListener() {
+//			@Override
+//			public void clicked(InputEvent event, float x, float y) {
+//				resetCourse(selectedCourses.get(courseIndex));
+//				game.setScreen(new MenuScreen(game));
+//			}
+//		});
 
-		nextMapButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				actualPlayers.clear();
-				resetCourse(selectedCourses.get(courseIndex));
-				game.setScreen(new MenuScreen(game));
-			}
-		});
+//		nextMapButton.addListener(new ClickListener() {
+//			@Override
+//			public void clicked(InputEvent event, float x, float y) {
+//				actualPlayers.clear();
+//				resetCourse(selectedCourses.get(courseIndex));
+//			}
+//		});
 	}
 }
