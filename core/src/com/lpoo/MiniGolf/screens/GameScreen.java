@@ -88,6 +88,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private Label playerID;
 	private ArrayList<Label> tacadas;
 	private boolean changeProcessor;
+	private Label timeLabel;
 
 	public GameScreen(MiniGolf game) {
 		this.game = game;
@@ -110,11 +111,12 @@ public class GameScreen implements Screen, InputProcessor {
 
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
-			
+
 			// CURRENT COURSE RENDER CYCLE
 
 			// TIME CHECK
 			elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
+			timeLabel.setText("Time Elapsed: " + elapsedTimeSeconds);
 			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped) {
 				// Didn't play in time -> still gets a "tacada added"
 				// Because the winner is the one with the less "tacadas"
@@ -123,7 +125,7 @@ public class GameScreen implements Screen, InputProcessor {
 				tacadas.get(playerID).setText("Tacadas: " + currentPlayer.getTacadaTotal());
 				updateCurrentPlayer();
 			}
-			
+
 			checkFallenBalls();
 
 			cam.update();
@@ -331,15 +333,15 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	private void renderLine() {
-		
+
 		// RENDER A LINE BETWEEN MOUSE POSITION AND BALL
 		if (allBallsStopped) {
 
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(Color.BLACK);
 			shapeRenderer.setProjectionMatrix(cam.combined);
-			
-			//GETTING PROPER VARIABLES
+
+			// GETTING PROPER VARIABLES
 			// Transforms mouse screen coordinates to camera World coordinates
 			// (using camera width and height)
 			Vector2 mouse = MiniGolf.viewport.unproject(new Vector2((float) Gdx.input.getX(), (float) Gdx.input.getY()));
@@ -352,8 +354,8 @@ public class GameScreen implements Screen, InputProcessor {
 			float ballX = currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD;
 			float ballY = currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD;
 
-			//DRAWING PLAY LINE
-			
+			// DRAWING PLAY LINE
+
 			// NORMAL MOUSE MODE
 			if (!invertedPointMode) {
 				if (inside(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
@@ -366,24 +368,24 @@ public class GameScreen implements Screen, InputProcessor {
 			} else { // INVERTED MODE (RIGHT CLICK TO CHANGE)
 
 				System.out.println(mouseX + " " + mouseY + " " + ballX + " " + ballY + " " + PLAY_RADIUS);
-				
+
 				if (inside(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
 					shapeRenderer.rectLine(ballX, ballY, ballX + (ballX - mouseX), ballY + (ballY - mouseY), 5);
 					shapeRenderer.setColor(Color.RED);
 					shapeRenderer.end();
-					drawDottedLine(shapeRenderer,10, ball.x, ball.y, mouse.x, mouse.y );
+					drawDottedLine(shapeRenderer, 10, ball.x, ball.y, mouse.x, mouse.y);
 				} else {
 					Vector2 intersection = intersectLineCircle(ball, mouse, PLAY_RADIUS);
-					
-					shapeRenderer.rectLine(ballX, ballY, ballX - (intersection.x - ballX),  ballY - (intersection.y - ballY), 5);
+
+					shapeRenderer.rectLine(ballX, ballY, ballX - (intersection.x - ballX), ballY - (intersection.y - ballY), 5);
 					shapeRenderer.setColor(Color.RED);
 					shapeRenderer.end();
-					drawDottedLine(shapeRenderer,10, ball.x, ball.y, intersection.x, intersection.y );
-					
+					drawDottedLine(shapeRenderer, 10, ball.x, ball.y, intersection.x, intersection.y);
+
 				}
 			}
 
-			//DRAWING RADIUS CIRCLE
+			// DRAWING RADIUS CIRCLE
 			shapeRenderer.end();
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.BLACK);
@@ -608,7 +610,7 @@ public class GameScreen implements Screen, InputProcessor {
 			currentCourseElements.get(i).initializeImage();
 			if (currentCourseElements.get(i) instanceof Teleporter) {
 				Teleporter tele1 = (Teleporter) currentCourseElements.get(i);
-				System.out.println("Teleporter with destination: " + tele1.getDestination().x + " " +tele1.getDestination().y);
+				System.out.println("Teleporter with destination: " + tele1.getDestination().x + " " + tele1.getDestination().y);
 				System.out.println("Changed color to nr." + teleporterColor.get(teleporterCounter));
 				currentCourseElements.get(i).changeColor(teleporterColor.get(teleporterCounter));
 				teleporterCounter++;
@@ -804,8 +806,12 @@ public class GameScreen implements Screen, InputProcessor {
 
 	}
 
+	// TODO
 	public void initializeButtons() {
-
+		timeLabel = new Label("Time Elapsed: ", skin);
+		timeLabel.setColor(Color.BLACK);
+		timeLabel.setPosition(BUTTON_WIDTH * 2, (float) (MiniGolf.HEIGHT - BUTTON_HEIGHT*1.5));
+		
 		Label temp = new Label("Press ESC to quit or S to skip track", skin);
 		temp.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		temp.setPosition(BUTTON_WIDTH * 2, MiniGolf.HEIGHT - BUTTON_HEIGHT);
@@ -818,6 +824,7 @@ public class GameScreen implements Screen, InputProcessor {
 		nextMapButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		nextMapButton.setPosition(BUTTON_WIDTH * 3, MiniGolf.HEIGHT - BUTTON_HEIGHT);
 
+		stage.addActor(timeLabel);
 		stage.addActor(temp);
 		// stage.addActor(goBackButton);
 		// stage.addActor(nextMapButton);
@@ -844,16 +851,16 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	private void drawDottedLine(ShapeRenderer shapeRenderer, float dotDist, float x1, float y1, float x2, float y2) {
-	    
+
 		shapeRenderer.begin(ShapeType.Filled);
-		
-	    Vector2 vec2 = new Vector2(x2, y2).sub(new Vector2(x1, y1));
-	    float length = vec2.len();
-	    for(int i = 0; i < length; i += dotDist) {
-	        vec2.clamp(length - i, length - i);
-	       // shapeRenderer.point(x1 + vec2.x, y1 + vec2.y, 0);
-	        shapeRenderer.rectLine(x1 + vec2.x, y1 + vec2.y, x1 + vec2.x+ dotDist/2, y1 + vec2.y, 5);
-	    }
+
+		Vector2 vec2 = new Vector2(x2, y2).sub(new Vector2(x1, y1));
+		float length = vec2.len();
+		for (int i = 0; i < length; i += dotDist) {
+			vec2.clamp(length - i, length - i);
+			// shapeRenderer.point(x1 + vec2.x, y1 + vec2.y, 0);
+			shapeRenderer.rectLine(x1 + vec2.x, y1 + vec2.y, x1 + vec2.x + dotDist / 2, y1 + vec2.y, 5);
+		}
 
 	}
 }

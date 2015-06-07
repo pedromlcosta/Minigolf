@@ -148,7 +148,7 @@ public class EditorScreen implements Screen {
 						ele.destroyBody();
 					}
 
-					created.setNome("Course" + game.getSelectedCourses().size());
+					created.setNome("Course" + MiniGolf.getAllCourses().size());
 					game.addToAllCourses(created);
 					game.getLoadSave().saveIndividualCourse(created);
 					game.setScreen(new MenuScreen(game));
