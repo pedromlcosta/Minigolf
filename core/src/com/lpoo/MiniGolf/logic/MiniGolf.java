@@ -302,13 +302,7 @@ public class MiniGolf extends Game {
 	}
 
 	public void randomCourses() {
-
-		// Reset selected Courses
-		selectedCourses.clear();
-
-		if (allCourses.isEmpty())
-			return;
-
+ 
 		//Shuffling all the courses
 		ArrayList<Course> randomCourses = (ArrayList<Course>) allCourses.clone();
 		Collections.shuffle(randomCourses);
@@ -316,6 +310,7 @@ public class MiniGolf extends Game {
 		//Adding to selectedCourses only the first "nrCourses" courses of the shuffled array
 		for(int i = 0 ; i < nrCourses; i++){
 			selectedCourses.add(randomCourses.get(i));
+ 
 		}
 
 	}

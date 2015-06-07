@@ -64,6 +64,19 @@ public class Element extends Actor implements Serializable {
 
 	}
 
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		// if (touchable && this.getTouchable() != Touchable.enabled)
+		// return null;
+		System.out.println(x + "  " + y + "   " + width + "   " + height);
+		if (x >= 0 && x < width && y >= 0 && y < height) {
+			System.out.println("TOUCHED: " + type);
+			return this;
+
+		} else
+			return null;
+	}
+
 	public Element(Vector2 pos, float width, float height) {
 		this.startPos = pos;
 		this.width = width;
@@ -296,6 +309,5 @@ public class Element extends Actor implements Serializable {
 	public void draw2() {
 
 	}
-	
 
 }
