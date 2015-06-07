@@ -1,6 +1,8 @@
 package com.lpoo.MiniGolf.screens;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -36,6 +38,7 @@ import com.lpoo.MiniGolf.logic.Element;
 import com.lpoo.MiniGolf.logic.ElementType;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 import com.lpoo.MiniGolf.logic.Player;
+import com.lpoo.MiniGolf.logic.Teleporter;
 
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
 public class GameScreen implements Screen, InputProcessor {
@@ -558,6 +561,10 @@ public class GameScreen implements Screen, InputProcessor {
 	@SuppressWarnings("unchecked")
 	public void initializeCourse(Course course) {
 
+		ArrayList<Integer> teleporterColor = new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10));
+		Collections.shuffle(teleporterColor);
+		int teleporterCounter = 0;
+		
 		// Sets current course
 		currentCourse = course;
 
@@ -568,6 +575,10 @@ public class GameScreen implements Screen, InputProcessor {
 			// Creates this elements body -> gives form to it
 			currentCourseElements.get(i).createBody(w);
 			currentCourseElements.get(i).initializeImage();
+			if(currentCourseElements.get(i) instanceof Teleporter){
+				currentCourseElements.get(i).changeColor(teleporterCounter);
+				teleporterCounter++;
+			}
 
 		}
 
@@ -781,4 +792,5 @@ public class GameScreen implements Screen, InputProcessor {
 //			}
 //		});
 	}
+
 }

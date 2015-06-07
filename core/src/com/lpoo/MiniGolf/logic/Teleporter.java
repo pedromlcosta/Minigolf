@@ -94,22 +94,40 @@ public class Teleporter extends Element {
 			image.setColor(Color.ORANGE);
 			break;
 		case 2:
+			destinationImage.setColor(Color.BLUE);
+			image.setColor(Color.BLUE);
 			break;
 		case 3:
+			destinationImage.setColor(Color.RED);
+			image.setColor(Color.RED);
 			break;
 		case 4:
+			destinationImage.setColor(Color.PINK);
+			image.setColor(Color.PINK);
 			break;
 		case 5:
+			destinationImage.setColor(Color.YELLOW);
+			image.setColor(Color.YELLOW);
 			break;
 		case 6:
+			destinationImage.setColor(Color.GRAY);
+			image.setColor(Color.GRAY);
 			break;
 		case 7:
+			destinationImage.setColor(Color.BLACK);
+			image.setColor(Color.BLACK);
 			break;
 		case 8:
+			destinationImage.setColor(Color.GREEN);
+			image.setColor(Color.GREEN);
 			break;
 		case 9:
+			destinationImage.setColor(Color.TEAL);
+			image.setColor(Color.TEAL);
 			break;
 		case 10:
+			destinationImage.setColor(Color.MAROON);
+			image.setColor(Color.MAROON);
 			break;
 		default:
 			break;

@@ -304,6 +304,8 @@ public class MiniGolf extends Game {
 
 	public void randomCourses() {
  
+		selectedCourses.clear();
+		
 		//Shuffling all the courses
 		ArrayList<Course> randomCourses = (ArrayList<Course>) allCourses.clone();
 		Collections.shuffle(randomCourses);
