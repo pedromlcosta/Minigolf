@@ -121,7 +121,7 @@ public class Floor extends Element {
 		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
 
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		//image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
+		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		image.setOriginCenter();
 		//TODO tentar converter angulo
