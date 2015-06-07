@@ -1,11 +1,5 @@
 package com.lpoo.MiniGolf.screens;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -102,9 +96,10 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		ElementType element;
 		stage.act(delta);
 		stage.draw();
-		ElementType element;
+		
 
 		// if (currentPlayer.getBallBody() != null) {
 		// if ((element = (ElementType)
@@ -180,7 +175,7 @@ public class GameScreen implements Screen, InputProcessor {
 				courseIndex++;
 			}
 		}
-		stage.draw();
+		
 	}
 
 	@Override
