@@ -1,6 +1,7 @@
 package com.lpoo.MiniGolf.logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,7 +29,7 @@ public class MiniGolf extends Game {
 	private ArrayList<Course> selectedCourses = new ArrayList<Course>();
 	private static ArrayList<Course> allCourses = new ArrayList<Course>();
 
-	private static int nrCourses = 2;
+	private static int nrCourses = 1;
 	public static final int MAX_PLAYERS = 4;
 
 	private static boolean randomCourse;
@@ -298,6 +299,27 @@ public class MiniGolf extends Game {
 
 	public static boolean isRandomCourse() {
 		return randomCourse;
+	}
+
+	public void randomCourses() {
+
+		int size = allCourses.size();
+		int temp[] = new int[size];
+		int pick;
+
+		System.out.println(size);
+		if (size == 0)
+			return;
+		for (int i = 0; i < nrCourses;) {
+
+			pick = (int) (Math.random() % size);
+
+			if (!Arrays.asList(temp).contains(pick)) {
+				selectedCourses.add(allCourses.get(pick));
+				temp[i] = pick;
+				i++;
+			}
+		}
 	}
 
 	public static void setRandomCourse(boolean randomCourse) {

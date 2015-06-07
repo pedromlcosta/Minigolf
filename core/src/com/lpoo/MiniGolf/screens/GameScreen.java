@@ -105,6 +105,7 @@ public class GameScreen implements Screen, InputProcessor {
 		//
 		// }
 		// }
+	
 		
 		System.out.println("Player nr. " + currentPlayer.getPlayerID() +" has tacadas = " +currentPlayer.getTacadaTotal());
 
@@ -199,7 +200,7 @@ public class GameScreen implements Screen, InputProcessor {
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
 		score = new Table();
-
+		game.randomCourses();
 		stage.addListener(new InputListener() {
 
 			@Override
