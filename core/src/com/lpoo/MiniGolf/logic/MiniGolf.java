@@ -1,5 +1,8 @@
 package com.lpoo.MiniGolf.logic;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Game;
@@ -14,7 +17,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.data.GameIO;
+import com.lpoo.MiniGolf.logic.Element.elementType;
 import com.lpoo.MiniGolf.screens.LoadScreen;
 
 public class MiniGolf extends Game {
@@ -65,7 +70,7 @@ public class MiniGolf extends Game {
 		// /// TEST COURSE /////
 		// ///////////////////////////////////////////////////////////////////
 
-		// Course 1
+//		// Course 1
 //		while (!Assets.update()) {
 //		}
 //		Course Course1 = new Course();
@@ -136,12 +141,21 @@ public class MiniGolf extends Game {
 //		addToAllCourses(Course2);
 //		addToSelectedCourses(Course1);
 //		addToSelectedCourses(Course2);
-//
-//		// io.saveAllCourses(allCourses);
-//
-//		// ///////////////////////////////////////////////////////////////////
-//		// /// END OF TEST COURSE /////
-//		// ///////////////////////////////////////////////////////////////////
+
+//		try {
+//			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("AllCourses.sav"));
+//			out.writeObject(selectedCourses);
+//			out.close();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			System.out.println("huehue");
+//		}
+		
+
+		// ///////////////////////////////////////////////////////////////////
+		// /// END OF TEST COURSE /////
+		// ///////////////////////////////////////////////////////////////////
 
 		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
 		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);

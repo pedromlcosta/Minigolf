@@ -1,5 +1,11 @@
 package com.lpoo.MiniGolf.screens;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
@@ -34,6 +40,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.lpoo.MiniGolf.data.GameIO;
 import com.lpoo.MiniGolf.logic.*;
 import com.lpoo.MiniGolf.logic.Element.elementType;
 
@@ -55,7 +62,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private ShapeRenderer shapeRenderer;
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.cam;
-	
+
 	private TextButton goBackButton, nextMapButton;
 	private static final float BUTTON_WIDTH = 200f;
 	private static final float BUTTON_HEIGHT = 50f;
@@ -80,7 +87,6 @@ public class GameScreen implements Screen, InputProcessor {
 	boolean invertedPointMode = false;
 	private Label playerID;
 	private ArrayList<Label> tacadas;
-
 	public GameScreen(MiniGolf game) {
 		this.game = game;
 	}
@@ -152,7 +158,7 @@ public class GameScreen implements Screen, InputProcessor {
 			// END OF COURSE
 			// System.out.println("Reseting Course nr. " + (courseIndex - 1));
 			// System.out.println("Derp");
-			if (courseIndex == selectedCourses.size()-1) {
+			if (courseIndex == selectedCourses.size() - 1) {
 				// WAS THE LAST COURSE - ENDING GAME
 				// resetPlayers();
 				if (selectedCourses.isEmpty())
@@ -164,10 +170,10 @@ public class GameScreen implements Screen, InputProcessor {
 			} else {
 				// CHANGING COURSE
 				System.out.println("Reseting players from course nr." + courseIndex);
-				//resetPlayers takes the next course Index
-				resetPlayers(selectedCourses.get(courseIndex+1));
+				// resetPlayers takes the next course Index
+				resetPlayers(selectedCourses.get(courseIndex + 1));
 				resetCourse(selectedCourses.get(courseIndex));
-				initializeCourse(selectedCourses.get(courseIndex+1));
+				initializeCourse(selectedCourses.get(courseIndex + 1));
 
 				// System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
@@ -197,79 +203,160 @@ public class GameScreen implements Screen, InputProcessor {
 		// ///////////////////////////////////////////////////////////////////
 
 		// Course 1
+//
+//		 Course Course1 = new Course();
+//		 Course1.setNome("Course 1");
+//		
+//		 Vector2 pos1 = new Vector2(1.0f, 1.0f);
+//		 Vector2 pos2 = new Vector2(2.0f, 2.0f);
+//		 Vector2 pos3 = new Vector2(3.0f, 3.0f);
+//		 Vector2 pos4 = new Vector2(4.0f, 4.0f);
+//		
+//		 Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
+//		 (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT /
+//		 BOX_TO_WORLD, elementType.grassFloor);
+//		
+//		 Hole hole1 = new Hole(new Vector2(5f, 5f), 0.3f);
+//		
+//		 Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 12f / BOX_TO_WORLD),
+//		 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT
+//		 / 2f / BOX_TO_WORLD, elementType.sandFloor);
+//		
+//		 Floor water1 = new Floor(new Vector2(7 * (WIDTH / 12f /
+//		 BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f /
+//		 BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.waterFloor);
+//		
+//		 Wall glue1 = new Wall(new Vector2(5 * (WIDTH / 12f / BOX_TO_WORLD), 9
+//		 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT /
+//		 2f / BOX_TO_WORLD, elementType.glueWall);
+//		
+//		 Floor void1 = new Floor(new Vector2(9 * (WIDTH / 12f / BOX_TO_WORLD),
+//		 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT
+//		 / 2f / BOX_TO_WORLD, elementType.voidFloor);
+//		
+//		 Floor illusion1 = new Floor(new Vector2(11 * (WIDTH / 12f /
+//		 BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f /
+//		 BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
+//		
+//		 Floor accel1 = new Floor(new Vector2(1 * (WIDTH / 12f /
+//		 BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f /
+//		 BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD,
+//		 elementType.acceleratorFloor);
+//		
+//		 Teleporter teleporter1 = new Teleporter(new Vector2(7f, 5f), new
+//		 Vector2(7f, 3f), 0.3f, 1);
+//		
+//		 // Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f /
+//		 // BOX_TO_WORLD),
+//		 // 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+//		 // HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
+//		
+//		 Course1.addEle(grass1);
+//		 Course1.addEle(accel1);
+//		 Course1.addEle(glue1);
+//		 Course1.addEle(hole1);
+//		 Course1.addEle(void1);
+//		 Course1.addEle(water1);
+//		 Course1.addEle(sand1);
+//		 Course1.addEle(illusion1);
+//		 Course1.addEle(teleporter1);
+//		 Course1.addPosition(pos1);
+//		 Course1.addPosition(pos2);
+//		 Course1.addPosition(pos3);
+//		 Course1.addPosition(pos4);
+//		
+//		 // Course 2
+//		 Course Course2 = new Course();
+//		 Course2.setNome("Course 2");
+//		 Vector2 pos5 = new Vector2(1.0f, 2.0f);
+//		 Vector2 pos6 = new Vector2(2.0f, 3.0f);
+//		 Vector2 pos7 = new Vector2(3.0f, 4.0f);
+//		 Vector2 pos8 = new Vector2(4.0f, 5.0f);
+//		 Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
+//		 (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT /
+//		 BOX_TO_WORLD, elementType.grassFloor);
+//		 Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
+//		 1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT
+//		 / 2f / BOX_TO_WORLD, elementType.sandFloor);
+//		 Hole hole2 = new Hole(new Vector2(7f, 7f), 0.3f);
+//		 Course2.addEle(grass2);
+//		 Course2.addEle(sand2);
+//		 Course2.addEle(hole2);
+//		 Course2.addPosition(pos5);
+//		 Course2.addPosition(pos6);
+//		 Course2.addPosition(pos7);
+//		 Course2.addPosition(pos8);
+//		 //
+//		 // // Adding to all and selected
+//		 game.addToAllCourses(Course1);
+//		 game.addToAllCourses(Course2);
+//		 game.addToSelectedCourses(Course1);
+//		 game.addToSelectedCourses(Course2);
 
-		Course Course1 = new Course();
-		Course1.setNome("Course 1");
-
-		Vector2 pos1 = new Vector2(1.0f, 1.0f);
-		Vector2 pos2 = new Vector2(2.0f, 2.0f);
-		Vector2 pos3 = new Vector2(3.0f, 3.0f);
-		Vector2 pos4 = new Vector2(4.0f, 4.0f);
-
-		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
-
-		Hole hole1 = new Hole(new Vector2(5f, 5f), 0.3f);
-
-		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
-
-		Floor water1 = new Floor(new Vector2(7 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.waterFloor);
-
-		Wall glue1 = new Wall(new Vector2(5 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.glueWall);
-
-		Floor void1 = new Floor(new Vector2(9 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.voidFloor);
-
-		Floor illusion1 = new Floor(new Vector2(11 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
-
-		Floor accel1 = new Floor(new Vector2(1 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.acceleratorFloor);
-
-		Teleporter teleporter1 = new Teleporter(new Vector2(7f, 5f), new Vector2(7f, 3f), 0.3f, 1);
-
-		// Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f /
-		// BOX_TO_WORLD),
-		// 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-		// HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
-
-		Course1.addEle(grass1);
-		Course1.addEle(accel1);
-		Course1.addEle(glue1);
-		Course1.addEle(hole1);
-		Course1.addEle(void1);
-		Course1.addEle(water1);
-		Course1.addEle(sand1);
-		Course1.addEle(illusion1);
-		Course1.addEle(teleporter1);
-		Course1.addPosition(pos1);
-		Course1.addPosition(pos2);
-		Course1.addPosition(pos3);
-		Course1.addPosition(pos4);
-
-		// Course 2
-		Course Course2 = new Course();
-		Course2.setNome("Course 2");
-		Vector2 pos5 = new Vector2(1.0f, 2.0f);
-		Vector2 pos6 = new Vector2(2.0f, 3.0f);
-		Vector2 pos7 = new Vector2(3.0f, 4.0f);
-		Vector2 pos8 = new Vector2(4.0f, 5.0f);
-		Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
-		Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD), 1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
-		Hole hole2 = new Hole(new Vector2(7f, 7f), 0.3f);
-		Course2.addEle(grass2);
-		Course2.addEle(sand2);
-		Course2.addEle(hole2);
-		Course2.addPosition(pos5);
-		Course2.addPosition(pos6);
-		Course2.addPosition(pos7);
-		Course2.addPosition(pos8);
+		// GameIO saveGame = new GameIO();
+		// //saveGame.saveAllCourses(selectedCourses);
+		// try {
+		// selectedCourses = saveGame.loadAllCourses();
+		// } catch (ClassNotFoundException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 		//
-		// // Adding to all and selected
-		game.addToAllCourses(Course1);
-		game.addToAllCourses(Course2);
-		game.addToSelectedCourses(Course1);
-		game.addToSelectedCourses(Course2);
+		
+		
+		 //CREATE SAVE DIRECTORY
+//		File save_dir = new File("saved_courses");
+//		// if the directory does not exist, create it
+//		if (!save_dir.exists()) {
+//			try {
+//				save_dir.mkdir();
+//			} catch (SecurityException se) {
+//				// No permissions to create folder
+//			}
+//		}
+////		
+//		for(int i = 0; i < game.getSelectedCourses().size(); i++){
+//			try {
+//				// Serializing data object to a file
+//				ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("saved_courses\\Course" + i ));
+//				out.writeObject(game.getSelectedCourses().get(i));
+//				out.close();
+//
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		
+//		
 
-		// //
+		
+		//LOOOOAD
+		// List all files in folder
+		File folder = new File("saved_courses");
+	
+		File[] listOfFiles = folder.listFiles();
+		if (listOfFiles != null) {
+			for (int i = 0; i < listOfFiles.length; i++) {
+				if (listOfFiles[i].isFile()) {
+					String fileName = listOfFiles[i].getName();
+				try{
+					ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+					Course c = (Course) in.readObject();
+					System.out.println("read obj");
+					game.getSelectedCourses().add(c);
+					in.close();
+				} catch (Exception e) {
+					System.out.println("Exception: " + e.getMessage());
+					e.printStackTrace();
+				}
+				}
+			}
+		}
+
 		// ///////////////////////////////////////////////////////////////////
-		// // /// END OF TEST COURSE /////
+		// //
+		// // /// END OF TEST COURSE //
 		// //
 		// ///////////////////////////////////////////////////////////////////
 
@@ -288,7 +375,7 @@ public class GameScreen implements Screen, InputProcessor {
 																// point,
 																// courseIndex
 																// is 0
-			
+
 			turnStart = System.currentTimeMillis();
 
 			Gdx.input.setInputProcessor(this);
@@ -614,6 +701,7 @@ public class GameScreen implements Screen, InputProcessor {
 		for (int i = 0; i < currentCourseElements.size(); i++) {
 			// Creates this elements body -> gives form to it
 			currentCourseElements.get(i).createBody(w);
+			//currentCourseELements.get(i).initializeImage();
 		}
 
 		// Clone the actualPlayers array.
@@ -764,23 +852,22 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public void initializeButtons() {
-		
+
 		goBackButton = new TextButton("Back", skin);
 		goBackButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		goBackButton.setPosition(WIDTH-BUTTON_WIDTH, HEIGHT - BUTTON_HEIGHT);
-		
+		goBackButton.setPosition(WIDTH - BUTTON_WIDTH, HEIGHT - BUTTON_HEIGHT);
+
 		nextMapButton = new TextButton("Skip Map", skin);
 		nextMapButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		goBackButton.setPosition(WIDTH-(BUTTON_WIDTH*2), HEIGHT - BUTTON_HEIGHT);
-		
-		
+		goBackButton.setPosition(WIDTH - (BUTTON_WIDTH * 2), HEIGHT - BUTTON_HEIGHT);
+
 		stage.addActor(goBackButton);
 		stage.addActor(nextMapButton);
-		
+
 	}
-	
+
 	private void addListeners() {
-		
+
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -788,7 +875,7 @@ public class GameScreen implements Screen, InputProcessor {
 				game.setScreen(new MenuScreen(game));
 			}
 		});
-		
+
 		nextMapButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
