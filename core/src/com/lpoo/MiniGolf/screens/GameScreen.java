@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -576,15 +575,22 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		// TODO borked don´t know enough of the way transitions between games work to fix
+		// TODO borked don´t know enough of the way transitions between games
+		// work to fix
 
 		if (keycode == Keys.ESCAPE) {
 
 			resetCourse(selectedCourses.get(courseIndex));
+			for (Player p : players) {
+				p.getBall().destroyBody();
+			}
 			game.setScreen(new MenuScreen(game));
 
 		} else if (keycode == Keys.S) {
-			 
+			// resetCourse(selectedCourses.get(courseIndex));
+			for (Player p : players) {
+				p.getBall().destroyBody();
+			}
 			actualPlayers.clear();
 		}
 		return false;
