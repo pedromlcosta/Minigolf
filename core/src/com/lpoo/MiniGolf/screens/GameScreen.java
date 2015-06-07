@@ -321,7 +321,7 @@ public class GameScreen implements Screen, InputProcessor {
 			Element e = courseElements.get(i);
 			if(e instanceof Teleporter){
 				Teleporter tempTele = (Teleporter) e;
-				tempTele.getImage().rotate(3);
+				tempTele.getImage().rotate(-3);
 				tempTele.getDestinationImage().rotate(3);
 			}
 			e.draw();
