@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -32,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.lpoo.MiniGolf.geometry.Geometry;
 import com.lpoo.MiniGolf.logic.Ball;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.Element;
@@ -45,7 +47,8 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 	static final float W_STEP = 1f / 60f;
-	static final float FORCE_AUGMENT = 3.0f;
+	static final float FORCE_AUGMENT = 6.0f;
+	static final float PLAY_RADIUS = MiniGolf.HEIGHT / 2f;
 	static final float BOX_TO_WORLD = MiniGolf.BOX_TO_WORLD;
 	static final int WIDTH = (int) MiniGolf.WIDTH;
 	static final int HEIGHT = (int) MiniGolf.HEIGHT;
@@ -88,7 +91,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 	public GameScreen(MiniGolf game) {
 		this.game = game;
-		
+
 		this.game.randomCourses();
 	}
 
@@ -96,7 +99,6 @@ public class GameScreen implements Screen, InputProcessor {
 	// SCREEN FUNCTIONS //
 	// ///////////////////////////////////////////
 
-	
 	@Override
 	public void render(float delta) {
 
@@ -105,33 +107,23 @@ public class GameScreen implements Screen, InputProcessor {
 		if (changeProcessor) {
 			Gdx.input.setInputProcessor(this);
 		}
-		// if (currentPlayer.getBallBody() != null) {
-		// if ((element = (ElementType)
-		// currentPlayer.getBallBody().getUserData()) != null) {
-		// System.out.println("Ball acceleration is: " + element.accel);
-		//
-		// }
-		// }
-
-		// System.out.println("Player nr. " + currentPlayer.getPlayerID() +
-		// " has tacadas = " + currentPlayer.getTacadaTotal());
 
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
+			
 			// CURRENT COURSE RENDER CYCLE
 
+			// TIME CHECK
 			elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
-
 			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped) {
-				// Didn't play in time -> still gets a "tacada added", to be
-				// fair
-				// Because the winner is the one with the less "tacadas" in the
-				// end
+				// Didn't play in time -> still gets a "tacada added"
+				// Because the winner is the one with the less "tacadas"
 				currentPlayer.addTacadaTotal();
 				int playerID = currentPlayer.getPlayerID() - 1;
 				tacadas.get(playerID).setText("Tacadas: " + currentPlayer.getTacadaTotal());
 				updateCurrentPlayer();
 			}
+			
 			checkFallenBalls();
 
 			cam.update();
@@ -150,6 +142,7 @@ public class GameScreen implements Screen, InputProcessor {
 			MiniGolf.batch.end();
 
 			// Checks if balls are stopped and render lines by polling
+			checkBallsStopped();
 			renderLine();
 
 			debugRenderer.render(w, debugMatrix);
@@ -231,8 +224,7 @@ public class GameScreen implements Screen, InputProcessor {
 		stage.getViewport().setCamera(secondaryCamera);
 
 		selectedCourses = game.getSelectedCourses();
-		
-		
+
 		System.out.println("Selected Size: " + game.getSelectedCourses().size());
 		if (!selectedCourses.isEmpty()) {
 
@@ -339,8 +331,69 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	private void renderLine() {
-		for (int i = 0; i < actualPlayers.size(); i++) {
+		
+		// RENDER A LINE BETWEEN MOUSE POSITION AND BALL
+		if (allBallsStopped) {
 
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(Color.BLACK);
+			shapeRenderer.setProjectionMatrix(cam.combined);
+			
+			//GETTING PROPER VARIABLES
+			// Transforms mouse screen coordinates to camera World coordinates
+			// (using camera width and height)
+			Vector2 mouse = MiniGolf.viewport.unproject(new Vector2((float) Gdx.input.getX(), (float) Gdx.input.getY()));
+
+			float mouseX = mouse.x;
+			float mouseY = mouse.y;
+
+			Vector2 ball = new Vector2(currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD, currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD);
+
+			float ballX = currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD;
+			float ballY = currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD;
+
+			//DRAWING PLAY LINE
+			
+			// NORMAL MOUSE MODE
+			if (!invertedPointMode) {
+				if (inside(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
+					shapeRenderer.rectLine(ball.x, ball.y, mouse.x, mouse.y, 5);
+				} else {
+					Vector2 intersection = intersectLineCircle(ball, mouse, PLAY_RADIUS);
+					shapeRenderer.rectLine(ball.x, ball.y, intersection.x, intersection.y, 5);
+				}
+
+			} else { // INVERTED MODE (RIGHT CLICK TO CHANGE)
+
+				System.out.println(mouseX + " " + mouseY + " " + ballX + " " + ballY + " " + PLAY_RADIUS);
+				
+				if (inside(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
+					shapeRenderer.rectLine(ballX, ballY, ballX + (ballX - mouseX), ballY + (ballY - mouseY), 5);
+					shapeRenderer.setColor(Color.RED);
+					shapeRenderer.end();
+					drawDottedLine(shapeRenderer,10, ball.x, ball.y, mouse.x, mouse.y );
+				} else {
+					Vector2 intersection = intersectLineCircle(ball, mouse, PLAY_RADIUS);
+					
+					shapeRenderer.rectLine(ballX, ballY, ballX - (intersection.x - ballX),  ballY - (intersection.y - ballY), 5);
+					shapeRenderer.setColor(Color.RED);
+					shapeRenderer.end();
+					drawDottedLine(shapeRenderer,10, ball.x, ball.y, intersection.x, intersection.y );
+					
+				}
+			}
+
+			//DRAWING RADIUS CIRCLE
+			shapeRenderer.end();
+			shapeRenderer.begin(ShapeType.Line);
+			shapeRenderer.setColor(Color.BLACK);
+			shapeRenderer.circle(ballX, ballY, PLAY_RADIUS);
+			shapeRenderer.end();
+		}
+	}
+
+	private void checkBallsStopped() {
+		for (int i = 0; i < actualPlayers.size(); i++) {
 			if (actualPlayers.get(i).getBallSpeedLen() != 0) {
 				allBallsStopped = false;
 				// allBallsStopped2 = false;
@@ -353,42 +406,20 @@ public class GameScreen implements Screen, InputProcessor {
 				}
 			}
 		}
+	}
 
-		// RENDER A LINE BETWEEN MOUSE POSITION AND BALL
-		if (allBallsStopped) {
+	private boolean inside(float ballX, float ballY, float mouseX, float mouseY, float radius) {
+		return Geometry.distance(mouseX, mouseY, ballX, ballY) <= radius;
 
-			shapeRenderer.begin(ShapeType.Filled);
+	}
 
-			shapeRenderer.setColor(Color.BLACK);
-			shapeRenderer.setProjectionMatrix(cam.combined);
-			// Transforms mouse screen coordinates to camera World coordinates
-			// (using camera width and height)
-			Vector3 vec = MiniGolf.viewport.unproject(new Vector3((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0));
+	private Vector2 intersectLineCircle(Vector2 ball, Vector2 mouse, float radius) {
 
-			float mouseX = vec.x;
-			float mouseY = vec.y;
+		Vector2 ballToMouse = new Vector2(mouse.x - ball.x, mouse.y - ball.y);
+		float intersectPointX = ball.x + (ballToMouse.x / ballToMouse.len()) * radius;
+		float intersectPointY = ball.y + (ballToMouse.y / ballToMouse.len()) * radius;
 
-			float ballX = currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD;
-			float ballY = currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD;
-			// System.out.println(currentPlayer.getBallPosX() *
-			// MiniGolf.BOX_TO_WORLD + "    " + currentPlayer.getBallPosY() *
-			// MiniGolf.BOX_TO_WORLD + "  " + mouseX + "   " + mouseY);
-
-			if (!invertedPointMode) {
-				shapeRenderer.rectLine(ballX, ballY, mouseX, mouseY, 5);
-			} else { // Ball + (Ball-Mouse)
-				shapeRenderer.rectLine(ballX, ballY, ballX + (ballX - mouseX), ballY + (ballY - mouseY), 5);
-				shapeRenderer.setColor(Color.RED);
-				shapeRenderer.rectLine(ballX, ballY, mouseX, mouseY, 5);
-			}
-
-			shapeRenderer.end();
-
-			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.setColor(Color.BLACK);
-			shapeRenderer.circle(ballX, ballY, MiniGolf.HEIGHT / 2f);
-			shapeRenderer.end();
-		}
+		return new Vector2(intersectPointX, intersectPointY);
 	}
 
 	private void dragHandler() {
@@ -541,7 +572,7 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public void resetPlayers(Course course) {
-	
+
 		// Restoring booleans and the body to each ball
 		for (int i = 0; i < game.getNrPlayers(); i++) {
 			players.get(i).setOver(false);
@@ -561,10 +592,10 @@ public class GameScreen implements Screen, InputProcessor {
 	@SuppressWarnings("unchecked")
 	public void initializeCourse(Course course) {
 
-		ArrayList<Integer> teleporterColor = new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10));
+		ArrayList<Integer> teleporterColor = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
 		Collections.shuffle(teleporterColor);
 		int teleporterCounter = 0;
-		
+
 		// Sets current course
 		currentCourse = course;
 
@@ -575,11 +606,13 @@ public class GameScreen implements Screen, InputProcessor {
 			// Creates this elements body -> gives form to it
 			currentCourseElements.get(i).createBody(w);
 			currentCourseElements.get(i).initializeImage();
-			if(currentCourseElements.get(i) instanceof Teleporter){
+			if (currentCourseElements.get(i) instanceof Teleporter) {
+				Teleporter tele1 = (Teleporter) currentCourseElements.get(i);
+				System.out.println("Teleporter with destination: " + tele1.getDestination().x + " " +tele1.getDestination().y);
 				System.out.println("Changed color to nr." + teleporterColor.get(teleporterCounter));
 				currentCourseElements.get(i).changeColor(teleporterColor.get(teleporterCounter));
 				teleporterCounter++;
-				
+
 			}
 
 		}
@@ -602,7 +635,6 @@ public class GameScreen implements Screen, InputProcessor {
 	// InputProcessor Functions //
 	// ///////////////////////////////////////////
 
-	
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO borked don´t know enough of the way transitions between games
@@ -617,12 +649,10 @@ public class GameScreen implements Screen, InputProcessor {
 			game.setScreen(new MenuScreen(game));
 
 		} else if (keycode == Keys.S) {
-			
-			
-			
+
 			for (Player p : actualPlayers) {
-				if(p.getBallBody()!=null)
-				p.getBall().destroyBody();
+				if (p.getBallBody() != null)
+					p.getBall().destroyBody();
 			}
 			actualPlayers.clear();
 		}
@@ -682,13 +712,29 @@ public class GameScreen implements Screen, InputProcessor {
 				float mouseX = vec.x;
 				float mouseY = vec.y;
 
+				float ballX = currentPlayer.getBallPosX() * MiniGolf.BOX_TO_WORLD;
+				float ballY = currentPlayer.getBallPosY() * MiniGolf.BOX_TO_WORLD;
+
+				// MOUSE<->BALL DISTANCE GIVES THE FORCE
 				float forceX = (mouseX / MiniGolf.BOX_TO_WORLD - currentPlayer.getBallPosX());
 				float forceY = (mouseY / MiniGolf.BOX_TO_WORLD) - currentPlayer.getBallPosY();
+
+				Vector2 force = new Vector2(forceX, forceY);
+
+				// LIMITS FORCE AS IF MOUSE WERE ON RADIUS LIMIT
+				// Normalizes the vector (to have the direction) and multiplies
+				// by the radius
+				if (!inside(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
+					forceX = (forceX / force.len()) * (PLAY_RADIUS / BOX_TO_WORLD);
+					forceY = (forceY / force.len()) * (PLAY_RADIUS / BOX_TO_WORLD);
+				}
 
 				if (invertedPointMode) {
 					forceX *= -1;
 					forceY *= -1;
 				}
+				Vector2 forceTest = new Vector2(forceX, forceY);
+				System.out.println("Force lenght: " + forceTest.len());
 
 				// (forceX/W_STEP) is as if the force where applied during 1
 				// second instead of 1/60 seconds
@@ -780,21 +826,34 @@ public class GameScreen implements Screen, InputProcessor {
 
 	private void addListeners() {
 
-//		goBackButton.addListener(new ClickListener() {
-//			@Override
-//			public void clicked(InputEvent event, float x, float y) {
-//				resetCourse(selectedCourses.get(courseIndex));
-//				game.setScreen(new MenuScreen(game));
-//			}
-//		});
+		// goBackButton.addListener(new ClickListener() {
+		// @Override
+		// public void clicked(InputEvent event, float x, float y) {
+		// resetCourse(selectedCourses.get(courseIndex));
+		// game.setScreen(new MenuScreen(game));
+		// }
+		// });
 
-//		nextMapButton.addListener(new ClickListener() {
-//			@Override
-//			public void clicked(InputEvent event, float x, float y) {
-//				actualPlayers.clear();
-//				resetCourse(selectedCourses.get(courseIndex));
-//			}
-//		});
+		// nextMapButton.addListener(new ClickListener() {
+		// @Override
+		// public void clicked(InputEvent event, float x, float y) {
+		// actualPlayers.clear();
+		// resetCourse(selectedCourses.get(courseIndex));
+		// }
+		// });
 	}
 
+	private void drawDottedLine(ShapeRenderer shapeRenderer, float dotDist, float x1, float y1, float x2, float y2) {
+	    
+		shapeRenderer.begin(ShapeType.Filled);
+		
+	    Vector2 vec2 = new Vector2(x2, y2).sub(new Vector2(x1, y1));
+	    float length = vec2.len();
+	    for(int i = 0; i < length; i += dotDist) {
+	        vec2.clamp(length - i, length - i);
+	       // shapeRenderer.point(x1 + vec2.x, y1 + vec2.y, 0);
+	        shapeRenderer.rectLine(x1 + vec2.x, y1 + vec2.y, x1 + vec2.x+ dotDist/2, y1 + vec2.y, 5);
+	    }
+
+	}
 }
