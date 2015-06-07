@@ -72,6 +72,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private static Player currentPlayer;
 	private long turnStart = System.currentTimeMillis();
 	private Table score;
+	private Table buttonTable;
 	public static int ballsInsideIllusion = 0;
 	static boolean allBallsStopped = true;
 	float mouseX, mouseY;
@@ -763,7 +764,19 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public void initializeButtons() {
-
+		
+		goBackButton = new TextButton("Back", skin);
+		goBackButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		goBackButton.setPosition(WIDTH-BUTTON_WIDTH, HEIGHT - BUTTON_HEIGHT);
+		
+		nextMapButton = new TextButton("Skip Map", skin);
+		nextMapButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+		goBackButton.setPosition(WIDTH-(BUTTON_WIDTH*2), HEIGHT - BUTTON_HEIGHT);
+		
+		
+		stage.addActor(goBackButton);
+		stage.addActor(nextMapButton);
+		
 	}
 	
 	private void addListeners() {
