@@ -184,4 +184,5 @@ public class Teleporter extends Element {
 				* MiniGolf.BOX_TO_WORLD);
 
 	}
+
 }
