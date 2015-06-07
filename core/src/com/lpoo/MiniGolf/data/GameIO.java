@@ -71,9 +71,20 @@ public class GameIO {
 
 	public void saveIndividualCourse(Course course) {
 
+		// CREATE SAVE DIRECTORY
+		File save_dir = new File("saved_courses");
+		// if the directory does not exist, create it
+		if (!save_dir.exists()) {
+			try {
+				save_dir.mkdir();
+			} catch (SecurityException se) {
+				// No permissions to create folder
+			}
+		}
+
 		try {
 			// Serializing data object to a file
-			out = new ObjectOutputStream(new FileOutputStream(course.getNome()));
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("saved_courses\\" + course.getNome()));
 			out.writeObject(course);
 			out.close();
 
@@ -117,7 +128,7 @@ public class GameIO {
 		OutputStream output = null;
 		try {
 			file.writeBytes(serialize(courses), false);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println(e.toString());
@@ -139,7 +150,7 @@ public class GameIO {
 			if (file.exists()) {
 				System.out.println("Haaaai");
 				tempCourses = (ArrayList<Course>) deserialize(file.readBytes());
-			}else{
+			} else {
 				System.out.println(Gdx.files.getLocalStoragePath());
 			}
 		} catch (IOException e) {
@@ -204,7 +215,7 @@ public class GameIO {
 	public static byte[] serialize(Object obj) throws IOException {
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		ObjectOutputStream o = new ObjectOutputStream(b);
-		
+
 		o.writeObject(obj);
 		return b.toByteArray();
 	}
