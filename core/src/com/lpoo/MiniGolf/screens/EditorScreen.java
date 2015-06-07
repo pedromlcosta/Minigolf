@@ -147,7 +147,7 @@ public class EditorScreen implements Screen {
 						ele.destroyBody();
 					}
 
-					created.setNome("CreadtedCourse" + game.getSelectedCourses().size());
+					created.setNome("Course" + game.getSelectedCourses().size());
 					game.addToSelectedCourses(created);
 				}
 				// add course to thingy

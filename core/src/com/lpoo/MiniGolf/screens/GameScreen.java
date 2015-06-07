@@ -377,9 +377,8 @@ public class GameScreen implements Screen, InputProcessor {
 		for (int i = 0; i < courseElements.size(); i++) {
 			Element e = courseElements.get(i);
 			if (e.getType() != elementType.illusionWall)
-				e.draw(MiniGolf.batch, 1);
-			else
-				drawIllusionaryWall(e);
+				e.draw();
+
 		}
 
 		// Draw Players' balls
@@ -392,7 +391,7 @@ public class GameScreen implements Screen, InputProcessor {
 	public void drawIllusionaryWall(Element ele) {
 		ele.setImagePos();
 		ele.draw();
-		
+
 	}
 
 	private void renderLine() {
@@ -627,6 +626,7 @@ public class GameScreen implements Screen, InputProcessor {
 		for (int i = 0; i < currentCourseElements.size(); i++) {
 			// Creates this elements body -> gives form to it
 			currentCourseElements.get(i).createBody(w);
+			currentCourseElements.get(i).setImagePos();
 		}
 
 		// Clone the actualPlayers array.
@@ -788,7 +788,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 		stage.addActor(goBackButton);
 		stage.addActor(nextMapButton);
-addListeners();
+		addListeners();
 	}
 
 	private void addListeners() {
