@@ -59,7 +59,7 @@ public class Wall extends Element {
 			body.setUserData(new ElementType(elementType.glueWall, 0, this));
 			break;
 		case bouncyWall:
-			fixt.setRestitution(2.0f);
+			fixt.setRestitution(1.15f);
 			body.setUserData(new ElementType(elementType.bouncyWall, 0, this));
 			break;
 		default:

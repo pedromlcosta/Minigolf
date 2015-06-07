@@ -105,6 +105,8 @@ public class GameScreen implements Screen, InputProcessor {
 		//
 		// }
 		// }
+		
+		System.out.println("Player nr. " + currentPlayer.getPlayerID() +" has tacadas = " +currentPlayer.getTacadaTotal());
 
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
@@ -113,6 +115,11 @@ public class GameScreen implements Screen, InputProcessor {
 			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
 
 			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped) {
+				//Didn't play in time -> still gets a "tacada added", to be fair
+				//Because the winner is the one with the less "tacadas" in the end
+				currentPlayer.addTacadaTotal();
+				int playerID = currentPlayer.getPlayerID() - 1;
+				tacadas.get(playerID).setText("Tacadas: " + currentPlayer.getTacadaTotal());
 				updateCurrentPlayer();
 			}
 			checkFallenBalls();
