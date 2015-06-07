@@ -17,10 +17,8 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
-
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -34,12 +32,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -69,7 +63,7 @@ public class SelectBox2<T> extends Widget implements Disableable {
 	static final Vector2 temp = new Vector2();
 
 	SelectBoxStyle style;
-	
+
 	final Array<T> items = new Array();
 	@SuppressWarnings("rawtypes")
 	final ArraySelection<T> selection = new ArraySelection(items);
@@ -310,8 +304,8 @@ public class SelectBox2<T> extends Widget implements Disableable {
 	}
 
 	/**
-	 * @return The index of the first selected item. The top item has an index of
-	 *         0. Nothing selected has an index of -1.
+	 * @return The index of the first selected item. The top item has an index
+	 *         of 0. Nothing selected has an index of -1.
 	 */
 	public int getSelectedIndex() {
 		ObjectSet<T> selected = selection.items();

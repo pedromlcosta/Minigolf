@@ -2,7 +2,6 @@ package com.lpoo.MiniGolf.data;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -42,7 +41,6 @@ public class Assets {
 		manager.load("teleporter.png", Texture.class);
 		Assets.manager.load("uiskin.atlas", TextureAtlas.class);
 		Assets.manager.load("uiskin.json", Skin.class);
-		setMenuSkin();
 		 
 	}
 

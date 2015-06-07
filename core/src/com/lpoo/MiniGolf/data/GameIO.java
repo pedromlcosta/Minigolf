@@ -1,14 +1,19 @@
 package com.lpoo.MiniGolf.data;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
@@ -90,13 +95,14 @@ public class GameIO {
 				// No permissions to create folder
 			}
 		}
-		
+
 		// SAVE TO THE DIRECTORY
 		for (int i = 0; i < MiniGolf.getAllCourses().size(); i++) {
 			try {
 				// Serializing data object to a file
 				ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("saved_courses\\Course" + i));
 				out.writeObject(MiniGolf.getAllCourses().get(i));
+				System.out.println("wrote object");
 				out.close();
 
 			} catch (IOException e) {
@@ -107,18 +113,46 @@ public class GameIO {
 
 	// WORKS!! DO NOT REMOVE!
 	public void saveAllCourses(ArrayList<Course> courses) {
-
+		FileHandle file = Gdx.files.local("AllCourses.sav");
+		OutputStream output = null;
 		try {
-			// Serializing data object to a file
-			out = new ObjectOutputStream(new FileOutputStream("AllCourses.sav"));
-			out.writeObject(courses);
-			out.close();
-
+			file.writeBytes(serialize(courses), false);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println(e.toString());
+		} finally {
+			if (output != null)
+				try {
+					output.close();
+				} catch (Exception e) {
+
+				}
 		}
 
 	}
+
+	public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
+		ArrayList<Course> tempCourses = null;
+		FileHandle file = Gdx.files.local("AllCourses.sav");
+		try {
+			if (file.exists()) {
+				System.out.println("Haaaai");
+				tempCourses = (ArrayList<Course>) deserialize(file.readBytes());
+			}else{
+				System.out.println(Gdx.files.getLocalStoragePath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return tempCourses;
+
+	}
+
+	// before version
+	// out = new ObjectOutputStream(new FileOutputStream("AllCourses.sav"));
+	// out.writeObject(courses);
+	// out.close();
 
 	public ArrayList<Course> loadAllIndividualCourses() throws ClassNotFoundException {
 		ArrayList<Course> tempCourses = new ArrayList<Course>();
@@ -131,7 +165,7 @@ public class GameIO {
 				if (listOfFiles[i].isFile()) {
 					String fileName = listOfFiles[i].getName();
 					try {
-						ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+						ObjectInputStream in = new ObjectInputStream(new FileInputStream("saved_courses\\" + fileName));
 						Course c = (Course) in.readObject();
 						System.out.println("read obj");
 						tempCourses.add(c);
@@ -149,21 +183,36 @@ public class GameIO {
 	}
 
 	// WORKS!! DO NOT REMOVE!
-	public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
+	// public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
+	//
+	// try {
+	// File test = new File("AllCourses.sav");
+	// if (!test.exists()) {
+	// return null;
+	// }
+	// FileInputStream stuff = new FileInputStream("AllCourses.sav");
+	// in = new ObjectInputStream(stuff);
+	// in.defaultReadObject();
+	// this.courses = (ArrayList<Course>) in.readObject();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// return courses;
+	//
+	// }
 
-		try {
-			File test = new File("Courses.sav");
-			if (!test.exists()) {
-				return null;
-			}
-			FileInputStream stuff = new FileInputStream("Courses.sav");
-			in = new ObjectInputStream(stuff);
-			this.courses = (ArrayList<Course>) in.readObject();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return courses;
+	public static byte[] serialize(Object obj) throws IOException {
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		ObjectOutputStream o = new ObjectOutputStream(b);
+		
+		o.writeObject(obj);
+		return b.toByteArray();
+	}
 
+	public static Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
+		ByteArrayInputStream b = new ByteArrayInputStream(bytes);
+		ObjectInputStream o = new ObjectInputStream(b);
+		return o.readObject();
 	}
 
 }
