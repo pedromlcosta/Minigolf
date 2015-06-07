@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.lpoo.MiniGolf.logic.Course;
+import com.lpoo.MiniGolf.logic.MiniGolf;
 
 public class GameIO {
 	ObjectOutputStream out;
@@ -79,20 +80,32 @@ public class GameIO {
 
 	public void saveAllIndividualCourses(ArrayList<Course> courses) {
 
-		for (int i = 0; i < courses.size(); i++) {
+		// CREATE SAVE DIRECTORY
+		File save_dir = new File("saved_courses");
+		// if the directory does not exist, create it
+		if (!save_dir.exists()) {
+			try {
+				save_dir.mkdir();
+			} catch (SecurityException se) {
+				// No permissions to create folder
+			}
+		}
+		
+		// SAVE TO THE DIRECTORY
+		for (int i = 0; i < MiniGolf.getAllCourses().size(); i++) {
 			try {
 				// Serializing data object to a file
-				out = new ObjectOutputStream(new FileOutputStream(courses.get(i).getNome()));
-				out.writeObject(courses.get(i));
+				ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("saved_courses\\Course" + i));
+				out.writeObject(MiniGolf.getAllCourses().get(i));
 				out.close();
 
-				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
+	// WORKS!! DO NOT REMOVE!
 	public void saveAllCourses(ArrayList<Course> courses) {
 
 		try {
@@ -108,19 +121,42 @@ public class GameIO {
 	}
 
 	public ArrayList<Course> loadAllIndividualCourses() throws ClassNotFoundException {
-		return null;
-		
+		ArrayList<Course> tempCourses = new ArrayList<Course>();
+
+		File folder = new File("saved_courses");
+
+		File[] listOfFiles = folder.listFiles();
+		if (listOfFiles != null) {
+			for (int i = 0; i < listOfFiles.length; i++) {
+				if (listOfFiles[i].isFile()) {
+					String fileName = listOfFiles[i].getName();
+					try {
+						ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+						Course c = (Course) in.readObject();
+						System.out.println("read obj");
+						tempCourses.add(c);
+						in.close();
+					} catch (Exception e) {
+						System.out.println("Exception: " + e.getMessage());
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		return tempCourses;
 
 	}
 
+	// WORKS!! DO NOT REMOVE!
 	public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
 
 		try {
-			File test = new File("Maze.sav");
+			File test = new File("Courses.sav");
 			if (!test.exists()) {
 				return null;
 			}
-			FileInputStream stuff = new FileInputStream("Maze.sav");
+			FileInputStream stuff = new FileInputStream("Courses.sav");
 			in = new ObjectInputStream(stuff);
 			this.courses = (ArrayList<Course>) in.readObject();
 		} catch (IOException e) {
