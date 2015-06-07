@@ -73,6 +73,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private long turnStart = System.currentTimeMillis();
 	private Table score;
 	private Table buttonTable;
+	long elapsedTimeSeconds = 0;
 	public static int ballsInsideIllusion = 0;
 	static boolean allBallsStopped = true;
 	float mouseX, mouseY;
@@ -116,7 +117,7 @@ public class GameScreen implements Screen, InputProcessor {
 										// over
 			// CURRENT COURSE RENDER CYCLE
 
-			long elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
+			elapsedTimeSeconds = (System.currentTimeMillis() - turnStart) / 1000;
 
 			if (elapsedTimeSeconds > game.getTempoMax() && allBallsStopped) {
 				// Didn't play in time -> still gets a "tacada added", to be
