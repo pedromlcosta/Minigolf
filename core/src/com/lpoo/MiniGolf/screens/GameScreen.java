@@ -392,7 +392,7 @@ public class GameScreen implements Screen, InputProcessor {
 	public void drawIllusionaryWall(Element ele) {
 		ele.setImagePos();
 		ele.draw();
-
+		
 	}
 
 	private void renderLine() {
@@ -780,15 +780,15 @@ public class GameScreen implements Screen, InputProcessor {
 
 		goBackButton = new TextButton("Back", skin);
 		goBackButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		goBackButton.setPosition(MiniGolf.WIDTH / 2 - BUTTON_WIDTH, MiniGolf.HEIGHT / 2 - BUTTON_HEIGHT);
+		goBackButton.setPosition(WIDTH / 2 - BUTTON_WIDTH, HEIGHT / 2 - BUTTON_HEIGHT);
 
 		nextMapButton = new TextButton("Skip Map", skin);
 		nextMapButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		nextMapButton.setPosition(MiniGolf.WIDTH / 2 - (BUTTON_WIDTH * 2), MiniGolf.HEIGHT / 2 - BUTTON_HEIGHT);
+		nextMapButton.setPosition(WIDTH / 2 - (BUTTON_WIDTH * 2), HEIGHT / 2 - BUTTON_HEIGHT);
 
 		stage.addActor(goBackButton);
 		stage.addActor(nextMapButton);
-		addListeners();
+
 	}
 
 	private void addListeners() {
