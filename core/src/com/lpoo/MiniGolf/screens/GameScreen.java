@@ -62,7 +62,6 @@ public class GameScreen implements Screen, InputProcessor {
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.cam;
 
-	private TextButton goBackButton, nextMapButton;
 	private static final float BUTTON_WIDTH = 200f;
 	private static final float BUTTON_HEIGHT = 50f;
 
@@ -320,6 +319,11 @@ public class GameScreen implements Screen, InputProcessor {
 
 		for (int i = 0; i < courseElements.size(); i++) {
 			Element e = courseElements.get(i);
+			if(e instanceof Teleporter){
+				Teleporter tempTele = (Teleporter) e;
+				tempTele.getImage().rotate(3);
+				tempTele.getDestinationImage().rotate(3);
+			}
 			e.draw();
 
 		}
@@ -824,39 +828,14 @@ public class GameScreen implements Screen, InputProcessor {
 		temp.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		temp.setPosition(BUTTON_WIDTH * 2, MiniGolf.HEIGHT - BUTTON_HEIGHT);
 		temp.setColor(Color.BLACK);
-		goBackButton = new TextButton("Back", skin);
-		goBackButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		goBackButton.setPosition(BUTTON_WIDTH, MiniGolf.HEIGHT - BUTTON_HEIGHT);
-
-		nextMapButton = new TextButton("Skip Map", skin);
-		nextMapButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		nextMapButton.setPosition(BUTTON_WIDTH * 3, MiniGolf.HEIGHT - BUTTON_HEIGHT);
-
+		
 		stage.addActor(timeLabel);
 		stage.addActor(temp);
 		// stage.addActor(goBackButton);
 		// stage.addActor(nextMapButton);
-		addListeners();
 	}
 
-	private void addListeners() {
 
-		// goBackButton.addListener(new ClickListener() {
-		// @Override
-		// public void clicked(InputEvent event, float x, float y) {
-		// resetCourse(selectedCourses.get(courseIndex));
-		// game.setScreen(new MenuScreen(game));
-		// }
-		// });
-
-		// nextMapButton.addListener(new ClickListener() {
-		// @Override
-		// public void clicked(InputEvent event, float x, float y) {
-		// actualPlayers.clear();
-		// resetCourse(selectedCourses.get(courseIndex));
-		// }
-		// });
-	}
 
 	private void drawDottedLine(ShapeRenderer shapeRenderer, float dotDist, float x1, float y1, float x2, float y2) {
 
@@ -871,4 +850,6 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 
 	}
+	
+
 }
