@@ -578,6 +578,7 @@ public class GameScreen implements Screen, InputProcessor {
 			if(currentCourseElements.get(i) instanceof Teleporter){
 				currentCourseElements.get(i).changeColor(teleporterCounter);
 				teleporterCounter++;
+				
 			}
 
 		}

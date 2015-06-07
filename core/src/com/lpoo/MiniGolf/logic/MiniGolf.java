@@ -304,6 +304,7 @@ public class MiniGolf extends Game {
 
 	public void randomCourses() {
  
+		
 		selectedCourses.clear();
 		
 		//Shuffling all the courses

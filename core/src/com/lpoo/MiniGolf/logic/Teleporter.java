@@ -131,6 +131,7 @@ public class Teleporter extends Element {
 			break;
 		default:
 			break;
+			
 		}
 	}
 
