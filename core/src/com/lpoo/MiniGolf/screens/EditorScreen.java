@@ -35,6 +35,7 @@ import com.lpoo.MiniGolf.logic.Floor;
 import com.lpoo.MiniGolf.logic.Hole;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 import com.lpoo.MiniGolf.logic.Teleporter;
+import com.lpoo.MiniGolf.logic.Wall;
 
 public class EditorScreen implements Screen {
 	private Skin skin;
@@ -285,10 +286,10 @@ public class EditorScreen implements Screen {
 			elementToAdd = new Element(Element.elementType.ball);
 			break;
 		case "BouncyWall":
-			elementToAdd = new Floor(Element.elementType.bouncyWall);
+			elementToAdd = new Wall(Element.elementType.bouncyWall);
 			break;
 		case "GlueWall":
-			elementToAdd = new Floor(Element.elementType.glueWall);
+			elementToAdd = new Wall(Element.elementType.glueWall);
 			break;
 		case "Hole":
 			elementToAdd = new Hole();
@@ -304,7 +305,7 @@ public class EditorScreen implements Screen {
 			elementToAdd = new Floor(elementType.waterFloor);
 			break;
 		case "RegularWall":
-			elementToAdd = new Floor(Element.elementType.regularWall);
+			elementToAdd = new Wall(Element.elementType.regularWall);
 			break;
 		case "SandFloor":
 			elementToAdd = new Floor(Element.elementType.sandFloor);

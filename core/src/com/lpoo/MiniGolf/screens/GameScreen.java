@@ -22,20 +22,25 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.lpoo.MiniGolf.logic.*;
+import com.lpoo.MiniGolf.logic.Ball;
+import com.lpoo.MiniGolf.logic.Course;
+import com.lpoo.MiniGolf.logic.Element;
 import com.lpoo.MiniGolf.logic.Element.elementType;
+import com.lpoo.MiniGolf.logic.ElementType;
+import com.lpoo.MiniGolf.logic.Floor;
+import com.lpoo.MiniGolf.logic.Hole;
+import com.lpoo.MiniGolf.logic.MiniGolf;
+import com.lpoo.MiniGolf.logic.Player;
+import com.lpoo.MiniGolf.logic.Teleporter;
+import com.lpoo.MiniGolf.logic.Wall;
 
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
 public class GameScreen implements Screen, InputProcessor {
@@ -55,7 +60,7 @@ public class GameScreen implements Screen, InputProcessor {
 	private ShapeRenderer shapeRenderer;
 	private World w = MiniGolf.getW();
 	private OrthographicCamera cam = MiniGolf.cam;
-	
+
 	private TextButton goBackButton, nextMapButton;
 	private static final float BUTTON_WIDTH = 200f;
 	private static final float BUTTON_HEIGHT = 50f;
@@ -95,10 +100,9 @@ public class GameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		ElementType element;
 		stage.act(delta);
 		stage.draw();
-		ElementType element;
-
 		// if (currentPlayer.getBallBody() != null) {
 		// if ((element = (ElementType)
 		// currentPlayer.getBallBody().getUserData()) != null) {
@@ -152,7 +156,7 @@ public class GameScreen implements Screen, InputProcessor {
 			// END OF COURSE
 			// System.out.println("Reseting Course nr. " + (courseIndex - 1));
 			// System.out.println("Derp");
-			if (courseIndex == selectedCourses.size()-1) {
+			if (courseIndex == selectedCourses.size() - 1) {
 				// WAS THE LAST COURSE - ENDING GAME
 				// resetPlayers();
 				if (selectedCourses.isEmpty())
@@ -164,16 +168,16 @@ public class GameScreen implements Screen, InputProcessor {
 			} else {
 				// CHANGING COURSE
 				System.out.println("Reseting players from course nr." + courseIndex);
-				//resetPlayers takes the next course Index
-				resetPlayers(selectedCourses.get(courseIndex+1));
+				// resetPlayers takes the next course Index
+				resetPlayers(selectedCourses.get(courseIndex + 1));
 				resetCourse(selectedCourses.get(courseIndex));
-				initializeCourse(selectedCourses.get(courseIndex+1));
+				initializeCourse(selectedCourses.get(courseIndex + 1));
 
 				// System.out.println("Initializing Course nr. " + courseIndex);
 				courseIndex++;
 			}
 		}
-		stage.draw();
+
 	}
 
 	@Override
@@ -288,7 +292,7 @@ public class GameScreen implements Screen, InputProcessor {
 																// point,
 																// courseIndex
 																// is 0
-			
+
 			turnStart = System.currentTimeMillis();
 
 			Gdx.input.setInputProcessor(this);
@@ -372,7 +376,10 @@ public class GameScreen implements Screen, InputProcessor {
 
 		for (int i = 0; i < courseElements.size(); i++) {
 			Element e = courseElements.get(i);
-			e.draw(MiniGolf.batch, 1);
+			if (e.getType() != elementType.illusionWall)
+				e.draw(MiniGolf.batch, 1);
+			else
+				drawIllusionaryWall(e);
 		}
 
 		// Draw Players' balls
@@ -380,6 +387,12 @@ public class GameScreen implements Screen, InputProcessor {
 			Ball b = actualPlayers.get(i).getBall();
 			b.draw();
 		}
+	}
+
+	public void drawIllusionaryWall(Element ele) {
+		ele.setImagePos();
+		ele.draw();
+
 	}
 
 	private void renderLine() {
@@ -764,23 +777,22 @@ public class GameScreen implements Screen, InputProcessor {
 	}
 
 	public void initializeButtons() {
-		
+
 		goBackButton = new TextButton("Back", skin);
 		goBackButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		goBackButton.setPosition(WIDTH-BUTTON_WIDTH, HEIGHT - BUTTON_HEIGHT);
-		
+		goBackButton.setPosition(MiniGolf.WIDTH / 2 - BUTTON_WIDTH, MiniGolf.HEIGHT / 2 - BUTTON_HEIGHT);
+
 		nextMapButton = new TextButton("Skip Map", skin);
 		nextMapButton.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
-		goBackButton.setPosition(WIDTH-(BUTTON_WIDTH*2), HEIGHT - BUTTON_HEIGHT);
-		
-		
+		nextMapButton.setPosition(MiniGolf.WIDTH / 2 - (BUTTON_WIDTH * 2), MiniGolf.HEIGHT / 2 - BUTTON_HEIGHT);
+
 		stage.addActor(goBackButton);
 		stage.addActor(nextMapButton);
-		
+		addListeners();
 	}
-	
+
 	private void addListeners() {
-		
+
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -788,7 +800,7 @@ public class GameScreen implements Screen, InputProcessor {
 				game.setScreen(new MenuScreen(game));
 			}
 		});
-		
+
 		nextMapButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

@@ -290,4 +290,8 @@ public class Element extends Actor implements Serializable {
 		this.createBody(MiniGolf.getW());
 	}
 
+	public void draw2() {
+		
+	}
+
 }

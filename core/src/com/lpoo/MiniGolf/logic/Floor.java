@@ -55,7 +55,7 @@ public class Floor extends Element {
 		body = w.createBody(bodyDef);
 		body.createFixture(fixDef);
 		body.setTransform(startPos, 0);
-		
+
 		switch (type) {
 		case grassFloor:
 		case illusionWall:
@@ -119,6 +119,11 @@ public class Floor extends Element {
 
 	public void decrementBallsIllusion() {
 		ballsInsideIllusion--;
+	}
+
+	public void draw2() {
+		image.draw(MiniGolf.batch);
+
 	}
 
 }
