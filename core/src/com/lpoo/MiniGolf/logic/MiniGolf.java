@@ -23,7 +23,7 @@ public class MiniGolf extends Game {
 	public static OrthographicCamera cam;
 	public static Viewport viewport;
 	private static World W;
-
+	private GameIO loadSave;
 	private int nrPlayers = 3;
 	private ArrayList<Course> selectedCourses = new ArrayList<Course>();
 	private static ArrayList<Course> allCourses = new ArrayList<Course>();
@@ -50,7 +50,7 @@ public class MiniGolf extends Game {
 
 	public void create() {
 
-		GameIO io = new GameIO();
+		loadSave = new GameIO();
 
 		// INITIALIZING SINGLETONS
 
@@ -65,88 +65,108 @@ public class MiniGolf extends Game {
 		// /// TEST COURSE /////
 		// ///////////////////////////////////////////////////////////////////
 
-//		// Course 1
-//		while (!Assets.update()) {
-//		}
-//		Course Course1 = new Course();
-//		Course1.setNome("Course 1");
-//
-//		Vector2 pos1 = new Vector2(1.0f, 1.0f);
-//		Vector2 pos2 = new Vector2(2.0f, 2.0f);
-//		Vector2 pos3 = new Vector2(3.0f, 3.0f);
-//		Vector2 pos4 = new Vector2(4.0f, 4.0f);
-//
-//		Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
-//
-//		Hole hole1 = new Hole(new Vector2(5f, 5f), 0.3f);
-//
-//		Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
-//
-//		Floor water1 = new Floor(new Vector2(7 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.waterFloor);
-//
-//		Wall glue1 = new Wall(new Vector2(5 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.glueWall);
-//
-//		Floor void1 = new Floor(new Vector2(9 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.voidFloor);
-//
-//		Floor illusion1 = new Floor(new Vector2(11 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
-//
-//		Floor accel1 = new Floor(new Vector2(1 * (WIDTH / 12f / BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.acceleratorFloor);
-//
-//		Teleporter teleporter1 = new Teleporter(new Vector2(7f, 5f), new Vector2(7f, 3f), 0.3f, 1);
-//
-//		// Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f /
-//		// BOX_TO_WORLD),
-//		// 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-//		// HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
-//
-//		Course1.addEle(grass1);
-//		Course1.addEle(accel1);
-//		Course1.addEle(glue1);
-//		Course1.addEle(hole1);
-//		Course1.addEle(void1);
-//		Course1.addEle(water1);
-//		Course1.addEle(sand1);
-//		Course1.addEle(illusion1);
-//		Course1.addEle(teleporter1);
-//		Course1.addPosition(pos1);
-//		Course1.addPosition(pos2);
-//		Course1.addPosition(pos3);
-//		Course1.addPosition(pos4);
-//
-//		// Course 2
-//		Course Course2 = new Course();
-//		Course2.setNome("Course 2");
-//		Vector2 pos5 = new Vector2(1.0f, 2.0f);
-//		Vector2 pos6 = new Vector2(2.0f, 3.0f);
-//		Vector2 pos7 = new Vector2(3.0f, 4.0f);
-//		Vector2 pos8 = new Vector2(4.0f, 5.0f);
-//		Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD), (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, elementType.grassFloor);
-//		Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD), 1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.sandFloor);
-//		Hole hole2 = new Hole(new Vector2(7f, 7f), 0.3f);
-//		Course2.addEle(grass2);
-//		Course2.addEle(sand2);
-//		Course2.addEle(hole2);
-//		Course2.addPosition(pos5);
-//		Course2.addPosition(pos6);
-//		Course2.addPosition(pos7);
-//		Course2.addPosition(pos8);
-//
-//		// Adding to all and selected
-//		addToAllCourses(Course1);
-//		addToAllCourses(Course2);
-//		addToSelectedCourses(Course1);
-//		addToSelectedCourses(Course2);
+		// // Course 1
+		// while (!Assets.update()) {
+		// }
+		// Course Course1 = new Course();
+		// Course1.setNome("Course 1");
+		//
+		// Vector2 pos1 = new Vector2(1.0f, 1.0f);
+		// Vector2 pos2 = new Vector2(2.0f, 2.0f);
+		// Vector2 pos3 = new Vector2(3.0f, 3.0f);
+		// Vector2 pos4 = new Vector2(4.0f, 4.0f);
+		//
+		// Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
+		// (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT /
+		// BOX_TO_WORLD, elementType.grassFloor);
+		//
+		// Hole hole1 = new Hole(new Vector2(5f, 5f), 0.3f);
+		//
+		// Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 12f / BOX_TO_WORLD),
+		// 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT
+		// / 2f / BOX_TO_WORLD, elementType.sandFloor);
+		//
+		// Floor water1 = new Floor(new Vector2(7 * (WIDTH / 12f /
+		// BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f /
+		// BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.waterFloor);
+		//
+		// Wall glue1 = new Wall(new Vector2(5 * (WIDTH / 12f / BOX_TO_WORLD), 9
+		// * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT /
+		// 2f / BOX_TO_WORLD, elementType.glueWall);
+		//
+		// Floor void1 = new Floor(new Vector2(9 * (WIDTH / 12f / BOX_TO_WORLD),
+		// 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT
+		// / 2f / BOX_TO_WORLD, elementType.voidFloor);
+		//
+		// Floor illusion1 = new Floor(new Vector2(11 * (WIDTH / 12f /
+		// BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f /
+		// BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
+		//
+		// Floor accel1 = new Floor(new Vector2(1 * (WIDTH / 12f /
+		// BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f /
+		// BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD,
+		// elementType.acceleratorFloor);
+		//
+		// Teleporter teleporter1 = new Teleporter(new Vector2(7f, 5f), new
+		// Vector2(7f, 3f), 0.3f, 1);
+		//
+		// // Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f /
+		// // BOX_TO_WORLD),
+		// // 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
+		// // HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
+		//
+		// Course1.addEle(grass1);
+		// Course1.addEle(accel1);
+		// Course1.addEle(glue1);
+		// Course1.addEle(hole1);
+		// Course1.addEle(void1);
+		// Course1.addEle(water1);
+		// Course1.addEle(sand1);
+		// Course1.addEle(illusion1);
+		// Course1.addEle(teleporter1);
+		// Course1.addPosition(pos1);
+		// Course1.addPosition(pos2);
+		// Course1.addPosition(pos3);
+		// Course1.addPosition(pos4);
+		//
+		// // Course 2
+		// Course Course2 = new Course();
+		// Course2.setNome("Course 2");
+		// Vector2 pos5 = new Vector2(1.0f, 2.0f);
+		// Vector2 pos6 = new Vector2(2.0f, 3.0f);
+		// Vector2 pos7 = new Vector2(3.0f, 4.0f);
+		// Vector2 pos8 = new Vector2(4.0f, 5.0f);
+		// Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
+		// (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT /
+		// BOX_TO_WORLD, elementType.grassFloor);
+		// Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
+		// 1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT
+		// / 2f / BOX_TO_WORLD, elementType.sandFloor);
+		// Hole hole2 = new Hole(new Vector2(7f, 7f), 0.3f);
+		// Course2.addEle(grass2);
+		// Course2.addEle(sand2);
+		// Course2.addEle(hole2);
+		// Course2.addPosition(pos5);
+		// Course2.addPosition(pos6);
+		// Course2.addPosition(pos7);
+		// Course2.addPosition(pos8);
+		//
+		// // Adding to all and selected
+		// addToAllCourses(Course1);
+		// addToAllCourses(Course2);
+		// addToSelectedCourses(Course1);
+		// addToSelectedCourses(Course2);
 
-//		try {
-//			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("AllCourses.sav"));
-//			out.writeObject(selectedCourses);
-//			out.close();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			System.out.println("huehue");
-//		}
-		
+		// try {
+		// ObjectOutputStream out = new ObjectOutputStream(new
+		// FileOutputStream("AllCourses.sav"));
+		// out.writeObject(selectedCourses);
+		// out.close();
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// System.out.println("huehue");
+		// }
 
 		// ///////////////////////////////////////////////////////////////////
 		// /// END OF TEST COURSE /////
@@ -311,6 +331,14 @@ public class MiniGolf extends Game {
 
 	public void addToAllCourses(Course course) {
 		allCourses.add(course);
+	}
+
+	public GameIO getLoadSave() {
+		return loadSave;
+	}
+
+	public void setLoadSave(GameIO loadSave) {
+		this.loadSave = loadSave;
 	}
 
 }

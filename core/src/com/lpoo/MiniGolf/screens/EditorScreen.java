@@ -147,6 +147,7 @@ public class EditorScreen implements Screen {
 
 					created.setNome("Course" + game.getSelectedCourses().size());
 					game.addToSelectedCourses(created);
+					game.getLoadSave().saveIndividualCourse(created);
 					game.setScreen(new MenuScreen(game));
 				}
 			}
@@ -540,8 +541,12 @@ public class EditorScreen implements Screen {
 					return;
 				}
 
-				Actor obj = stage.hit(screenX, screenY, true);
+				Actor obj = stage.hit(screenX, screenY, false);
 
+				if (obj == null) {
+					System.out.println("null");
+				} else
+					System.out.println("OBJECT");
 				if (obj instanceof Element) {
 					System.out.println("Rebelo Rocks");
 				}
