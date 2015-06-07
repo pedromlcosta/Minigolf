@@ -102,7 +102,7 @@ public class OptionsScreen implements Screen {
 		maxTimeLabel = new Label("Time: 0", skin);
 
 		Label numberOfPlayersLabel = new Label(" Number Of Players: ", skin);
-		Label numberOfCoursesLabel = new Label(" Number Of Courses: " + MiniGolf.getNrCourses(), skin);
+		Label numberOfCoursesLabel = new Label(" Number Of Courses: ", skin);
 		Label spaceLabel = new Label("", skin);
 
 		gameOptionsTable.defaults().width(200);

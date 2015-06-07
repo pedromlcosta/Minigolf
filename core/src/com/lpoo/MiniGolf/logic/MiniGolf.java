@@ -314,7 +314,7 @@ public class MiniGolf extends Game {
 		System.out.println(size);
 		if (size == 0)
 			return;
-
+		
 		System.out.println(nrCourses);
 		Random rand = new Random();
 
