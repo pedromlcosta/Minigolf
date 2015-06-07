@@ -449,7 +449,6 @@ public class EditorScreen implements Screen {
 			if (nTeleporters % 2 != 0 && elementToAdd.getType() == elementType.teleporter && nTotalt <= 10) {
 				elementToAdd.setDestination(new Vector2(posInicialX + width / 2, posInicialY + height / 2));
 				nTeleporters++;
-				elementToAdd.changeColor(nTotalt);
 				elementToAdd.initializeDestImage();
 				getElement(selectElement.getSelected());
 
@@ -467,6 +466,7 @@ public class EditorScreen implements Screen {
 							nTeleporters++;
 							nTotalt++;
 							createElement();
+							elementToAdd.changeColor(nTotalt);
 						}
 					}
 				} else {
