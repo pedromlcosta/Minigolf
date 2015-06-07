@@ -36,6 +36,15 @@ public class Element extends Actor implements Serializable {
 	protected float height;
 	protected elementType type;
 	transient protected Sprite image;
+	private float angle;
+
+	public float getAngle() {
+		return angle;
+	}
+
+	public void setAngle(float angle) {
+		this.angle = angle;
+	}
 
 	public Element() {
 		startPos = new Vector2();
