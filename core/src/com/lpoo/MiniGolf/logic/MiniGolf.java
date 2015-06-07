@@ -1,8 +1,5 @@
 package com.lpoo.MiniGolf.logic;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Game;
@@ -17,9 +14,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.data.GameIO;
-import com.lpoo.MiniGolf.logic.Element.elementType;
 import com.lpoo.MiniGolf.screens.LoadScreen;
 
 public class MiniGolf extends Game {
@@ -31,7 +26,7 @@ public class MiniGolf extends Game {
 
 	private int nrPlayers = 3;
 	private ArrayList<Course> selectedCourses = new ArrayList<Course>();
-	private ArrayList<Course> allCourses = new ArrayList<Course>();
+	private static ArrayList<Course> allCourses = new ArrayList<Course>();
 
 	private static int nrCourses = 2;
 	public static final int MAX_PLAYERS = 4;
@@ -306,12 +301,12 @@ public class MiniGolf extends Game {
 		selectedCourses.add(course);
 	}
 
-	public ArrayList<Course> getAllCourses() {
+	public static ArrayList<Course> getAllCourses() {
 		return allCourses;
 	}
 
 	public void setAllCourses(ArrayList<Course> allCourses) {
-		this.allCourses = allCourses;
+		MiniGolf.allCourses = allCourses;
 	}
 
 	public void addToAllCourses(Course course) {

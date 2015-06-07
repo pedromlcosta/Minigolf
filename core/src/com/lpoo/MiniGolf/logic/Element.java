@@ -36,7 +36,7 @@ public class Element extends Actor implements Serializable {
 	protected float height;
 	protected elementType type;
 	transient protected Sprite image;
-	private float angle;
+	protected float angle;
 
 	public float getAngle() {
 		return angle;
@@ -187,6 +187,7 @@ public class Element extends Actor implements Serializable {
 		// height*MiniGolf.BOX_TO_WORLD );
 	}
 
+	
 	public Sprite getImage() {
 		return image;
 	}
@@ -267,10 +268,12 @@ public class Element extends Actor implements Serializable {
 
 	}
 
-	public void setImagePos() {
+	public void initializeImage() {
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
+		image.setOriginCenter();
+		image.setRotation(angle);
 	}
 
 	public void setRadius(float holeRadius) {
