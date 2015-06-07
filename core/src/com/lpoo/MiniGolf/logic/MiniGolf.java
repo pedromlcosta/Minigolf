@@ -2,6 +2,7 @@ package com.lpoo.MiniGolf.logic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 import com.badlogic.gdx.Game;
@@ -304,32 +305,21 @@ public class MiniGolf extends Game {
 
 	public void randomCourses() {
 
-		int size = allCourses.size();
-		Integer temp[] = new Integer[size];
-		Integer pick;
-		if (selectedCourses != null)
-			selectedCourses.clear();
-		else
-			return;
-		System.out.println(size);
-		if (size == 0)
+		// Reset selected Courses
+		selectedCourses.clear();
+
+		if (allCourses.isEmpty())
 			return;
 
-		System.out.println(nrCourses);
-		Random rand = new Random();
-
-		for (int i = 0; i < nrCourses;) {
-
-			pick = rand.nextInt(size);
-
-			if (!Arrays.asList(temp).contains(pick)) {
-				System.out.println("Pick: " + pick);
-				selectedCourses.add(allCourses.get(pick));
-				temp[i] = pick;
-				i++;
-			}
+		//Shuffling all the courses
+		ArrayList<Course> randomCourses = (ArrayList<Course>) allCourses.clone();
+		Collections.shuffle(randomCourses);
+		
+		//Adding to selectedCourses only the first "nrCourses" courses of the shuffled array
+		for(int i = 0 ; i < nrCourses; i++){
+			selectedCourses.add(randomCourses.get(i));
 		}
-		System.out.println("SELECTED COURSE: " + selectedCourses.size());
+
 	}
 
 	public static void setRandomCourse(boolean randomCourse) {
