@@ -314,9 +314,7 @@ public class MiniGolf extends Game {
 		//Adding to selectedCourses only the first "nrCourses" courses of the shuffled array
 		for(int i = 0 ; i < nrCourses; i++){
 			selectedCourses.add(randomCourses.get(i));
- 
 		}
-
 	}
 
 	public static void setRandomCourse(boolean randomCourse) {

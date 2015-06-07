@@ -56,6 +56,7 @@ public class EditorScreen implements Screen {
 	private float cursorPosX, cursorPosY, leftX, leftY;
 	private int nPlayersPlaced = 0;
 	private int nTeleporters = 0;
+	private int nTotalt = 0;
 	Floor grassFloor;
 	public static boolean middleMousebutton, rKeyPressed;
 
@@ -445,10 +446,11 @@ public class EditorScreen implements Screen {
 			posInicialX /= MiniGolf.BOX_TO_WORLD;
 			posInicialY /= MiniGolf.BOX_TO_WORLD;
 
-			if (nTeleporters % 2 != 0 && elementToAdd.getType() == elementType.teleporter) {
+			if (nTeleporters % 2 != 0 && elementToAdd.getType() == elementType.teleporter && nTotalt <= 10) {
 				elementToAdd.setDestination(new Vector2(posInicialX + width / 2, posInicialY + height / 2));
-				elementToAdd.changeColor(nTeleporters % 10);
 				nTeleporters++;
+				elementToAdd.changeColor(nTotalt);
+				elementToAdd.initializeDestImage();
 				getElement(selectElement.getSelected());
 
 			} else {
@@ -456,12 +458,17 @@ public class EditorScreen implements Screen {
 				elementToAdd.createElement(posInicialX, posInicialY, width, height);
 
 				if (notOverlapping()) {
-					if (elementToAdd.getType() == elementType.teleporter)
-						nTeleporters++;
 
-					stage.addActor(elementToAdd);
-					created.addEle(elementToAdd);
-					elementToAdd.initializeImage();
+					if (elementToAdd.getType() != elementType.teleporter) {
+
+						createElement();
+					} else {
+						if (nTotalt <= 9) {
+							nTeleporters++;
+							nTotalt++;
+							createElement();
+						}
+					}
 				} else {
 					elementToAdd.destroyBody();
 				}
@@ -473,6 +480,13 @@ public class EditorScreen implements Screen {
 
 		}
 		pressedRightButton = false;
+	}
+
+	public void createElement() {
+		stage.addActor(elementToAdd);
+		created.addEle(elementToAdd);
+		elementToAdd.initializeImage();
+
 	}
 
 	// returns a new Pos depending on the placement of the element

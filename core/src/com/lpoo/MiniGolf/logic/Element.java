@@ -359,4 +359,9 @@ public class Element extends Actor implements Serializable {
 	// } else
 	// return null;
 	// return null;
+
+	public void initializeDestImage() {
+		// TODO Auto-generated method stub
+		
+	}
 }

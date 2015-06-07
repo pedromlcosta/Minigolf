@@ -74,13 +74,14 @@ public class Hole extends Element {
 		// + " " + (body.getPosition().y-width/2f)*MiniGolf.BOX_TO_WORLD + " " +
 		// width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD+
 		// " "+ body.getFixtureList().get(0).getShape().getRadius());
-		MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - width / 2f) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-				* MiniGolf.BOX_TO_WORLD);
+//		MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - width / 2f) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
+//				* MiniGolf.BOX_TO_WORLD);
 		// image.setPosition(body.getPosition().x*MiniGolf.BOX_TO_WORLD,
 		// body.getPosition().y*MiniGolf.BOX_TO_WORLD);
 		// image.setSize(width*MiniGolf.BOX_TO_WORLD,
 		// height*MiniGolf.BOX_TO_WORLD);
 		// image.draw(MiniGolf.batch);
+	image.draw(MiniGolf.batch);
 	}
 
  

@@ -73,7 +73,7 @@ public class Teleporter extends Element {
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get("teleporter.png", Texture.class));
 		destinationImage = new Sprite(Assets.manager.get("teleporterDestination.png", Texture.class));
-		
+
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
@@ -88,6 +88,7 @@ public class Teleporter extends Element {
 	}
 
 	public void changeColor(int colorID) {
+		System.out.println("Color: " + colorID);
 		switch (colorID) {
 		case 1:
 			destinationImage.setColor(Color.ORANGE);
@@ -131,7 +132,7 @@ public class Teleporter extends Element {
 			break;
 		default:
 			break;
-			
+
 		}
 	}
 
@@ -174,14 +175,29 @@ public class Teleporter extends Element {
 		this.destination = destination;
 	}
 
+	public void initializeDestImage() {
+		destinationImage.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		destinationImage.setPosition((destination.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (destination.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
+		destinationImage.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
+		destinationImage.setOriginCenter();
+		destinationImage.setRotation(angle);
+
+	}
+
 	@Override
 	public void draw(Batch batch, float parentAlfa) {
 
-		batch.draw(image, (body.getPosition().x - width / 2) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-				* MiniGolf.BOX_TO_WORLD);
-
-		batch.draw(destinationImage, (destination.x - width / 2) * MiniGolf.BOX_TO_WORLD, (destination.y - height / 2) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-				* MiniGolf.BOX_TO_WORLD);
+		image.draw(batch);
+		destinationImage.draw(batch);
+		// batch.draw(image.getTexture(), (body.getPosition().x - width / 2) *
+		// MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2) *
+		// MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
+		// * MiniGolf.BOX_TO_WORLD);
+		//
+		// batch.draw(destinationImage.getTexture(), (destination.x - width / 2)
+		// * MiniGolf.BOX_TO_WORLD, (destination.y - height / 2) *
+		// MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
+		// * MiniGolf.BOX_TO_WORLD);
 
 	}
 
