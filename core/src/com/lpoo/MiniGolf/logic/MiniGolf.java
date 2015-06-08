@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -77,6 +79,11 @@ public class MiniGolf extends Game {
 	public static final float BUTTON_HEIGHT = 50f;
 
 	/**
+	 * background sond to be played
+	 */
+	private Sound sound;
+
+	/**
 	 * Instantiates a new mini golf.
 	 */
 	public MiniGolf() {
@@ -91,6 +98,9 @@ public class MiniGolf extends Game {
 	public void create() {
 
 		// INITIALIZING SINGLETONS
+		sound = Gdx.audio.newSound(Gdx.files.local("calm.mp3"));
+		sound.play();
+		sound.loop();
 
 		batch = new SpriteBatch();
 		W = new World(new Vector2(0, 0), false);
