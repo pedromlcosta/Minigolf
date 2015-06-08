@@ -102,7 +102,7 @@ public class EditorScreen implements Screen {
 	Floor grassFloor;
 
 	/** The r key pressed. */
-	public static boolean middleMousebutton, rKeyPressed;
+	public static boolean middleMouseButton, rKeyPressed;
 
 	/**
 	 * Instantiates a new editor screen.
@@ -134,7 +134,7 @@ public class EditorScreen implements Screen {
 		// default
 		// value for
 		// elementToAdd
-		pressedResetbutton = middleMousebutton = circleElement = drawElement = pressedLeftButton = pressedRightButton = false;
+		pressedResetbutton = middleMouseButton = circleElement = drawElement = pressedLeftButton = pressedRightButton = false;
 		changedItem = true;
 		createActors();
 		addListeners();
@@ -697,10 +697,10 @@ public class EditorScreen implements Screen {
 			@Override
 			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
 
-				middleMousebutton = false;
+				middleMouseButton = false;
 				if (button == Buttons.BACK) {
 				} else if (button == Buttons.MIDDLE) {
-					middleMousebutton = true;
+					middleMouseButton = true;
 					return false;
 				} else if (button == Buttons.LEFT && !pressedLeftButton) {
 					posInit.x = posX;

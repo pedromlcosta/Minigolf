@@ -66,7 +66,7 @@ public class Element extends Actor implements Serializable {
 	/** The body. */
 	transient protected Body body;
 
-	/** The start pos. */
+	/** The start position of the Element */
 	protected Vector2 startPos;
 
 	/** The width. */
@@ -75,10 +75,10 @@ public class Element extends Actor implements Serializable {
 	/** The height. */
 	protected float height;
 
-	/** The type. */
+	/** The type,enum member that indicates what type of Element the objet will be */
 	protected elementType type;
 
-	/** The image. */
+	/** The image used by the Element. */
 	transient protected Sprite image;
 
 	/** The angle. */
@@ -97,7 +97,7 @@ public class Element extends Actor implements Serializable {
 	 * Sets the angle.
 	 *
 	 * @param angle
-	 *            the new angle
+	 *           
 	 */
 	public void setAngle(float angle) {
 		this.angle = angle;
@@ -112,62 +112,9 @@ public class Element extends Actor implements Serializable {
 		width = 0;
 		this.setVisible(true);
 		this.setTouchable(Touchable.enabled);
-
-		this.addCaptureListener(new InputListener() {
-			@Override
-			public boolean touchDown(InputEvent Event, float posX, float posY, int arg2, int button) {
-				System.out.println("TOUCHED: " + type);
-				return false;
-			}
-
-		});
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.scenes.scene2d.Actor#hit(float, float, boolean)
-	 */
-	@Override
-	public Actor hit(float x, float y, boolean touchable) {
-		if ((touchable && this.getTouchable() != Touchable.enabled) || type == elementType.grassFloor) {
-			EditorScreen.middleMousebutton = false;
-			EditorScreen.rKeyPressed = false;
-			return null;
-		}
-
-		float newX = x / MiniGolf.BOX_TO_WORLD;
-		float newY = y / MiniGolf.BOX_TO_WORLD;
-		if (newX >= (startPos.x - width / 2) && newX < startPos.x + width / 2 && newY >= (startPos.y - height / 2) && newY < (startPos.y + height / 2)) {
-			if (EditorScreen.middleMousebutton) {
-
-				System.out.println("TOUCHED: " + type);
-				EditorScreen.removeFromArrayElement(this);
-				this.destroyBody();
-				this.remove();
-				EditorScreen.middleMousebutton = false;
-				return this;
-			} else if (type == elementType.acceleratorFloor) {
-				if (EditorScreen.rKeyPressed) {
-
-					Vector2 bodyPos = body.getPosition();
-
-					angle = body.getAngle() + (90 * Geometry.DEG_TO_RAD);
-					angle = (float) (angle % (2 * Math.PI)); // Between 0 and
-																// 2*pi
-
-					// TODO tentar converter angulo
-					image.setOriginCenter();
-					image.rotate90(false);
-					body.setTransform(bodyPos.x, bodyPos.y, angle);
-					EditorScreen.rKeyPressed = false;
-				}
-			}
-		}
-		return null;
-	}
-
+	
 	/**
 	 * Instantiates a new element.
 	 *
@@ -230,11 +177,8 @@ public class Element extends Actor implements Serializable {
 	 * Instantiates a new element.
 	 *
 	 * @param width
-	 *            the width
 	 * @param height
-	 *            the height
 	 * @param type
-	 *            the type
 	 */
 	public Element(float width, float height, elementType type) {
 
@@ -249,7 +193,7 @@ public class Element extends Actor implements Serializable {
 	 * Instantiates a new element.
 	 *
 	 * @param type
-	 *            the type
+	 *           
 	 */
 	public Element(elementType type) {
 		this.type = type;
@@ -257,13 +201,56 @@ public class Element extends Actor implements Serializable {
 		this.setTouchable(Touchable.enabled);
 
 	}
+	
+	/*
+	 * @Override of the already implemented function
+	 * Changes:
+	 *  besides detecting if a certain element is hit, it also checks the flags middleMouseButton ( if true the actor hit will be deleted)
+	 * and the flag rKeyPressed if true and the actor is a acceleratorFloor the actor will rotate 90º degrees counter-clockwise 
+	 */
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		if ((touchable && this.getTouchable() != Touchable.enabled) || type == elementType.grassFloor) {
+			EditorScreen.middleMouseButton = false;
+			EditorScreen.rKeyPressed = false;
+			return null;
+		}
+
+		float newX = x / MiniGolf.BOX_TO_WORLD;
+		float newY = y / MiniGolf.BOX_TO_WORLD;
+		if (newX >= (startPos.x - width / 2) && newX < startPos.x + width / 2 && newY >= (startPos.y - height / 2) && newY < (startPos.y + height / 2)) {
+			if (EditorScreen.middleMouseButton) {
+
+				System.out.println("TOUCHED: " + type);
+				EditorScreen.removeFromArrayElement(this);
+				this.destroyBody();
+				this.remove();
+				EditorScreen.middleMouseButton = false;
+				return this;
+			} else if (type == elementType.acceleratorFloor) {
+				if (EditorScreen.rKeyPressed) {
+
+					Vector2 bodyPos = body.getPosition();
+
+					angle = body.getAngle() + (90 * Geometry.DEG_TO_RAD);
+					angle = (float) (angle % (2 * Math.PI)); // Between 0 and
+																// 2*pi
+					image.setOriginCenter();
+					image.rotate90(false);
+					body.setTransform(bodyPos.x, bodyPos.y, angle);
+					EditorScreen.rKeyPressed = false;
+				}
+			}
+		}
+		return null;
+	}
+
 
 	/**
 	 * Overlap.
 	 *
 	 * @param eleToBeAdded
-	 *            the ele to be added
-	 * @return true, if successful
+	 * @return true if the two elements "this" and eleToBeAdded are overlapping
 	 */
 	public boolean overlap(Element eleToBeAdded) {
 
@@ -275,12 +262,17 @@ public class Element extends Actor implements Serializable {
 
 		Vector2 temp = new Vector2(startPos.x - width / 2, startPos.y - height / 2);
 		Vector2 temp2 = new Vector2(eleToBeAdded.getPosX() - eleToBeAdded.getWidth() / 2, eleToBeAdded.getPosY() - eleToBeAdded.getHeight() / 2);
+		
+		//Both are circles
 		if (shapeToAdd.getType() == Type.Circle && shapeEle.getType() == Type.Circle) {
 			return Geometry.overlapCircles((CircleShape) shapeEle, temp, (CircleShape) shapeToAdd, temp2);
-		} else if (shapeToAdd.getType() == Type.Polygon && shapeEle.getType() == Type.Polygon) {
+		} else 
+			//Both are rectangles
+			if (shapeToAdd.getType() == Type.Polygon && shapeEle.getType() == Type.Polygon) {
 
 			return Geometry.overlapPloygons(this, temp, eleToBeAdded, temp2);
 		} else {
+			//One is a circle the other one is a rectangle
 			if (shapeToAdd.getType() == Type.Polygon) {
 				return Geometry.overlap(this, temp, shapeEle.getRadius(), eleToBeAdded, temp2);
 			} else {
@@ -323,7 +315,6 @@ public class Element extends Actor implements Serializable {
 	 * Sets the image.
 	 *
 	 * @param image
-	 *            the new image
 	 */
 	public void setImage(Sprite image) {
 		this.image = image;
@@ -351,14 +342,13 @@ public class Element extends Actor implements Serializable {
 	 * Sets the body.
 	 *
 	 * @param body
-	 *            the new body
 	 */
 	public void setBody(Body body) {
 		this.body = body;
 	}
 
 	/**
-	 * Gets the pos y.
+	 * Gets the pos y of the element
 	 *
 	 * @return the pos y
 	 */
@@ -367,7 +357,7 @@ public class Element extends Actor implements Serializable {
 	}
 
 	/**
-	 * Gets the start pos x.
+	 * Gets the start pos x of the element
 	 *
 	 * @return the start pos x
 	 */
@@ -385,10 +375,10 @@ public class Element extends Actor implements Serializable {
 	}
 
 	/**
-	 * Sets the start pos x.
+	 * Sets the start pos x. 
 	 *
 	 * @param x
-	 *            the new start pos x
+	 *           
 	 */
 	public void setStartPosX(float x) {
 		this.startPos.x = x;
@@ -414,45 +404,42 @@ public class Element extends Actor implements Serializable {
 
 	/**
 	 * Sets the start pos.
+	 * startPos represents the central point  of the element
 	 *
 	 * @param Start
-	 *            the new start pos
+	 *           
 	 */
 	public void setStartPos(Vector2 Start) {
 		this.startPos = Start;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.scenes.scene2d.Actor#getHeight()
+	/**
+	 * @return the height
 	 */
 	public float getHeight() {
 		return height;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * @param height
 	 * 
-	 * @see com.badlogic.gdx.scenes.scene2d.Actor#setHeight(float)
+	 * replaces the this.height with the @param
 	 */
 	public void setHeight(float height) {
 		this.height = height;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.scenes.scene2d.Actor#getWidth()
+	/**
+	 * @return the width
 	 */
 	public float getWidth() {
 		return width;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * @param width
 	 * 
-	 * @see com.badlogic.gdx.scenes.scene2d.Actor#setWidth(float)
+	 * replaces the this.width with the @param
 	 */
 	public void setWidth(float width) {
 		this.width = width;
@@ -471,7 +458,7 @@ public class Element extends Actor implements Serializable {
 	 * Sets the type.
 	 *
 	 * @param type
-	 *            the new type
+	 *             
 	 */
 	public void setType(elementType type) {
 		this.type = type;
@@ -481,7 +468,7 @@ public class Element extends Actor implements Serializable {
 	 * Creates the body.
 	 *
 	 * @param w
-	 *            the w
+	 *           
 	 */
 	public void createBody(World w) {
 	}
@@ -494,7 +481,8 @@ public class Element extends Actor implements Serializable {
 	}
 
 	/**
-	 * Initialize image.
+	 * Initialize image, makes it such that we start to draw the element from the  
+	 * bottom  left corner
 	 */
 	public void initializeImage() {
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
@@ -509,7 +497,7 @@ public class Element extends Actor implements Serializable {
 	 * Sets the radius.
 	 *
 	 * @param holeRadius
-	 *            the new radius
+	 *          
 	 */
 	public void setRadius(float holeRadius) {
 	}
@@ -518,7 +506,7 @@ public class Element extends Actor implements Serializable {
 	 * Sets the destination.
 	 *
 	 * @param destination
-	 *            the new destination
+	 *          
 	 */
 	public void setDestination(Vector2 destination) {
 	}
@@ -527,22 +515,23 @@ public class Element extends Actor implements Serializable {
 	 * Change color.
 	 *
 	 * @param colorID
-	 *            the color id
+	 *          
 	 */
 	public void changeColor(int colorID) {
 	}
 
 	/**
-	 * Creates the element.
+	 * "Creates" the element
+	 * Adds to the element the necessary fields such that it can in fact be placed and seen during in the course
 	 *
 	 * @param posInicialX
-	 *            the pos inicial x
+	 *            
 	 * @param posInicialY
-	 *            the pos inicial y
+	 *            
 	 * @param width
-	 *            the width
+	 *           
 	 * @param height
-	 *            the height
+	 *            
 	 */
 	public void createElement(float posInicialX, float posInicialY, float width, float height) {
 
