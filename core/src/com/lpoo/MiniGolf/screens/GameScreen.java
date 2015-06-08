@@ -1,5 +1,6 @@
 package com.lpoo.MiniGolf.screens;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,9 +31,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.esotericsoftware.kryonet.Server;
 import com.lpoo.MiniGolf.geometry.Geometry;
 import com.lpoo.MiniGolf.logic.Ball;
 import com.lpoo.MiniGolf.logic.Course;
@@ -41,7 +44,6 @@ import com.lpoo.MiniGolf.logic.ElementType;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 import com.lpoo.MiniGolf.logic.Player;
 import com.lpoo.MiniGolf.logic.Teleporter;
-import com.lpoo.MiniGolf.geometry.*;
 
 
 //WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
@@ -91,6 +93,8 @@ public class GameScreen implements Screen, InputProcessor {
 	private boolean changeProcessor;
 	private Label timeLabel;
 
+	Server server = new Server();
+	
 	public GameScreen(MiniGolf game) {
 		this.game = game;
 
@@ -201,6 +205,35 @@ public class GameScreen implements Screen, InputProcessor {
 
 	@Override
 	public void show() {
+		
+		
+		
+		Kryo kryo = server.getKryo();
+		kryo.register(Comando.class);
+
+		server.start();
+		try {
+			server.bind(54555, 54777);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+
+		server.addListener(new Listener() {
+			public void received(Connection connection, Object object) {
+				if (object instanceof Comando) {
+					Comando request = (Comando) object;
+					
+					// do stuff with command
+				}
+			}
+		});
+		
+		
+		
+		
+		
+		
 		stage = new Stage();
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();

@@ -17,5 +17,7 @@
 	<classpathentry kind="lib" path="jar_deps/reflectasm-1.10.0.jar"/>
 	<classpathentry kind="lib" path="jar_deps/vis-ui-0.7.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="jar_deps/kryo-2.23.1-SNAPSHOT-all-debug.jar"/>
+	<classpathentry kind="lib" path="jar_deps/kryonet-debug-2.21.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
