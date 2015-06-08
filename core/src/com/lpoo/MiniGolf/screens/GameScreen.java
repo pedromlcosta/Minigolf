@@ -954,6 +954,7 @@ public class GameScreen implements Screen, InputProcessor {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (button == Buttons.LEFT) {
 
+			
 			// Auxiliar vector containing the available players, that are still
 			// playing and the one who played in the last turn
 
