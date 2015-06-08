@@ -53,8 +53,8 @@ public class EditorScreen implements Screen {
 	/** The scene. */
 	private Table scene;
 
-	/** The resete button. */
-	private TextButton goBackButton, doneButton, revertLastMoveButton, reseteButton;
+	/** The reset button. */
+	private TextButton goBackButton, doneButton, revertLastMoveButton, resetButton;
 
 	/** The game. */
 	private MiniGolf game;
@@ -68,10 +68,13 @@ public class EditorScreen implements Screen {
 	/** The Constant HOLE_RADIUS. */
 	private static final float HOLE_RADIUS = 0.3f;
 
-	/** The pos init. */
+	/**
+	 * The pos init. this is the inicial position when we start to add an
+	 * Element
+	 */
 	Vector2 posInit;
 
-	/** The circle element. */
+	/** boolean flags that manage the diferent changes in the editor. */
 	private boolean drawElement, pressedLeftButton, pressedRightButton, pressedResetbutton, changedItem, circleElement;
 
 	/** The shape renderer. */
@@ -80,17 +83,20 @@ public class EditorScreen implements Screen {
 	/** The cam. */
 	private OrthographicCamera cam;
 
-	/** The left y. */
+	/**
+	 * The current position of the Mouse -> (CursosPosX,cursorPosY) and the
+	 * position when the user releases the Mouse Left Button -> (leftX,leftY)
+	 */
 	private float cursorPosX, cursorPosY, leftX, leftY;
 
 	/** The n players placed. */
 	private int nPlayersPlaced = 0;
 
-	/** The n teleporters. */
-	private int nTeleporters = 0;
-
 	/** The n totalt. */
 	private int nTotalt = 0;
+
+	/** The n teleporters. must be 2 bigger than nTotalt */
+	private int nTeleporters = 0;
 
 	/** The grass floor. */
 	Floor grassFloor;
@@ -278,7 +284,7 @@ public class EditorScreen implements Screen {
 		 * Destroys all Elements and allows user to start fresh With the
 		 * exception of grass floor that´s the default floor type
 		 */
-		reseteButton.addListener(new ClickListener() {
+		resetButton.addListener(new ClickListener() {
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				pressedResetbutton = true;
 			}
@@ -444,9 +450,9 @@ public class EditorScreen implements Screen {
 		revertLastMoveButton.setWidth(MiniGolf.BUTTON_WIDTH);
 		revertLastMoveButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
-		reseteButton = new TextButton("Reset", skin);
-		reseteButton.setWidth(MiniGolf.BUTTON_WIDTH);
-		reseteButton.setHeight(MiniGolf.BUTTON_HEIGHT);
+		resetButton = new TextButton("Reset", skin);
+		resetButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		resetButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
 		goBackButton = new TextButton("Back", skin);
 		goBackButton.setWidth(MiniGolf.BUTTON_WIDTH);
@@ -459,7 +465,7 @@ public class EditorScreen implements Screen {
 
 		// TODO ADD PLAYER STATUS TO GAME; CHANGE LETTER COLOR
 		scene = new Table();
-		scene.add(reseteButton).width(MiniGolf.BUTTON_WIDTH).height(MiniGolf.BUTTON_HEIGHT);
+		scene.add(resetButton).width(MiniGolf.BUTTON_WIDTH).height(MiniGolf.BUTTON_HEIGHT);
 		scene.add(spaceLabel).width(50f);
 		scene.add(revertLastMoveButton).width(MiniGolf.BUTTON_WIDTH).height(MiniGolf.BUTTON_HEIGHT);
 		scene.add(spaceLabel).width(50f);
@@ -647,7 +653,6 @@ public class EditorScreen implements Screen {
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Keys.R) {
-					System.out.println("Left Shift Pressed");
 					rKeyPressed = true;
 				} else
 					rKeyPressed = false;
@@ -662,9 +667,7 @@ public class EditorScreen implements Screen {
 					if (elementToAdd != null) {
 
 						if (elementToAdd.getType() == elementType.ball) {
-							// System.out.println("Update Ball");
 							if (nPlayersPlaced < MiniGolf.MAX_PLAYERS) {
-								// System.out.println("Teste");
 								created.addPosition(new Vector2((screenX + elementToAdd.getWidth() / 2) / MiniGolf.BOX_TO_WORLD, (screenY + elementToAdd.getHeight() / 2) / MiniGolf.BOX_TO_WORLD));
 								nPlayersPlaced++;
 
@@ -696,7 +699,6 @@ public class EditorScreen implements Screen {
 
 				middleMousebutton = false;
 				if (button == Buttons.BACK) {
-					System.out.println("BACK BUTTON");
 				} else if (button == Buttons.MIDDLE) {
 					middleMousebutton = true;
 					return false;
@@ -709,9 +711,6 @@ public class EditorScreen implements Screen {
 					return true;
 				} else if (button == Buttons.RIGHT) {
 					pressedLeftButton = false;
-
-					// TODO CHECK
-					// elementToAdd = null;
 					drawElement = false;
 					pressedRightButton = true;
 
@@ -740,7 +739,6 @@ public class EditorScreen implements Screen {
 	 */
 	public void drawBall() {
 
-		// System.out.println(created.getPositions().size());
 		for (int i = 0; i < nPlayersPlaced; i++) {
 			Vector2 pos = created.getPositions().get(i);
 			shapeRenderer.begin();

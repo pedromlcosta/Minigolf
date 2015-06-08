@@ -2,7 +2,6 @@ package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.geometry.Geometry;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Floor.
  */
@@ -84,8 +82,6 @@ public class Floor extends Element {
 
 		body = w.createBody(bodyDef);
 		body.createFixture(fixDef);
-		//TODO tentar converter angulo
-	//	System.out.println("INITIALIZING BODY, ANGLE IN RADS IS: " + angle + " AND IN DEG: " + angle/Geometry.DEG_TO_RAD);
 		body.setTransform(startPos, angle);
 
 		switch (type) {
@@ -112,7 +108,6 @@ public class Floor extends Element {
 			break;
 		}
 
-		//System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
 
 	}
 
@@ -130,8 +125,6 @@ public class Floor extends Element {
 	 * @see com.lpoo.MiniGolf.logic.Element#draw()
 	 */
 	public void draw() {
-		// MiniGolf.batch.draw(image.getTexture(), image.getOriginX(),
-		// image.getOriginY(),image.getWidth(), image.getHeight(), 0, 0, 2, 1);
 		image.draw(MiniGolf.batch);
 	}
 
@@ -177,7 +170,6 @@ public class Floor extends Element {
 		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		image.setOriginCenter();
-		//TODO tentar converter angulo
 		image.setRotation(angle * (1 / Geometry.DEG_TO_RAD));
 
 	}

@@ -256,16 +256,6 @@ public class Teleporter extends Element {
 
 		image.draw(batch);
 		destinationImage.draw(batch);
-		// batch.draw(image.getTexture(), (body.getPosition().x - width / 2) *
-		// MiniGolf.BOX_TO_WORLD, (body.getPosition().y - height / 2) *
-		// MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-		// * MiniGolf.BOX_TO_WORLD);
-		//
-		// batch.draw(destinationImage.getTexture(), (destination.x - width / 2)
-		// * MiniGolf.BOX_TO_WORLD, (destination.y - height / 2) *
-		// MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-		// * MiniGolf.BOX_TO_WORLD);
-
 	}
 
 	/**
