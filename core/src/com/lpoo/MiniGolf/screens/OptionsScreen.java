@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.data.Assets;
-import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
 public class OptionsScreen implements Screen {
@@ -38,15 +37,19 @@ public class OptionsScreen implements Screen {
 	private Table gameOptionsTable;
 	private MiniGolf game;
 
-	private final float DELTA_WIDTH = 200f;
-	private static final float BUTTON_WIDTH = 200f;
-	private static final float BUTTON_HEIGHT = 50f;
-
+	/**
+	 * Constructor of the screen
+	 * 
+	 * @param game
+	 */
 	public OptionsScreen(MiniGolf game) {
 		this.game = game;
 
 	}
 
+	/**
+	 * Instantiates all elements that will be used through out the screen
+	 */
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
@@ -64,7 +67,9 @@ public class OptionsScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 	}
 
-	// Create template
+	/**
+	 * In charge of initializing the actors
+	 */
 	private void createMenuElements() {
 
 		maxTimeSlider = new Slider(10f, 60f, 1f, false, skin);
@@ -72,20 +77,9 @@ public class OptionsScreen implements Screen {
 		numberOfPlayers = new TextField("Number of Players", skin);
 		numberOfCourses = new TextField("Number of Courses", skin);
 
-		String[] newItems;
-		newItems = new String[game.getSelectedCourses().size()];
-
-		int i = 0;
-		for (Course c : game.getSelectedCourses()) {
-			if (c.getNome() != null) {
-				newItems[i] = c.getNome();
-				i++;
-			}
-		}
-
 		goBackButton = new TextButton("Back", skin);
-		goBackButton.setWidth(BUTTON_WIDTH);
-		goBackButton.setHeight(BUTTON_HEIGHT);
+		goBackButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		goBackButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 		goBackButton.setPosition(MiniGolf.WIDTH / 2 - 150f, MiniGolf.HEIGHT / 2 - 100f);
 		stage.addActor(goBackButton);
 		addListeners();
@@ -94,9 +88,8 @@ public class OptionsScreen implements Screen {
 	}
 
 	/**
-	 * creates the tables that mantain the Menu
+	 * creates the tables that maintains the Menu
 	 */
-	// TODO ver funções sem numero de argumentos;
 	private void createTable() {
 		gameOptionsTable = new Table();
 
@@ -136,8 +129,16 @@ public class OptionsScreen implements Screen {
 
 	}
 
+	/**
+	 * adds listeners to the actors
+	 */
 	private void addListeners() {
 
+		/**
+		 * Validates if the value given by the user is acceptable A value is
+		 * considered acceptable when it´s bigger than 0 but not bigger than the
+		 * number of MAX_Player
+		 */
 		numberOfPlayers.setTextFieldFilter(new TextFieldFilter() {
 			@Override
 			public boolean acceptChar(TextField textField, char c) {
@@ -159,6 +160,9 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
+		/**
+		 * if the value on the text isn´t valid it´s erased
+		 */
 		numberOfPlayers.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -170,6 +174,10 @@ public class OptionsScreen implements Screen {
 
 			}
 		});
+		/**
+		 * it aceptes a value when it is a number and said number is not bigger
+		 * than the number of All Courses available
+		 */
 		numberOfCourses.setTextFieldFilter(new TextFieldFilter() {
 			@Override
 			public boolean acceptChar(TextField textField, char c) {
@@ -192,6 +200,9 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
+		/**
+		 * if the value not valid it erases the value
+		 */
 		numberOfCourses.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -202,6 +213,10 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
+		/**
+		 * updates the variable TempoMax in MiniGolf and changes the Label
+		 * accordingly
+		 */
 		maxTimeSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
@@ -210,6 +225,9 @@ public class OptionsScreen implements Screen {
 			}
 		});
 
+		/**
+		 * Returns to the MenuScreen
+		 */
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -219,6 +237,9 @@ public class OptionsScreen implements Screen {
 
 	}
 
+	/**
+	 * Disposes of the screen Elements
+	 */
 	@Override
 	public void dispose() {
 		batch.dispose();
@@ -235,6 +256,9 @@ public class OptionsScreen implements Screen {
 	public void pause() {
 	}
 
+	/**
+	 * Redraws the screen
+	 */
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);

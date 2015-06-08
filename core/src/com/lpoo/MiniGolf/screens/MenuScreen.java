@@ -26,8 +26,6 @@ public class MenuScreen implements Screen {
 	private TextButton OptionsButton;
 	private TextButton exitButton;
 	private TextButton editorButton;
-	private static final float BUTTON_WIDTH = 200f;
-	private static final float BUTTON_HEIGHT = 50f;
 	private MiniGolf game;
 	private Sprite background;
 
@@ -78,17 +76,17 @@ public class MenuScreen implements Screen {
 		exitButton = new TextButton("Exit", skin);
 		editorButton = new TextButton("Edit", skin);
 
-		playButton.setWidth(BUTTON_WIDTH);
-		playButton.setHeight(BUTTON_HEIGHT);
+		playButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		playButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
-		OptionsButton.setWidth(BUTTON_WIDTH);
-		OptionsButton.setHeight(BUTTON_HEIGHT);
+		OptionsButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		OptionsButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
-		exitButton.setWidth(BUTTON_WIDTH);
-		exitButton.setHeight(BUTTON_HEIGHT);
+		exitButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		exitButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
-		editorButton.setWidth(BUTTON_WIDTH);
-		editorButton.setHeight(BUTTON_HEIGHT);
+		editorButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		editorButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
 		playButton.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH, MiniGolf.HEIGHT / 2 + DELTA_HEIGHT * 3);
 		editorButton.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH, MiniGolf.HEIGHT / 2 + DELTA_HEIGHT);

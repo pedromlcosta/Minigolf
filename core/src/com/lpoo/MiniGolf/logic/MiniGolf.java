@@ -46,7 +46,8 @@ public class MiniGolf extends Game {
 	public static final String TITLE = "Game Project";
 	public static float WIDTH = 1920;
 	public static float HEIGHT = 1080;
-
+	public  static final float BUTTON_WIDTH = 200f;
+	public static final float BUTTON_HEIGHT = 50f;
 	public MiniGolf() {
 
 	}

@@ -43,8 +43,7 @@ public class EditorScreen implements Screen {
 	private Table scene;
 
 	private TextButton goBackButton, doneButton, revertLastMoveButton, reseteButton;
-	private static final float BUTTON_WIDTH = 200f;
-	private static final float BUTTON_HEIGHT = 50f;
+
 	private MiniGolf game;
 	private static Course created;
 	private Element elementToAdd;
@@ -331,20 +330,20 @@ public class EditorScreen implements Screen {
 
 		Label spaceLabel = new Label("", skin);
 		doneButton = new TextButton("Done", skin);
-		doneButton.setWidth(BUTTON_WIDTH);
-		doneButton.setHeight(BUTTON_HEIGHT);
+		doneButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		doneButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
 		revertLastMoveButton = new TextButton("Revert Last Placement", skin);
-		revertLastMoveButton.setWidth(BUTTON_WIDTH);
-		revertLastMoveButton.setHeight(BUTTON_HEIGHT);
+		revertLastMoveButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		revertLastMoveButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
 		reseteButton = new TextButton("Reset", skin);
-		reseteButton.setWidth(BUTTON_WIDTH);
-		reseteButton.setHeight(BUTTON_HEIGHT);
+		reseteButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		reseteButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
 		goBackButton = new TextButton("Back", skin);
-		goBackButton.setWidth(BUTTON_WIDTH);
-		goBackButton.setHeight(BUTTON_HEIGHT);
+		goBackButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		goBackButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
 		selectElement = new SelectBox2<String>(skin);
 		selectElement.setItems(new String[] { "AcceleratorFloor", "Ball", "BouncyWall", "GlueWall", "Hole", "IceFloor", "IllusionWall", "WaterFloor", "RegularWall", "SandFloor", "Teleporter",
@@ -353,13 +352,13 @@ public class EditorScreen implements Screen {
 
 		// TODO ADD PLAYER STATUS TO GAME; CHANGE LETTER COLOR
 		scene = new Table();
-		scene.add(reseteButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+		scene.add(reseteButton).width(MiniGolf.BUTTON_WIDTH).height(MiniGolf.BUTTON_HEIGHT);
 		scene.add(spaceLabel).width(50f);
-		scene.add(revertLastMoveButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+		scene.add(revertLastMoveButton).width(MiniGolf.BUTTON_WIDTH).height(MiniGolf.BUTTON_HEIGHT);
 		scene.add(spaceLabel).width(50f);
-		scene.add(doneButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+		scene.add(doneButton).width(MiniGolf.BUTTON_WIDTH).height(MiniGolf.BUTTON_HEIGHT);
 		scene.add(spaceLabel).width(50f);
-		scene.add(goBackButton).width(BUTTON_WIDTH).height(BUTTON_HEIGHT);
+		scene.add(goBackButton).width(MiniGolf.BUTTON_WIDTH).height(MiniGolf.BUTTON_HEIGHT);
 		scene.add(spaceLabel).width(60);
 		scene.add(tableLabel);
 		scene.add(spaceLabel).width(10);

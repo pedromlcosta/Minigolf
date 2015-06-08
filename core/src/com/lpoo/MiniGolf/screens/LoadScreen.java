@@ -18,6 +18,10 @@ public class LoadScreen implements Screen {
 	private Texture texture;
 	private MiniGolf game;
 
+	/**
+	 * 
+	 * @param game
+	 */
 	public LoadScreen(MiniGolf game) {
 		this.game = game;
 	}
@@ -33,7 +37,7 @@ public class LoadScreen implements Screen {
 		}
 
 	}
-
+ 
 	@Override
 	public void resize(int width, int height) {
 	}
