@@ -12,28 +12,62 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.screens.GameScreen;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Ball.
+ */
 public class Ball extends Element {
 
+	/** The stepping on. */
 	public elementType steppingOn = elementType.nothing;
+	
+	/** The radius. */
 	public float radius;
+	
+	/** The last pos. */
 	private Vector2 lastPos;
+	
+	/** The last pos type. */
 	public elementType lastPosType;
 
+	/** The teleport destination. */
 	private Vector2 teleportDestination;
+	
+	/** The velocity before teleport. */
 	private Vector2 velocityBeforeTeleport;
+	
+	/** The on speed pad. */
 	private boolean onSpeedPad = false;
+	
+	/** The accel angle. */
 	public float accelAngle;
 
+	/** The touched void. */
 	private boolean touchedVoid = false;
+	
+	/** The touched water. */
 	private boolean touchedWater = false;
+	
+	/** The touched teleporter. */
 	private boolean touchedTeleporter = false;
 
+	/**
+	 * Instantiates a new ball.
+	 */
 	public Ball() {
 		super();
 		
 	}
 
 	// Constructor that also creates the body
+	/**
+	 * Instantiates a new ball.
+	 *
+	 * @param pos the pos
+	 * @param w the w
+	 * @param radius the radius
+	 * @param player the player
+	 */
 	public Ball(Vector2 pos, World w, float radius, Player player) {
 		super(pos, radius * 2, radius * 2);
 		this.radius = radius;
@@ -46,6 +80,13 @@ public class Ball extends Element {
 
 	}
 
+	/**
+	 * Creates the body.
+	 *
+	 * @param w the w
+	 * @param player the player
+	 * @param newPos the new pos
+	 */
 	public void createBody(World w, Player player, Vector2 newPos) {
 
 		CircleShape circleOuter = new CircleShape();
@@ -74,6 +115,9 @@ public class Ball extends Element {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#destroyBody()
+	 */
 	public void destroyBody() {
 		for (int i = 0; i < body.getFixtureList().size; i++) {
 			body.destroyFixture(body.getFixtureList().get(i));
@@ -82,11 +126,21 @@ public class Ball extends Element {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#draw()
+	 */
 	public void draw() {
 		MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f) * MiniGolf.BOX_TO_WORLD, (body.getPosition().y - width / 2f) * MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
 				* MiniGolf.BOX_TO_WORLD);
 	}
 
+	/**
+	 * Begin contact listener.
+	 *
+	 * @param ballUserData the ball user data
+	 * @param obstacleUserData the obstacle user data
+	 * @param innerSensor the inner sensor
+	 */
 	public void beginContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
 
 		if (innerSensor) {
@@ -146,6 +200,13 @@ public class Ball extends Element {
 
 	}
 
+	/**
+	 * End contact listener.
+	 *
+	 * @param ballUserData the ball user data
+	 * @param obstacleUserData the obstacle user data
+	 * @param innerSensor the inner sensor
+	 */
 	public void endContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
 
 		// steppingOn = Element.elementType.grassFloor;
@@ -187,24 +248,47 @@ public class Ball extends Element {
 		}
 	}
 
+	/**
+	 * Gets the player.
+	 *
+	 * @return the player
+	 */
 	public Player getPlayer() {
 
 		ElementType bodyUserData = (ElementType) body.getUserData();
 		return bodyUserData.player;
 	}
 
+	/**
+	 * Gets the body user data.
+	 *
+	 * @return the body user data
+	 */
 	public ElementType getBodyUserData() {
 		return (ElementType) body.getUserData();
 	}
 
+	/**
+	 * Gets the last pos.
+	 *
+	 * @return the last pos
+	 */
 	public Vector2 getLastPos() {
 		return lastPos;
 	}
 
+	/**
+	 * Sets the last pos.
+	 *
+	 * @param lastPos the new last pos
+	 */
 	public void setLastPos(Vector2 lastPos) {
 		this.lastPos = lastPos.cpy();
 	}
 
+	/**
+	 * Check elements touched.
+	 */
 	public void checkElementsTouched() {
 
 		if (touchedVoid) {
@@ -226,22 +310,48 @@ public class Ball extends Element {
 		}
 	}
 
+	/**
+	 * Checks if is touched void.
+	 *
+	 * @return true, if is touched void
+	 */
 	public boolean isTouchedVoid() {
 		return touchedVoid;
 	}
 
+	/**
+	 * Sets the touched void.
+	 *
+	 * @param touchedVoid the new touched void
+	 */
 	public void setTouchedVoid(boolean touchedVoid) {
 		this.touchedVoid = touchedVoid;
 	}
 
+	/**
+	 * Checks if is touched water.
+	 *
+	 * @return true, if is touched water
+	 */
 	public boolean isTouchedWater() {
 		return touchedWater;
 	}
 
+	/**
+	 * Sets the touched water.
+	 *
+	 * @param touchedWater the new touched water
+	 */
 	public void setTouchedWater(boolean touchedWater) {
 		this.touchedWater = touchedWater;
 	}
 
+	/**
+	 * Teleport.
+	 *
+	 * @param destination the destination
+	 * @param keepVelocity the keep velocity
+	 */
 	public void teleport(Vector2 destination, boolean keepVelocity) {
 
 		if (keepVelocity) {
@@ -262,18 +372,38 @@ public class Ball extends Element {
 
 	}
 
+	/**
+	 * Gets the velocity before teleport.
+	 *
+	 * @return the velocity before teleport
+	 */
 	public Vector2 getVelocityBeforeTeleport() {
 		return velocityBeforeTeleport;
 	}
 
+	/**
+	 * Sets the velocity before teleport.
+	 *
+	 * @param velocityBeforeTeleport the new velocity before teleport
+	 */
 	public void setVelocityBeforeTeleport(Vector2 velocityBeforeTeleport) {
 		this.velocityBeforeTeleport = velocityBeforeTeleport;
 	}
 
+	/**
+	 * Checks if is on speed pad.
+	 *
+	 * @return true, if is on speed pad
+	 */
 	public boolean isOnSpeedPad() {
 		return onSpeedPad;
 	}
 
+	/**
+	 * Sets the on speed pad.
+	 *
+	 * @param onSpeedPad the new on speed pad
+	 */
 	public void setOnSpeedPad(boolean onSpeedPad) {
 		this.onSpeedPad = onSpeedPad;
 	}

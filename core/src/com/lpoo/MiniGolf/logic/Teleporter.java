@@ -13,16 +13,27 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.Color;
 import com.lpoo.MiniGolf.data.Assets;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Teleporter.
+ */
 public class Teleporter extends Element {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The radius. */
 	private float radius;
+	
+	/** The destination. */
 	private Vector2 destination = new Vector2(1, 1);
+	
+	/** The destination image. */
 	transient private Sprite destinationImage;
 
+	/**
+	 * Instantiates a new teleporter.
+	 */
 	public Teleporter() {
 		super();
 		image = new Sprite(Assets.manager.get("teleporter.png", Texture.class));
@@ -31,12 +42,24 @@ public class Teleporter extends Element {
 		destinationImage.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 	}
 
+	/**
+	 * Instantiates a new teleporter.
+	 *
+	 * @param type the type
+	 */
 	public Teleporter(elementType type) {
 		super(type);
 		image = new Sprite(Assets.manager.get("teleporter.png", Texture.class));
 		destinationImage = new Sprite(Assets.manager.get("teleporterDestination.png", Texture.class));
 	}
 
+	/**
+	 * Instantiates a new teleporter.
+	 *
+	 * @param start the start
+	 * @param destination the destination
+	 * @param radius the radius
+	 */
 	public Teleporter(Vector2 start, Vector2 destination, float radius) {
 		super(start, radius * 2, radius * 2);
 		this.destination = destination;
@@ -52,6 +75,14 @@ public class Teleporter extends Element {
 		destinationImage.setSize(radius * 2 * MiniGolf.BOX_TO_WORLD, radius * 2 * MiniGolf.BOX_TO_WORLD);
 	}
 
+	/**
+	 * Instantiates a new teleporter.
+	 *
+	 * @param start the start
+	 * @param destination the destination
+	 * @param radius the radius
+	 * @param colorID the color id
+	 */
 	public Teleporter(Vector2 start, Vector2 destination, float radius, int colorID) {
 		super(start, radius * 2, radius * 2);
 		this.destination = destination;
@@ -70,6 +101,9 @@ public class Teleporter extends Element {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#initializeImage()
+	 */
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get("teleporter.png", Texture.class));
 		destinationImage = new Sprite(Assets.manager.get("teleporterDestination.png", Texture.class));
@@ -83,6 +117,9 @@ public class Teleporter extends Element {
 		initializeDestImage();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#initializeDestImage()
+	 */
 	public void initializeDestImage() {
 		destinationImage.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		destinationImage.setPosition((destination.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (destination.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
@@ -92,6 +129,9 @@ public class Teleporter extends Element {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#changeColor(int)
+	 */
 	public void changeColor(int colorID) {
 		System.out.println("Color: " + colorID);
 		switch (colorID) {
@@ -141,6 +181,9 @@ public class Teleporter extends Element {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d.World)
+	 */
 	public void createBody(World w) {
 		CircleShape circle = new CircleShape();
 		circle.setRadius(radius);
@@ -156,6 +199,9 @@ public class Teleporter extends Element {
 		this.body.createFixture(fixDef);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#destroyBody()
+	 */
 	public void destroyBody() {
 
 		for (int i = 0; i < body.getFixtureList().size; i++) {
@@ -164,6 +210,9 @@ public class Teleporter extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#createElement(float, float, float, float)
+	 */
 	public void createElement(float posInicialX, float posInicialY, float width, float height) {
 
 		this.setStartPos(new Vector2(posInicialX, posInicialY));
@@ -172,6 +221,9 @@ public class Teleporter extends Element {
 		this.createBody(MiniGolf.getW());
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#draw()
+	 */
 	public void draw() {
 		// TODO: Shaperenderer, circulos a volta deles, de cores iguais entre
 		// elementos e diferentes
@@ -180,14 +232,25 @@ public class Teleporter extends Element {
 		destinationImage.draw(MiniGolf.batch);
 	}
 
+	/**
+	 * Gets the destination.
+	 *
+	 * @return the destination
+	 */
 	public Vector2 getDestination() {
 		return destination;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#setDestination(com.badlogic.gdx.math.Vector2)
+	 */
 	public void setDestination(Vector2 destination) {
 		this.destination = destination;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#draw(com.badlogic.gdx.graphics.g2d.Batch, float)
+	 */
 	@Override
 	public void draw(Batch batch, float parentAlfa) {
 
@@ -205,6 +268,11 @@ public class Teleporter extends Element {
 
 	}
 
+	/**
+	 * Gets the destination image.
+	 *
+	 * @return the destination image
+	 */
 	public Sprite getDestinationImage() {
 		return destinationImage;
 	}
