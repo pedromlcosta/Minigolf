@@ -12,14 +12,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.data.Assets;
 
 /**
- * The Class Hole.
+ * The Class Hole, representing the hole element of the course.
  */
 public class Hole extends Element {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
-	/** The radius. */
+	/** The radius of the hole. The actual body will only be half of this radius though. */
 	private float radius;
 
 	/**
@@ -51,7 +51,7 @@ public class Hole extends Element {
 	/**
 	 * Instantiates a new hole.
 	 *
-	 * @param pos the pos
+	 * @param pos the position of the hole
 	 * @param radius the radius
 	 */
 	public Hole(Vector2 pos, float radius) {

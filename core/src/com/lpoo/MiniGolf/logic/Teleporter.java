@@ -13,21 +13,22 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.Color;
 import com.lpoo.MiniGolf.data.Assets;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Teleporter.
+ * The Class Teleporter. Subclass of Element, represents only the game's
+ * obstacles which have sensors somewhere inside and teleport the ball somewhere
+ * when they collide.
  */
 public class Teleporter extends Element {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
-	/** The radius. */
+
+	/** The radius of the teleporter. */
 	private float radius;
-	
-	/** The destination. */
+
+	/** The destination, also known as the exit portal. */
 	private Vector2 destination = new Vector2(1, 1);
-	
+
 	/** The destination image. */
 	transient private Sprite destinationImage;
 
@@ -45,7 +46,8 @@ public class Teleporter extends Element {
 	/**
 	 * Instantiates a new teleporter.
 	 *
-	 * @param type the type
+	 * @param type
+	 *            the type, teleporter
 	 */
 	public Teleporter(elementType type) {
 		super(type);
@@ -56,9 +58,12 @@ public class Teleporter extends Element {
 	/**
 	 * Instantiates a new teleporter.
 	 *
-	 * @param start the start
-	 * @param destination the destination
-	 * @param radius the radius
+	 * @param start
+	 *            the start position, where the teleporter is situated
+	 * @param destination
+	 *            the destination of the teleporter exit
+	 * @param radius
+	 *            the radius of the teleporter
 	 */
 	public Teleporter(Vector2 start, Vector2 destination, float radius) {
 		super(start, radius * 2, radius * 2);
@@ -78,10 +83,14 @@ public class Teleporter extends Element {
 	/**
 	 * Instantiates a new teleporter.
 	 *
-	 * @param start the start
-	 * @param destination the destination
-	 * @param radius the radius
-	 * @param colorID the color id
+	 * @param start
+	 *            the start position, where the teleporter is situated
+	 * @param destination
+	 *            the destination of the teleporter exit
+	 * @param radius
+	 *            the radius of the teleporter
+	 * @param colorID
+	 *            the color id, which will give a color to the teleporter
 	 */
 	public Teleporter(Vector2 start, Vector2 destination, float radius, int colorID) {
 		super(start, radius * 2, radius * 2);
@@ -101,7 +110,9 @@ public class Teleporter extends Element {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#initializeImage()
 	 */
 	public void initializeImage() {
@@ -117,7 +128,9 @@ public class Teleporter extends Element {
 		initializeDestImage();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#initializeDestImage()
 	 */
 	public void initializeDestImage() {
@@ -129,7 +142,9 @@ public class Teleporter extends Element {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#changeColor(int)
 	 */
 	public void changeColor(int colorID) {
@@ -181,8 +196,12 @@ public class Teleporter extends Element {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d.World)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d
+	 * .World)
 	 */
 	public void createBody(World w) {
 		CircleShape circle = new CircleShape();
@@ -199,7 +218,9 @@ public class Teleporter extends Element {
 		this.body.createFixture(fixDef);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#destroyBody()
 	 */
 	public void destroyBody() {
@@ -210,8 +231,11 @@ public class Teleporter extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.lpoo.MiniGolf.logic.Element#createElement(float, float, float, float)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.lpoo.MiniGolf.logic.Element#createElement(float, float, float,
+	 * float)
 	 */
 	public void createElement(float posInicialX, float posInicialY, float width, float height) {
 
@@ -221,7 +245,9 @@ public class Teleporter extends Element {
 		this.createBody(MiniGolf.getW());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#draw()
 	 */
 	public void draw() {
@@ -241,15 +267,23 @@ public class Teleporter extends Element {
 		return destination;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.lpoo.MiniGolf.logic.Element#setDestination(com.badlogic.gdx.math.Vector2)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.lpoo.MiniGolf.logic.Element#setDestination(com.badlogic.gdx.math.
+	 * Vector2)
 	 */
 	public void setDestination(Vector2 destination) {
 		this.destination = destination;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.lpoo.MiniGolf.logic.Element#draw(com.badlogic.gdx.graphics.g2d.Batch, float)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.lpoo.MiniGolf.logic.Element#draw(com.badlogic.gdx.graphics.g2d.Batch,
+	 * float)
 	 */
 	@Override
 	public void draw(Batch batch, float parentAlfa) {

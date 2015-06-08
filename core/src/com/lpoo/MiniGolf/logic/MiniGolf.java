@@ -22,79 +22,65 @@ import com.lpoo.MiniGolf.screens.LoadScreen;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class MiniGolf.
+ * The Class MiniGolf, which starts the game up, contains some of the singletons
+ * and other important elements.
  */
 public class MiniGolf extends Game {
 
-	/** The batch. */
+	/** The batch for drawing, used wherever necessary. */
 	public static SpriteBatch batch;
-	
-	/** The cam. */
-	public static OrthographicCamera cam;
-	
-	/** The viewport. */
-	public static Viewport viewport;
-	
-	/** The w. */
+
+	/** The libgdx physics world. */
 	private static World W;
-	
-	/** The load save. */
+
+	/** The controller for loading and saving courses. */
 	private GameIO loadSave;
-	
-	/** The nr players. */
+
+	/** The number of players, can be changed in the menu */
 	private int nrPlayers = 3;
-	
-	/** The selected courses. */
+
+	/** The selected courses, out of all the courses. */
 	private ArrayList<Course> selectedCourses = new ArrayList<Course>();
-	
+
 	/** The all courses. */
 	private static ArrayList<Course> allCourses = new ArrayList<Course>();
 
-	/** The nr courses. */
+	/** The nr. of courses to be selected. */
 	private static int nrCourses = 1;
-	
-	/** The Constant MAX_PLAYERS. */
+
+	/** The Constant MAX_PLAYERS. Max number of players allowed in a game. */
 	public static final int MAX_PLAYERS = 4;
 
-	/** The random course. */
+	/** Indicates whether the courses are chosen randomly or not. */
 	private static boolean randomCourse;
-	
-	/** The end point. */
-	private Vector2 endPoint;
-	
-	/** The start point. */
-	private Vector2 startPoint;
-	
-	/** The tacadas max. */
-	private int tacadasMax = 3;
-	
-	/** The tempo max. */
-	private int tempoMax = 10;
-	
-	/** The course height. */
-	private int courseHeight;
-	
-	/** The course width. */
-	private int courseWidth;
 
-	/** The Constant BOX_TO_WORLD. */
+	/** The maximum shots per turn per player. Not implemented yet. */
+	private int tacadasMax = 3;
+
+	/** The max time of a turn. */
+	private int tempoMax = 10;
+
+	/**
+	 * The Constant BOX_TO_WORLD. Transforms numbers from BOX2D coordinates to
+	 * WORLD/SCREEN coordinates when multiplied by it.
+	 */
 	public static final float BOX_TO_WORLD = 100f;
-	
-	/** The Constant TITLE. */
+
+	/** The Constant TITLE. Name of the game. */
 	public static final String TITLE = "Game Project";
-	
-	/** The width. */
+
+	/** The internal width of the game. */
 	public static float WIDTH = 1920;
-	
-	/** The height. */
+
+	/** The internal height of the game. */
 	public static float HEIGHT = 1080;
-	
+
 	/** The Constant BUTTON_WIDTH. */
-	public  static final float BUTTON_WIDTH = 200f;
-	
+	public static final float BUTTON_WIDTH = 200f;
+
 	/** The Constant BUTTON_HEIGHT. */
 	public static final float BUTTON_HEIGHT = 50f;
-	
+
 	/**
 	 * Instantiates a new mini golf.
 	 */
@@ -102,21 +88,36 @@ public class MiniGolf extends Game {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * Initializing all the things. Loading the courses (non-Javadoc)
+	 * 
 	 * @see com.badlogic.gdx.ApplicationListener#create()
 	 */
 	public void create() {
 
-		loadSave = new GameIO();
-
 		// INITIALIZING SINGLETONS
 
 		batch = new SpriteBatch();
-		cam = new OrthographicCamera(WIDTH, HEIGHT);
-		viewport = new FitViewport(WIDTH, HEIGHT, cam);
 		W = new World(new Vector2(0, 0), false);
 		W.setContinuousPhysics(true);
 		W.setWarmStarting(true);
+
+		loadCourses();
+
+		this.setScreen(new LoadScreen(this));
+
+		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
+		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
+		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT / BOX_TO_WORLD);
+		createEdge(0.0f, HEIGHT / BOX_TO_WORLD, 0.0f, 0.0f);
+
+	}
+
+	/**
+	 * Load courses, from the folder where they were saved individually.
+	 */
+	public void loadCourses() {
+		loadSave = new GameIO();
 
 		// LOADING MAPS
 		try {
@@ -125,145 +126,22 @@ public class MiniGolf extends Game {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		this.setScreen(new LoadScreen(this));
-		// ///////////////////////////////////////////////////////////////////
-		// /// TEST COURSE /////
-		// ///////////////////////////////////////////////////////////////////
-
-		// // Course 1
-		// while (!Assets.update()) {
-		// }
-		// Course Course1 = new Course();
-		// Course1.setNome("Course 1");
-		//
-		// Vector2 pos1 = new Vector2(1.0f, 1.0f);
-		// Vector2 pos2 = new Vector2(2.0f, 2.0f);
-		// Vector2 pos3 = new Vector2(3.0f, 3.0f);
-		// Vector2 pos4 = new Vector2(4.0f, 4.0f);
-		//
-		// Floor grass1 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
-		// (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT /
-		// BOX_TO_WORLD, elementType.grassFloor);
-		//
-		// Hole hole1 = new Hole(new Vector2(5f, 5f), 0.3f);
-		//
-		// Floor sand1 = new Floor(new Vector2(3 * (WIDTH / 12f / BOX_TO_WORLD),
-		// 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT
-		// / 2f / BOX_TO_WORLD, elementType.sandFloor);
-		//
-		// Floor water1 = new Floor(new Vector2(7 * (WIDTH / 12f /
-		// BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f /
-		// BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.waterFloor);
-		//
-		// Wall glue1 = new Wall(new Vector2(5 * (WIDTH / 12f / BOX_TO_WORLD), 9
-		// * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT /
-		// 2f / BOX_TO_WORLD, elementType.glueWall);
-		//
-		// Floor void1 = new Floor(new Vector2(9 * (WIDTH / 12f / BOX_TO_WORLD),
-		// 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f / BOX_TO_WORLD, HEIGHT
-		// / 2f / BOX_TO_WORLD, elementType.voidFloor);
-		//
-		// Floor illusion1 = new Floor(new Vector2(11 * (WIDTH / 12f /
-		// BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f /
-		// BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
-		//
-		// Floor accel1 = new Floor(new Vector2(1 * (WIDTH / 12f /
-		// BOX_TO_WORLD), 9 * (HEIGHT / 12f / BOX_TO_WORLD)), WIDTH / 6f /
-		// BOX_TO_WORLD, HEIGHT / 2f / BOX_TO_WORLD,
-		// elementType.acceleratorFloor);
-		//
-		// Teleporter teleporter1 = new Teleporter(new Vector2(7f, 5f), new
-		// Vector2(7f, 3f), 0.3f, 1);
-		//
-		// // Floor illusion1 = new Floor(new Vector2(1 * (WIDTH / 4f /
-		// // BOX_TO_WORLD),
-		// // 3 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD,
-		// // HEIGHT / 2f / BOX_TO_WORLD, elementType.illusionWall);
-		//
-		// Course1.addEle(grass1);
-		// Course1.addEle(accel1);
-		// Course1.addEle(glue1);
-		// Course1.addEle(hole1);
-		// Course1.addEle(void1);
-		// Course1.addEle(water1);
-		// Course1.addEle(sand1);
-		// Course1.addEle(illusion1);
-		// Course1.addEle(teleporter1);
-		// Course1.addPosition(pos1);
-		// Course1.addPosition(pos2);
-		// Course1.addPosition(pos3);
-		// Course1.addPosition(pos4);
-		//
-		// // Course 2
-		// Course Course2 = new Course();
-		// Course2.setNome("Course 2");
-		// Vector2 pos5 = new Vector2(1.0f, 2.0f);
-		// Vector2 pos6 = new Vector2(2.0f, 3.0f);
-		// Vector2 pos7 = new Vector2(3.0f, 4.0f);
-		// Vector2 pos8 = new Vector2(4.0f, 5.0f);
-		// Floor grass2 = new Floor(new Vector2((WIDTH / 2f / BOX_TO_WORLD),
-		// (HEIGHT / 2f / BOX_TO_WORLD)), WIDTH / BOX_TO_WORLD, HEIGHT /
-		// BOX_TO_WORLD, elementType.grassFloor);
-		// Floor sand2 = new Floor(new Vector2(1 * (WIDTH / 4f / BOX_TO_WORLD),
-		// 1 * (HEIGHT / 4f / BOX_TO_WORLD)), WIDTH / 2f / BOX_TO_WORLD, HEIGHT
-		// / 2f / BOX_TO_WORLD, elementType.sandFloor);
-		// Hole hole2 = new Hole(new Vector2(7f, 7f), 0.3f);
-		// Course2.addEle(grass2);
-		// Course2.addEle(sand2);
-		// Course2.addEle(hole2);
-		// Course2.addPosition(pos5);
-		// Course2.addPosition(pos6);
-		// Course2.addPosition(pos7);
-		// Course2.addPosition(pos8);
-		//
-		// // Adding to all and selected
-		// addToAllCourses(Course1);
-		// addToAllCourses(Course2);
-		// addToSelectedCourses(Course1);
-		// addToSelectedCourses(Course2);
-
-		// try {
-		// ObjectOutputStream out = new ObjectOutputStream(new
-		// FileOutputStream("AllCourses.sav"));
-		// out.writeObject(selectedCourses);
-		// out.close();
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// System.out.println("huehue");
-		// }
-
-		// ///////////////////////////////////////////////////////////////////
-		// /// END OF TEST COURSE /////
-		// ///////////////////////////////////////////////////////////////////
-
-		
-		createEdge(0.0f, 0.0f, WIDTH / BOX_TO_WORLD, 0.0f);
-		createEdge(WIDTH / BOX_TO_WORLD, 0.0f, WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD);
-		createEdge(WIDTH / BOX_TO_WORLD, HEIGHT / BOX_TO_WORLD, 0.0f, HEIGHT / BOX_TO_WORLD);
-		createEdge(0.0f, HEIGHT / BOX_TO_WORLD, 0.0f, 0.0f);
-
-		cam.update();
-		cam.translate(new Vector2(WIDTH / 2, HEIGHT / 2));
-
 	}
 
-	// TODO PASSAR ISTO PARA O SHOW DO GAMESCREEN
-
 	/**
-	 * Gets the w.
+	 * Gets the World.
 	 *
-	 * @return the w
+	 * @return the World
 	 */
 	public static World getW() {
 		return W;
 	}
 
 	/**
-	 * Sets the w.
+	 * Sets the World.
 	 *
-	 * @param w the new w
+	 * @param w
+	 *            the new World.
 	 */
 	public static void setW(World w) {
 		W = w;
@@ -281,73 +159,24 @@ public class MiniGolf extends Game {
 	/**
 	 * Sets the batch.
 	 *
-	 * @param batch the new batch
+	 * @param batch
+	 *            the new batch
 	 */
 	public static void setBatch(SpriteBatch batch) {
 		MiniGolf.batch = batch;
 	}
 
 	/**
-	 * Gets the cam.
+	 * Creates an edge.
 	 *
-	 * @return the cam
-	 */
-	public static OrthographicCamera getCam() {
-		return cam;
-	}
-
-	/**
-	 * Sets the cam.
-	 *
-	 * @param cam the new cam
-	 */
-	public static void setCam(OrthographicCamera cam) {
-		MiniGolf.cam = cam;
-	}
-
-	/**
-	 * Gets the course height.
-	 *
-	 * @return the course height
-	 */
-	public int getCourseHeight() {
-		return courseHeight;
-	}
-
-	/**
-	 * Sets the course height.
-	 *
-	 * @param courseHeight the new course height
-	 */
-	public void setCourseHeight(int courseHeight) {
-		this.courseHeight = courseHeight;
-	}
-
-	/**
-	 * Gets the course width.
-	 *
-	 * @return the course width
-	 */
-	public int getCourseWidth() {
-		return courseWidth;
-	}
-
-	/**
-	 * Sets the course width.
-	 *
-	 * @param courseWidth the new course width
-	 */
-	public void setCourseWidth(int courseWidth) {
-		this.courseWidth = courseWidth;
-	}
-
-	/**
-	 * Creates the edge.
-	 *
-	 * @param x1 the x1
-	 * @param y1 the y1
-	 * @param x2 the x2
-	 * @param y2 the y2
+	 * @param x1
+	 *            the x1 Starting x of the edge.
+	 * @param y1
+	 *            the y1 Starting y of the edge.
+	 * @param x2
+	 *            the x2 Final x of the edge.
+	 * @param y2
+	 *            the y2 Final y of the edge.
 	 */
 	void createEdge(float x1, float y1, float x2, float y2) {
 		BodyDef bodyDef = new BodyDef();
@@ -363,72 +192,38 @@ public class MiniGolf extends Game {
 	}
 
 	/**
-	 * Gets the end point.
+	 * Gets the number of max shots.
 	 *
-	 * @return the end point
-	 */
-	public Vector2 getEndPoint() {
-		return endPoint;
-	}
-
-	/**
-	 * Sets the end point.
-	 *
-	 * @param endPoint the new end point
-	 */
-	public void setEndPoint(Vector2 endPoint) {
-		this.endPoint = endPoint;
-	}
-
-	/**
-	 * Gets the start point.
-	 *
-	 * @return the start point
-	 */
-	public Vector2 getStartPoint() {
-		return startPoint;
-	}
-
-	/**
-	 * Sets the start point.
-	 *
-	 * @param startPoint the new start point
-	 */
-	public void setStartPoint(Vector2 startPoint) {
-		this.startPoint = startPoint;
-	}
-
-	/**
-	 * Gets the tacadas max.
-	 *
-	 * @return the tacadas max
+	 * @return the number of max shots.
 	 */
 	public int getTacadasMax() {
 		return tacadasMax;
 	}
 
 	/**
-	 * Sets the tacadas max.
+	 * Sets the number of max shots.
 	 *
-	 * @param tacadasMax the new tacadas max
+	 * @param tacadasMax
+	 *            the new number of max shots.
 	 */
 	public void setTacadasMax(int tacadasMax) {
 		this.tacadasMax = tacadasMax;
 	}
 
 	/**
-	 * Gets the tempo max.
+	 * Gets the max. turn time.
 	 *
-	 * @return the tempo max
+	 * @return the max. turn time.
 	 */
 	public int getTempoMax() {
 		return tempoMax;
 	}
 
 	/**
-	 * Sets the tempo max.
+	 * Sets the max. turn time.
 	 *
-	 * @param tempoMax the new tempo max
+	 * @param tempoMax
+	 *            the new max. turn time
 	 */
 	public void setTempoMax(int tempoMax) {
 		this.tempoMax = tempoMax;
@@ -446,7 +241,8 @@ public class MiniGolf extends Game {
 	/**
 	 * Sets the height.
 	 *
-	 * @param height the new height
+	 * @param height
+	 *            the new height
 	 */
 	public static void setHeight(int height) {
 		HEIGHT = height;
@@ -464,63 +260,68 @@ public class MiniGolf extends Game {
 	/**
 	 * Sets the width.
 	 *
-	 * @param width the new width
+	 * @param width
+	 *            the new width
 	 */
 	public static void setWidth(int width) {
 		WIDTH = width;
 	}
 
 	/**
-	 * Checks if is random course.
+	 * Checks if courses are selected randomly.
 	 *
-	 * @return true, if is random course
+	 * @return true, if the courses are to be selected randomly.
 	 */
 	public static boolean isRandomCourse() {
 		return randomCourse;
 	}
 
 	/**
-	 * Random courses.
+	 * Picks a nrCourses courses from all the courses available and puts them in
+	 * the selectedCourses.
 	 */
 	public void randomCourses() {
- 
-		if(allCourses.isEmpty())
+
+		if (allCourses.isEmpty())
 			return;
-		
+
 		selectedCourses.clear();
-		
-		//Shuffling all the courses
+
+		// Shuffling all the courses
 		ArrayList<Course> randomCourses = (ArrayList<Course>) allCourses.clone();
 		Collections.shuffle(randomCourses);
-		
-		//Adding to selectedCourses only the first "nrCourses" courses of the shuffled array
-		for(int i = 0 ; i < nrCourses; i++){
+
+		// Adding to selectedCourses only the first "nrCourses" courses of the
+		// shuffled array
+		for (int i = 0; i < nrCourses; i++) {
 			selectedCourses.add(randomCourses.get(i));
 		}
 	}
 
 	/**
-	 * Sets the random course.
+	 * Sets if the courses will be selected randomly
 	 *
-	 * @param randomCourse the new random course
+	 * @param randomCourse
+	 *            the new random course value
 	 */
 	public static void setRandomCourse(boolean randomCourse) {
 		MiniGolf.randomCourse = randomCourse;
 	}
 
 	/**
-	 * Gets the nr courses.
+	 * Gets the nr courses to be selected.
 	 *
-	 * @return the nr courses
+	 * @return the nr courses to be selected.
 	 */
 	public static int getNrCourses() {
 		return nrCourses;
 	}
 
 	/**
-	 * Sets the nr courses.
+	 * Sets the nr courses to be selected.
 	 *
-	 * @param nrCourses the new nr courses
+	 * @param nrCourses
+	 *            the new nr courses to be selected.
 	 */
 	public static void setNrCourses(int nrCourses) {
 		MiniGolf.nrCourses = nrCourses;
@@ -529,7 +330,7 @@ public class MiniGolf extends Game {
 	/**
 	 * Gets the nr players.
 	 *
-	 * @return the nr players
+	 * @return the nr players.
 	 */
 	public int getNrPlayers() {
 		return nrPlayers;
@@ -538,7 +339,8 @@ public class MiniGolf extends Game {
 	/**
 	 * Sets the nr players.
 	 *
-	 * @param nrPlayers the new nr players
+	 * @param nrPlayers
+	 *            the new nr players.
 	 */
 	public void setNrPlayers(int nrPlayers) {
 		this.nrPlayers = nrPlayers;
@@ -556,7 +358,8 @@ public class MiniGolf extends Game {
 	/**
 	 * Sets the selected courses.
 	 *
-	 * @param selectedCourses the new selected courses
+	 * @param selectedCourses
+	 *            the new selected courses
 	 */
 	public void setSelectedCourses(ArrayList<Course> selectedCourses) {
 		this.selectedCourses = selectedCourses;
@@ -565,52 +368,56 @@ public class MiniGolf extends Game {
 	/**
 	 * Adds the to selected courses.
 	 *
-	 * @param course the course
+	 * @param course
+	 *            the course to add.
 	 */
 	public void addToSelectedCourses(Course course) {
 		selectedCourses.add(course);
 	}
 
 	/**
-	 * Gets the all courses.
+	 * Gets all the courses.
 	 *
-	 * @return the all courses
+	 * @return the array with all the courses
 	 */
 	public static ArrayList<Course> getAllCourses() {
 		return allCourses;
 	}
 
 	/**
-	 * Sets the all courses.
+	 * Sets the new array with all courses.
 	 *
-	 * @param allCourses the new all courses
+	 * @param allCourses
+	 *            the new array with all the courses
 	 */
 	public void setAllCourses(ArrayList<Course> allCourses) {
 		MiniGolf.allCourses = allCourses;
 	}
 
 	/**
-	 * Adds the to all courses.
+	 * Adds a course to the array which stores them all.
 	 *
-	 * @param course the course
+	 * @param course
+	 *            the course to be added
 	 */
 	public void addToAllCourses(Course course) {
 		allCourses.add(course);
 	}
 
 	/**
-	 * Gets the load save.
+	 * Gets the gameIO controller.
 	 *
-	 * @return the load save
+	 * @return the gameIO controller.
 	 */
 	public GameIO getLoadSave() {
 		return loadSave;
 	}
 
 	/**
-	 * Sets the load save.
+	 * Sets the gameIO controller.
 	 *
-	 * @param loadSave the new load save
+	 * @param loadSave
+	 *            the gameIO controller.
 	 */
 	public void setLoadSave(GameIO loadSave) {
 		this.loadSave = loadSave;

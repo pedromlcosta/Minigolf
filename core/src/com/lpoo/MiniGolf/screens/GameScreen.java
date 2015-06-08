@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -101,6 +102,9 @@ public class GameScreen implements Screen, InputProcessor {
 	/** The camera used to control the display ratios, position, etc. */
 	private OrthographicCamera cam = new OrthographicCamera(MiniGolf.WIDTH, MiniGolf.HEIGHT);;
 
+	/** The viewport used along with the camera. */
+	Viewport viewport = new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT, cam);
+	
 	/** The Constant BUTTON_WIDTH, for actors such as labels, buttons, etc. */
 	private static final float BUTTON_WIDTH = 200f;
 
@@ -312,7 +316,7 @@ public class GameScreen implements Screen, InputProcessor {
 	@Override
 	public void resize(int width, int height) {
 
-		MiniGolf.viewport.update(width, height);
+		viewport.update(width, height);
 		stage.getViewport().update(width, height, true);
 		stage.getCamera().update();
 		cam.update();
@@ -531,7 +535,7 @@ public class GameScreen implements Screen, InputProcessor {
 			// GETTING PROPER VARIABLES
 			// Transforms mouse screen coordinates to camera World coordinates
 			// (using camera width and height)
-			Vector2 mouse = MiniGolf.viewport.unproject(new Vector2((float) Gdx.input.getX(), (float) Gdx.input.getY()));
+			Vector2 mouse = viewport.unproject(new Vector2((float) Gdx.input.getX(), (float) Gdx.input.getY()));
 
 			float mouseX = mouse.x;
 			float mouseY = mouse.y;
@@ -965,7 +969,7 @@ public class GameScreen implements Screen, InputProcessor {
 				// must be scaled to the box size first
 				// forceY = Box_scale_mouse_Y - Box_scale_ball_Y
 
-				Vector3 vec = MiniGolf.viewport.unproject(new Vector3((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0));
+				Vector3 vec = viewport.unproject(new Vector3((float) Gdx.input.getX(), (float) Gdx.input.getY(), 0));
 
 				float mouseX = vec.x;
 				float mouseY = vec.y;

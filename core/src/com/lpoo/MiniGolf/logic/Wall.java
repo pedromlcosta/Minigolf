@@ -12,19 +12,23 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.data.Assets;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Wall.
+ * The Class Wall. Subclass of Element, represents only the game obstacles which
+ * have no sensors and can't be crossed normally.
  */
 public class Wall extends Element {
-	
+
 	/**
 	 * Instantiates a new wall.
 	 *
-	 * @param pos the pos
-	 * @param width the width
-	 * @param height the height
-	 * @param type the type
+	 * @param pos
+	 *            the central position of the wall and body
+	 * @param width
+	 *            the width of the wall
+	 * @param height
+	 *            the height of the wall
+	 * @param type 
+	 *            the type of the wall
 	 */
 	public Wall(Vector2 pos, float width, float height, elementType type) {
 
@@ -38,7 +42,8 @@ public class Wall extends Element {
 	/**
 	 * Instantiates a new wall.
 	 *
-	 * @param type the type
+	 * @param type
+	 *            the type of the wall
 	 */
 	public Wall(elementType type) {
 
@@ -48,8 +53,12 @@ public class Wall extends Element {
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d.World)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d
+	 * .World)
 	 */
 	public void createBody(World w) {
 
@@ -91,7 +100,9 @@ public class Wall extends Element {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#destroyBody()
 	 */
 	public void destroyBody() {
@@ -101,7 +112,9 @@ public class Wall extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#draw()
 	 */
 	public void draw() {
@@ -110,13 +123,14 @@ public class Wall extends Element {
 
 	}
 
- 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#initializeImage()
 	 */
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
-		
+
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);

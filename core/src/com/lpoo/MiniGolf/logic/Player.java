@@ -11,73 +11,63 @@ import com.badlogic.gdx.physics.box2d.World;
 public class Player {
 
 	/** The player id. */
-	private int playerID;  //Starts at 0
-	
+	private int playerID; // Starts at 0
+
 	/** The ball. */
 	private Ball ball;
-	
-	/** The pontuacao. */
-	private int pontuacao;
-	
-	/** The tacadas jogada. */
-	private int tacadasJogada;
-	
-	/** The tacada total. */
+
+	/**
+	 * Number of total shots the player has attempted. By the end of the game,
+	 * the player with the less shots wins
+	 */
 	private int tacadaTotal;
-	
-	/** The play time. */
+
+	/** The play time, during the current turn where the player is playing. */
 	private int playTime = 0;
-	
-	/** The just played. */
+
+	/** Tells us if this player was the one to play in the last turn. */
 	private boolean justPlayed;
-	
-	/** The over. */
+
+	/** Indicates whether a player has ended the current course he is playing on */
 	private boolean over;
-	
-	/** The won. */
-	private boolean won;
-	
-	/** The club movement. */
-	private Vector2 clubMovement;
 
 	/**
 	 * Instantiates a new player.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id of the player
 	 */
 	public Player(int id) {
 		playerID = id;
 		justPlayed = false;
-		pontuacao = 0;
-		tacadasJogada = 0;
 		tacadaTotal = 0;
 		over = false;
-		won = false;
 	}
 
 	/**
 	 * Instantiates a new player.
 	 *
-	 * @param b the b
+	 * @param b
+	 *            the ball the player owns
 	 */
 	public Player(Ball b) {
 		justPlayed = false;
 		ball = b;
-		pontuacao = 0;
-		tacadasJogada = 0;
 		tacadaTotal = 0;
 		over = false;
-		won = false;
 	}
-	
+
 	/**
 	 * Creates the ball.
 	 *
-	 * @param pos the pos
-	 * @param w the w
-	 * @param radius the radius
+	 * @param pos
+	 *            the starting position of the players ball
+	 * @param w
+	 *            the world where the ball body will be created
+	 * @param radius
+	 *            the radius of the ball
 	 */
-	public void createBall(Vector2 pos, World w, float radius){
+	public void createBall(Vector2 pos, World w, float radius) {
 		ball = new Ball(pos, w, radius, this);
 	}
 
@@ -93,88 +83,36 @@ public class Player {
 	/**
 	 * Sets the ball.
 	 *
-	 * @param ball the new ball
+	 * @param ball
+	 *            the new ball
 	 */
 	public void setBall(Ball ball) {
 		this.ball = ball;
 	}
 
 	/**
-	 * Gets the pontuacao.
+	 * Gets the number of total shots attempted by the player
 	 *
-	 * @return the pontuacao
-	 */
-	public int getPontuacao() {
-		return pontuacao;
-	}
-
-	/**
-	 * Sets the pontuacao.
-	 *
-	 * @param pontuacao the new pontuacao
-	 */
-	public void setPontuacao(int pontuacao) {
-		this.pontuacao = pontuacao;
-	}
-
-	/**
-	 * Gets the tacadas jogada.
-	 *
-	 * @return the tacadas jogada
-	 */
-	public int getTacadasJogada() {
-		return tacadasJogada;
-	}
-
-	/**
-	 * Sets the tacadas jogada.
-	 *
-	 * @param tacadasJogada the new tacadas jogada
-	 */
-	public void setTacadasJogada(int tacadasJogada) {
-		this.tacadasJogada = tacadasJogada;
-	}
-
-	/**
-	 * Gets the tacada total.
-	 *
-	 * @return the tacada total
+	 * @return the number of total shots
 	 */
 	public int getTacadaTotal() {
 		return tacadaTotal;
 	}
 
 	/**
-	 * Sets the tacada total.
+	 * Sets the number of total shots.
 	 *
-	 * @param tacadaTotal the new tacada total
+	 * @param tacadaTotal
+	 *            the new number of total shots
 	 */
 	public void setTacadaTotal(int tacadaTotal) {
 		this.tacadaTotal = tacadaTotal;
 	}
 
 	/**
-	 * Gets the club movement.
+	 * Gets the ball x position
 	 *
-	 * @return the club movement
-	 */
-	public Vector2 getClubMovement() {
-		return clubMovement;
-	}
-
-	/**
-	 * Sets the club movement.
-	 *
-	 * @param clubMovement the new club movement
-	 */
-	public void setClubMovement(Vector2 clubMovement) {
-		this.clubMovement = clubMovement;
-	}
-	
-	/**
-	 * Gets the ball pos x.
-	 *
-	 * @return the ball pos x
+	 * @return the ball x position
 	 */
 	public float getBallPosX() {
 		return ball.body.getPosition().x;
@@ -192,16 +130,17 @@ public class Player {
 	/**
 	 * Sets the ball body.
 	 *
-	 * @param body the new ball body
+	 * @param body
+	 *            the new ball body
 	 */
 	public void setBallBody(Body body) {
 		this.ball.body = body;
 	}
-	
+
 	/**
-	 * Gets the ball speed.
+	 * Gets the ball's speed.
 	 *
-	 * @return the ball speed
+	 * @return the ball's speed
 	 */
 	public Vector2 getBallSpeed() {
 		return ball.body.getLinearVelocity();
@@ -210,80 +149,84 @@ public class Player {
 	/**
 	 * Sets the ball speed.
 	 *
-	 * @param vX the v x
-	 * @param vY the v y
+	 * @param vX
+	 *            the speed in the x axis
+	 * @param vY
+	 *            the speed in the y axis
 	 */
 	public void setBallSpeed(float vX, float vY) {
 		this.ball.body.setLinearVelocity(vX, vY);
 	}
-	
+
 	/**
-	 * Gets the ball speed len.
+	 * Gets the ball absolute speed.
 	 *
-	 * @return the ball speed len
+	 * @return the ball absolute speed.
 	 */
 	public float getBallSpeedLen() {
 		return ball.body.getLinearVelocity().len();
 	}
 
 	/**
-	 * Gets the ball pos y.
+	 * Gets the ball y position.
 	 *
-	 * @return the ball pos y
+	 * @return the ball y position.
 	 */
 	public float getBallPosY() {
 		return ball.body.getPosition().y;
 	}
 
 	/**
-	 * Gets the ball old pos x.
+	 * Gets the ball starting x position.
 	 *
-	 * @return the ball old pos x
+	 * @return the ball starting x position.
 	 */
 	public float getBallOldPosX() {
 		return ball.startPos.x;
 	}
 
 	/**
-	 * Gets the ball old pos y.
+	 * Gets the ball starting y position.
 	 *
-	 * @return the ball old pos y
+	 * @return the ball starting y position.
 	 */
 	public float getBallOldPosY() {
 		return ball.startPos.y;
 	}
 
 	/**
-	 * Sets the ball old pos x.
+	 * Sets the ball starting x position.
 	 *
-	 * @param x the new ball old pos x
+	 * @param x
+	 *            the new ball starting x position.
 	 */
 	public void setBallOldPosX(float x) {
 		this.ball.startPos.x = x;
 	}
 
 	/**
-	 * Gets the ball pos.
+	 * Gets the ball position.
 	 *
-	 * @return the ball pos
+	 * @return the ball position.
 	 */
 	public Vector2 getBallPos() {
 		return ball.body.getPosition();
 	}
 
 	/**
-	 * Gets the ball old pos.
+	 * Gets the ball starting position.
 	 *
-	 * @return the ball old pos
+	 * @return the ball starting position.
 	 */
 	public Vector2 getBallOldPos() {
 		return ball.startPos;
 	}
 
 	/**
-	 * Sets the ball old pos.
+	 * Sets the ball starting position.
 	 *
-	 * @param oldPos the new ball old pos
+	 * @param oldPos
+	 *            the new ball starting position.
 	 */
 	public void setBallOldPos(Vector2 oldPos) {
 		this.ball.startPos = oldPos;
@@ -301,7 +244,8 @@ public class Player {
 	/**
 	 * Sets the ball height.
 	 *
-	 * @param height the new ball height
+	 * @param height
+	 *            the new ball height
 	 */
 	public void setBallHeight(int height) {
 		this.ball.height = height;
@@ -319,52 +263,36 @@ public class Player {
 	/**
 	 * Sets the ball width.
 	 *
-	 * @param width the new ball width
+	 * @param width
+	 *            the new ball width
 	 */
 	public void setBallWidth(int width) {
 		this.ball.width = width;
 	}
 
 	/**
-	 * Checks if is over.
+	 * Checks if player ended the current course.
 	 *
-	 * @return true, if is over
+	 * @return true, if it is over.
 	 */
 	public boolean isOver() {
 		return over;
 	}
 
 	/**
-	 * Sets the over.
+	 * Sets the over value.
 	 *
-	 * @param over the new over
+	 * @param over
+	 *            true or false, whether he has finished the course or not
 	 */
 	public void setOver(boolean over) {
 		this.over = over;
 	}
 
 	/**
-	 * Checks if is won.
+	 * Checks if player has just played in the last turn.
 	 *
-	 * @return true, if is won
-	 */
-	public boolean isWon() {
-		return won;
-	}
-
-	/**
-	 * Sets the won.
-	 *
-	 * @param won the new won
-	 */
-	public void setWon(boolean won) {
-		this.won = won;
-	}
-
-	/**
-	 * Checks if is just played.
-	 *
-	 * @return true, if is just played
+	 * @return true, if he has just played
 	 */
 	public boolean isJustPlayed() {
 		return justPlayed;
@@ -373,25 +301,27 @@ public class Player {
 	/**
 	 * Sets the just played.
 	 *
-	 * @param justPlayed the new just played
+	 * @param justPlayed
+	 *            the new value, indicating if the player has just played
 	 */
 	public void setJustPlayed(boolean justPlayed) {
 		this.justPlayed = justPlayed;
 	}
 
 	/**
-	 * Gets the play time.
+	 * Gets the play time of the turn.
 	 *
-	 * @return the play time
+	 * @return the play time of the turn
 	 */
 	public int getPlayTime() {
 		return playTime;
 	}
 
 	/**
-	 * Sets the play time.
+	 * Sets the play time of the turn.
 	 *
-	 * @param playTime the new play time
+	 * @param playTime
+	 *            the new play time of the turn.
 	 */
 	public void setPlayTime(int playTime) {
 		this.playTime = playTime;
@@ -409,24 +339,18 @@ public class Player {
 	/**
 	 * Sets the player id.
 	 *
-	 * @param playerID the new player id
+	 * @param playerID
+	 *            the new player id
 	 */
 	public void setPlayerID(int playerID) {
 		this.playerID = playerID;
 	}
-	
+
 	/**
-	 * Adds the tacada total.
+	 * Adds 1 shot to the total shots.
 	 */
-	public void addTacadaTotal(){
+	public void addTacadaTotal() {
 		tacadaTotal++;
-	}
-	
-	/**
-	 * Adds the tacada jogada.
-	 */
-	public void addTacadaJogada(){
-		tacadasJogada++;
 	}
 
 }
