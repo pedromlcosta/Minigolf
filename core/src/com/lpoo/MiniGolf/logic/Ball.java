@@ -18,37 +18,42 @@ import com.lpoo.MiniGolf.screens.GameScreen;
  */
 public class Ball extends Element {
 
-	/** The stepping on. */
+	/** The type of obstacle the ball is stepping on. */
 	public elementType steppingOn = elementType.nothing;
-	
-	/** The radius. */
-	public float radius;
-	
-	/** The last pos. */
-	private Vector2 lastPos;
-	
-	/** The last pos type. */
-	public elementType lastPosType;
 
-	/** The teleport destination. */
+	/** The radius of the ball. */
+	public float radius;
+
+	/** The last position where the ball was stopped. */
+	private Vector2 lastPos;
+
+	/**
+	 * The teleport destination. When the ball touches a teleporter, it needs to
+	 * know where it is going to be teleported, because each teleporter has its
+	 * own destination. The value is saved in this variable and then handled
+	 * when recreating the ball on the teleporter exit.
+	 */
 	private Vector2 teleportDestination;
-	
-	/** The velocity before teleport. */
+
+	/**
+	 * The velocity before the teleport was effectuated, so it can be restored
+	 * after, when the ball is recreated on the teleporter exit.
+	 */
 	private Vector2 velocityBeforeTeleport;
-	
-	/** The on speed pad. */
+
+	/** Tells us if the ball is stepping on a speed pad (accelerator floor). */
 	private boolean onSpeedPad = false;
-	
-	/** The accel angle. */
+
+	/** The acceleration angle, when stepping a speed pad/accelerator floor. */
 	public float accelAngle;
 
-	/** The touched void. */
+	/** Indicates whether the fall fell into a void floor. */
 	private boolean touchedVoid = false;
-	
-	/** The touched water. */
+
+	/** Indicates whether the ball fell into a water floor. */
 	private boolean touchedWater = false;
-	
-	/** The touched teleporter. */
+
+	/** Indicates whether the ball has entered into a teleporter. */
 	private boolean touchedTeleporter = false;
 
 	/**
@@ -56,17 +61,21 @@ public class Ball extends Element {
 	 */
 	public Ball() {
 		super();
-		
+
 	}
 
 	// Constructor that also creates the body
 	/**
 	 * Instantiates a new ball.
 	 *
-	 * @param pos the pos
-	 * @param w the w
-	 * @param radius the radius
-	 * @param player the player
+	 * @param pos
+	 *            the starting position of the ball
+	 * @param w
+	 *            the World the ball's body is inserted into
+	 * @param radius
+	 *            the radius of the ball
+	 * @param player
+	 *            the player that owns this ball
 	 */
 	public Ball(Vector2 pos, World w, float radius, Player player) {
 		super(pos, radius * 2, radius * 2);
@@ -83,9 +92,12 @@ public class Ball extends Element {
 	/**
 	 * Creates the body.
 	 *
-	 * @param w the w
-	 * @param player the player
-	 * @param newPos the new pos
+	 * @param w
+	 *            the World where the body is going to be created
+	 * @param player
+	 *            the player, that owns the ball that has this body
+	 * @param newPos
+	 *            the new position where the body is going to be created
 	 */
 	public void createBody(World w, Player player, Vector2 newPos) {
 
@@ -115,7 +127,9 @@ public class Ball extends Element {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#destroyBody()
 	 */
 	public void destroyBody() {
@@ -126,7 +140,9 @@ public class Ball extends Element {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#draw()
 	 */
 	public void draw() {
@@ -135,11 +151,17 @@ public class Ball extends Element {
 	}
 
 	/**
-	 * Begin contact listener.
+	 * Listener for when the ball ENTERS/BEGINS contact with another body.
+	 * Handles all types of interactions between the ball and other elements
+	 * when entering them.
 	 *
-	 * @param ballUserData the ball user data
-	 * @param obstacleUserData the obstacle user data
-	 * @param innerSensor the inner sensor
+	 * @param ballUserData
+	 *            the ball user data, stored in the ball body
+	 * @param obstacleUserData
+	 *            the obstacle user data, stored in the obstacle body
+	 * @param innerSensor
+	 *            indicates whether the contact was made with the inner sensor
+	 *            of the ball or it's outer surface/fixture
 	 */
 	public void beginContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
 
@@ -200,11 +222,17 @@ public class Ball extends Element {
 	}
 
 	/**
-	 * End contact listener.
+	 * Listener for when the ball LEAVES/ENDS contact with another body. Handles
+	 * all types of interactions between the ball and other elements when
+	 * exiting them.
 	 *
-	 * @param ballUserData the ball user data
-	 * @param obstacleUserData the obstacle user data
-	 * @param innerSensor the inner sensor
+	 * @param ballUserData
+	 *            the ball user data, stored in the ball body
+	 * @param obstacleUserData
+	 *            the obstacle user data, stored in the obstacle body
+	 * @param innerSensor
+	 *            indicates whether the contact was made with the inner sensor
+	 *            of the ball or it's outer surface/fixture
 	 */
 	public void endContactListener(ElementType ballUserData, ElementType obstacleUserData, boolean innerSensor) {
 
@@ -247,9 +275,9 @@ public class Ball extends Element {
 	}
 
 	/**
-	 * Gets the player.
+	 * Gets the player that owns this ball.
 	 *
-	 * @return the player
+	 * @return the player that owns this ball.
 	 */
 	public Player getPlayer() {
 
@@ -258,34 +286,35 @@ public class Ball extends Element {
 	}
 
 	/**
-	 * Gets the body user data.
+	 * Gets the body user data stored in the ball's body.
 	 *
-	 * @return the body user data
+	 * @return the body user data stored in the ball's body.
 	 */
 	public ElementType getBodyUserData() {
 		return (ElementType) body.getUserData();
 	}
 
 	/**
-	 * Gets the last pos.
+	 * Gets the last position where the ball was stopped.
 	 *
-	 * @return the last pos
+	 * @return the last position where the ball was stopped.
 	 */
 	public Vector2 getLastPos() {
 		return lastPos;
 	}
 
 	/**
-	 * Sets the last pos.
+	 * Sets the last position where the ball was stopped.
 	 *
-	 * @param lastPos the new last pos
+	 * @param lastPos
+	 *            the new last position where the ball was stopped.
 	 */
 	public void setLastPos(Vector2 lastPos) {
 		this.lastPos = lastPos.cpy();
 	}
 
 	/**
-	 * Check elements touched.
+	 * Check what elements the ball has touched and acts accordingly.
 	 */
 	public void checkElementsTouched() {
 
@@ -309,46 +338,52 @@ public class Ball extends Element {
 	}
 
 	/**
-	 * Checks if is touched void.
+	 * Checks if the ball has fell into the void.
 	 *
-	 * @return true, if is touched void
+	 * @return true, if it touched a void floor.
 	 */
 	public boolean isTouchedVoid() {
 		return touchedVoid;
 	}
 
 	/**
-	 * Sets the touched void.
+	 * Sets the touched void value.
 	 *
-	 * @param touchedVoid the new touched void
+	 * @param touchedVoid
+	 *            the new touched void value.
 	 */
 	public void setTouchedVoid(boolean touchedVoid) {
 		this.touchedVoid = touchedVoid;
 	}
 
 	/**
-	 * Checks if is touched water.
+	 * Checks if the ball fell into the water.
 	 *
-	 * @return true, if is touched water
+	 * @return true, if it touched a water floor.
 	 */
 	public boolean isTouchedWater() {
 		return touchedWater;
 	}
 
 	/**
-	 * Sets the touched water.
+	 * Sets the touched water value.
 	 *
-	 * @param touchedWater the new touched water
+	 * @param touchedWater
+	 *            the new touched water value.
 	 */
 	public void setTouchedWater(boolean touchedWater) {
 		this.touchedWater = touchedWater;
 	}
 
 	/**
-	 * Teleport.
+	 * Teleports the ball to a destination, setting it's velocity, by deleting
+	 * the body and creating it with the new attributes.
 	 *
-	 * @param destination the destination
-	 * @param keepVelocity the keep velocity
+	 * @param destination
+	 *            the destination of the ball.
+	 * @param keepVelocity
+	 *            indicates whether the ball should be stopped on its
+	 *            destination or keep its previous speed.
 	 */
 	public void teleport(Vector2 destination, boolean keepVelocity) {
 
@@ -373,7 +408,7 @@ public class Ball extends Element {
 	/**
 	 * Gets the velocity before teleport.
 	 *
-	 * @return the velocity before teleport
+	 * @return the velocity before teleport.
 	 */
 	public Vector2 getVelocityBeforeTeleport() {
 		return velocityBeforeTeleport;
@@ -382,25 +417,27 @@ public class Ball extends Element {
 	/**
 	 * Sets the velocity before teleport.
 	 *
-	 * @param velocityBeforeTeleport the new velocity before teleport
+	 * @param velocityBeforeTeleport
+	 *            the new velocity before teleport
 	 */
 	public void setVelocityBeforeTeleport(Vector2 velocityBeforeTeleport) {
 		this.velocityBeforeTeleport = velocityBeforeTeleport;
 	}
 
 	/**
-	 * Checks if is on speed pad.
+	 * Checks if the ball is on a speed pad/ accelerator floor
 	 *
-	 * @return true, if is on speed pad
+	 * @return true, if is on a speed pad
 	 */
 	public boolean isOnSpeedPad() {
 		return onSpeedPad;
 	}
 
 	/**
-	 * Sets the on speed pad.
+	 * Sets the value telling whether the ball is on a speed pad/accelerator floor
 	 *
-	 * @param onSpeedPad the new on speed pad
+	 * @param onSpeedPad
+	 *            the new on speed pad value.
 	 */
 	public void setOnSpeedPad(boolean onSpeedPad) {
 		this.onSpeedPad = onSpeedPad;
