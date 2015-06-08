@@ -217,6 +217,7 @@ public class GameScreen implements Screen, InputProcessor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 
 		server.addListener(new Listener() {
 			public void received(Connection connection, Object object) {
