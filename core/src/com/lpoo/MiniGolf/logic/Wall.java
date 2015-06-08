@@ -2,7 +2,6 @@ package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,7 +12,20 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.data.Assets;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Wall.
+ */
 public class Wall extends Element {
+	
+	/**
+	 * Instantiates a new wall.
+	 *
+	 * @param pos the pos
+	 * @param width the width
+	 * @param height the height
+	 * @param type the type
+	 */
 	public Wall(Vector2 pos, float width, float height, elementType type) {
 
 		super(pos, width, height, type);
@@ -23,6 +35,11 @@ public class Wall extends Element {
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 	}
 
+	/**
+	 * Instantiates a new wall.
+	 *
+	 * @param type the type
+	 */
 	public Wall(elementType type) {
 
 		super(type);
@@ -31,6 +48,9 @@ public class Wall extends Element {
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d.World)
+	 */
 	public void createBody(World w) {
 
 		PolygonShape square = new PolygonShape();
@@ -71,6 +91,9 @@ public class Wall extends Element {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#destroyBody()
+	 */
 	public void destroyBody() {
 		for (int i = 0; i < body.getFixtureList().size; i++) {
 			body.destroyFixture(body.getFixtureList().get(i));
@@ -78,6 +101,9 @@ public class Wall extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#draw()
+	 */
 	public void draw() {
 		MiniGolf.batch.draw(image.getTexture(), (startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD, image.getWidth(), image.getHeight(), 0, 0, 2, 1);
 		// image.draw(MiniGolf.batch);
@@ -85,6 +111,9 @@ public class Wall extends Element {
 	}
 
  
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#initializeImage()
+	 */
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
 		

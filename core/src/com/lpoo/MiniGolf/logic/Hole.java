@@ -2,7 +2,6 @@ package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -12,14 +11,20 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.data.Assets;
 
+/**
+ * The Class Hole.
+ */
 public class Hole extends Element {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The radius. */
 	private float radius;
 
+	/**
+	 * Instantiates a new hole.
+	 */
 	public Hole() {
 		super();
 		image = new Sprite(Assets.manager.get("hole.png", Texture.class));
@@ -27,14 +32,28 @@ public class Hole extends Element {
 
 	}
 
+	/**
+	 * Gets the radius.
+	 *
+	 * @return the radius
+	 */
 	public float getRadius() {
 		return radius;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#setRadius(float)
+	 */
 	public void setRadius(float radius) {
 		this.radius = radius;
 	}
 
+	/**
+	 * Instantiates a new hole.
+	 *
+	 * @param pos the pos
+	 * @param radius the radius
+	 */
 	public Hole(Vector2 pos, float radius) {
 		super(pos, radius * 2, radius * 2);
 
@@ -43,6 +62,9 @@ public class Hole extends Element {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d.World)
+	 */
 	public void createBody(World w) {
 		CircleShape circle = new CircleShape();
 		circle.setRadius(radius * 0.50f);
@@ -62,6 +84,9 @@ public class Hole extends Element {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#destroyBody()
+	 */
 	public void destroyBody() {
 
 		for (int i = 0; i < body.getFixtureList().size; i++) {
@@ -70,23 +95,17 @@ public class Hole extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#draw()
+	 */
 	public void draw() {
-		// System.out.println((body.getPosition().x-width/2f)*MiniGolf.BOX_TO_WORLD
-		// + " " + (body.getPosition().y-width/2f)*MiniGolf.BOX_TO_WORLD + " " +
-		// width*MiniGolf.BOX_TO_WORLD + " " + height*MiniGolf.BOX_TO_WORLD+
-		// " "+ body.getFixtureList().get(0).getShape().getRadius());
-		// MiniGolf.batch.draw(image, (body.getPosition().x - width / 2f) *
-		// MiniGolf.BOX_TO_WORLD, (body.getPosition().y - width / 2f) *
-		// MiniGolf.BOX_TO_WORLD, width * MiniGolf.BOX_TO_WORLD, height
-		// * MiniGolf.BOX_TO_WORLD);
-		// image.setPosition(body.getPosition().x*MiniGolf.BOX_TO_WORLD,
-		// body.getPosition().y*MiniGolf.BOX_TO_WORLD);
-		// image.setSize(width*MiniGolf.BOX_TO_WORLD,
-		// height*MiniGolf.BOX_TO_WORLD);
-		// image.draw(MiniGolf.batch);
+		 
 		image.draw(MiniGolf.batch);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#createElement(float, float, float, float)
+	 */
 	public void createElement(float posInicialX, float posInicialY, float width, float height) {
 
 		this.setStartPos(new Vector2(posInicialX, posInicialY));
@@ -95,6 +114,9 @@ public class Hole extends Element {
 		this.createBody(MiniGolf.getW());
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#initializeImage()
+	 */
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get("hole.png", Texture.class));
 

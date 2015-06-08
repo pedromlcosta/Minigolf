@@ -22,31 +22,60 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.data.Assets;
-import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OptionsScreen.
+ */
 public class OptionsScreen implements Screen {
+	
+	/** The batch. */
 	private SpriteBatch batch;
+	
+	/** The skin. */
 	private Skin skin;
+	
+	/** The stage. */
 	private Stage stage;
+	
+	/** The max time slider. */
 	private Slider maxTimeSlider;
+	
+	/** The max time label. */
 	private Label maxTimeLabel;
+	
+	/** The background. */
 	private Sprite background;
+	
+	/** The number of players. */
 	private TextField numberOfPlayers;
+	
+	/** The number of courses. */
 	private TextField numberOfCourses;
+	
+	/** The go back button. */
 	private TextButton goBackButton;
+	
+	/** The game options table. */
 	private Table gameOptionsTable;
+	
+	/** The game. */
 	private MiniGolf game;
 
-	private final float DELTA_WIDTH = 200f;
-	private static final float BUTTON_WIDTH = 200f;
-	private static final float BUTTON_HEIGHT = 50f;
-
+	/**
+	 * Constructor of the screen.
+	 *
+	 * @param game the game
+	 */
 	public OptionsScreen(MiniGolf game) {
 		this.game = game;
 
 	}
 
+	/**
+	 * Instantiates all elements that will be used through out the screen.
+	 */
 	@Override
 	public void show() {
 		batch = new SpriteBatch();
@@ -64,7 +93,9 @@ public class OptionsScreen implements Screen {
 		Gdx.input.setInputProcessor(stage);
 	}
 
-	// Create template
+	/**
+	 * In charge of initializing the actors.
+	 */
 	private void createMenuElements() {
 
 		maxTimeSlider = new Slider(10f, 60f, 1f, false, skin);
@@ -72,20 +103,9 @@ public class OptionsScreen implements Screen {
 		numberOfPlayers = new TextField("Number of Players", skin);
 		numberOfCourses = new TextField("Number of Courses", skin);
 
-		String[] newItems;
-		newItems = new String[game.getSelectedCourses().size()];
-
-		int i = 0;
-		for (Course c : game.getSelectedCourses()) {
-			if (c.getNome() != null) {
-				newItems[i] = c.getNome();
-				i++;
-			}
-		}
-
 		goBackButton = new TextButton("Back", skin);
-		goBackButton.setWidth(BUTTON_WIDTH);
-		goBackButton.setHeight(BUTTON_HEIGHT);
+		goBackButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		goBackButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 		goBackButton.setPosition(MiniGolf.WIDTH / 2 - 150f, MiniGolf.HEIGHT / 2 - 100f);
 		stage.addActor(goBackButton);
 		addListeners();
@@ -94,9 +114,8 @@ public class OptionsScreen implements Screen {
 	}
 
 	/**
-	 * creates the tables that mantain the Menu
+	 * creates the tables that maintains the Menu.
 	 */
-	// TODO ver funções sem numero de argumentos;
 	private void createTable() {
 		gameOptionsTable = new Table();
 
@@ -126,18 +145,22 @@ public class OptionsScreen implements Screen {
 		gameOptionsTable.add(numberOfCourses);
 		gameOptionsTable.row();
 
-		// TODO MiniGolf.WIDTH
-		// TODO MiniGolf.HEIGHT
 		gameOptionsTable.setPosition(MiniGolf.WIDTH / 2, MiniGolf.HEIGHT / 2 + 60f);
 
 		stage.addActor(gameOptionsTable);
 
-		// General table
-
 	}
 
+	/**
+	 * adds listeners to the actors.
+	 */
 	private void addListeners() {
 
+		/**
+		 * Validates if the value given by the user is acceptable A value is
+		 * considered acceptable when it´s bigger than 0 but not bigger than the
+		 * number of MAX_Player
+		 */
 		numberOfPlayers.setTextFieldFilter(new TextFieldFilter() {
 			@Override
 			public boolean acceptChar(TextField textField, char c) {
@@ -159,6 +182,9 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
+		/**
+		 * if the value on the text isn´t valid it´s erased
+		 */
 		numberOfPlayers.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -170,6 +196,10 @@ public class OptionsScreen implements Screen {
 
 			}
 		});
+		/**
+		 * it aceptes a value when it is a number and said number is not bigger
+		 * than the number of All Courses available
+		 */
 		numberOfCourses.setTextFieldFilter(new TextFieldFilter() {
 			@Override
 			public boolean acceptChar(TextField textField, char c) {
@@ -183,7 +213,6 @@ public class OptionsScreen implements Screen {
 					numberOfCourses.setText("");
 					return false;
 				}
-				// TODO change for MAX_COURSES
 				if (valor > MiniGolf.getAllCourses().size() || valor <= 0)
 					return false;
 				else {
@@ -192,6 +221,9 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
+		/**
+		 * if the value not valid it erases the value
+		 */
 		numberOfCourses.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -202,6 +234,10 @@ public class OptionsScreen implements Screen {
 				}
 			}
 		});
+		/**
+		 * updates the variable TempoMax in MiniGolf and changes the Label
+		 * accordingly
+		 */
 		maxTimeSlider.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent arg0, Actor arg1) {
@@ -210,6 +246,9 @@ public class OptionsScreen implements Screen {
 			}
 		});
 
+		/**
+		 * Returns to the MenuScreen
+		 */
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -219,6 +258,9 @@ public class OptionsScreen implements Screen {
 
 	}
 
+	/**
+	 * Disposes of the screen Elements.
+	 */
 	@Override
 	public void dispose() {
 		batch.dispose();
@@ -226,15 +268,26 @@ public class OptionsScreen implements Screen {
 		stage.dispose();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 		dispose();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/**
+	 * Redraws the screen.
+	 *
+	 * @param delta the delta
+	 */
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -248,12 +301,18 @@ public class OptionsScreen implements Screen {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}

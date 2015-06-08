@@ -10,6 +10,9 @@ import com.lpoo.MiniGolf.logic.Element;
 public class Geometry {
 
 	private final static float tolerance = 0.2f;
+	/**
+	 * Converters degrees into radians
+	 */
 	public static final float DEG_TO_RAD = (float) (Math.PI / 180);
 
 	/**
@@ -38,17 +41,17 @@ public class Geometry {
 
 	/**
 	 * 
-	 * @param c1
-	 * @param posC1
-	 * @param c2
-	 * @param posC2
+	 * @param circle1
+	 * @param posCircle1
+	 * @param circle2
+	 * @param posCircle2
 	 * @return true if two circles Overlap
 	 */
-	public static boolean overlapCircles(CircleShape c1, Vector2 posC1, CircleShape c2, Vector2 posC2) {
+	public static boolean overlapCircles(CircleShape circle1, Vector2 posCircle1, CircleShape circle2, Vector2 posCircle2) {
 
-		float radiusC1 = c1.getRadius();
-		float radiusC2 = c2.getRadius();
-		float dist = distance(posC1.x, posC1.y, posC2.x, posC2.y);
+		float radiusC1 = circle1.getRadius();
+		float radiusC2 = circle2.getRadius();
+		float dist = distance(posCircle1.x, posCircle1.y, posCircle2.x, posCircle2.y);
 		float absSum, absDiff;
 		absSum = Math.abs(radiusC1 + radiusC2 + tolerance);
 		absDiff = Math.abs(radiusC1 - radiusC2);
@@ -64,16 +67,16 @@ public class Geometry {
 	/**
 	 * 
 	 * @param circle
-	 * @param pos1
+	 * @param posCircle
 	 * @param radius
 	 * @param rectangule
-	 * @param pos2
+	 * @param posRectangule
 	 * @return returns if there is an overlap between a circle and a rectangle
 	 */
-	public static boolean overlap(Element circle, Vector2 pos1, float radius, Element rectangule, Vector2 pos2) {
+	public static boolean overlap(Element circle, Vector2 posCircle, float radius, Element rectangule, Vector2 posRectangule) {
 
-		Circle c = new Circle(pos1.x, pos1.y, radius);
-		Rectangle r = new Rectangle(pos2.x, pos2.y, rectangule.getWidth(), rectangule.getHeight());
+		Circle c = new Circle(posCircle.x, posCircle.y, radius);
+		Rectangle r = new Rectangle(posRectangule.x, posRectangule.y, rectangule.getWidth(), rectangule.getHeight());
 		return Intersector.overlaps(c, r);
 
 	}
@@ -81,15 +84,15 @@ public class Geometry {
 	/**
 	 * 
 	 * @param element
-	 * @param posSq1
+	 * @param posRectangle1
 	 * @param eleToBeAdded
-	 * @param posSq2
+	 * @param posRectangle2
 	 * @return return true if there is an overlap between two rectangle
 	 */
-	public static boolean overlapPloygons(Element element, Vector2 posSq1, Element eleToBeAdded, Vector2 posSq2) {
+	public static boolean overlapPloygons(Element element, Vector2 posRectangle1, Element eleToBeAdded, Vector2 posRectangle2) {
 
-		Rectangle r1 = new Rectangle(posSq1.x, posSq1.y, element.getWidth(), element.getHeight());
-		Rectangle r2 = new Rectangle(posSq2.x, posSq2.y, eleToBeAdded.getWidth(), eleToBeAdded.getHeight());
+		Rectangle r1 = new Rectangle(posRectangle1.x, posRectangle1.y, element.getWidth(), element.getHeight());
+		Rectangle r2 = new Rectangle(posRectangle2.x, posRectangle2.y, eleToBeAdded.getWidth(), eleToBeAdded.getHeight());
 		return r1.overlaps(r2);
 	}
 

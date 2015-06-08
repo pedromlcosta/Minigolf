@@ -18,29 +18,60 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MenuScreen.
+ */
 public class MenuScreen implements Screen {
+	
+	/** The batch. */
 	private SpriteBatch batch;
+	
+	/** The skin. */
 	private Skin skin;
+	
+	/** The stage. */
 	private Stage stage;
+	
+	/** The play button. */
 	private TextButton playButton;
+	
+	/** The Options button. */
 	private TextButton OptionsButton;
+	
+	/** The exit button. */
 	private TextButton exitButton;
+	
+	/** The editor button. */
 	private TextButton editorButton;
-	private static final float BUTTON_WIDTH = 200f;
-	private static final float BUTTON_HEIGHT = 50f;
+	
+	/** The game. */
 	private MiniGolf game;
+	
+	/** The background. */
 	private Sprite background;
 
+	/** The delta width. */
 	private final float DELTA_WIDTH = 100f;
+	
+	/** The delta height. */
 	private final float DELTA_HEIGHT = 50f;
 
 	// private final static Logger LOGGER =
 	// Logger.getLogger(MenuScreen.class.getName());
 
+	/**
+	 * Instantiates a new menu screen.
+	 *
+	 * @param game the game
+	 */
 	public MenuScreen(MiniGolf game) {
 		this.game = game;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	public void show() {
 		batch = new SpriteBatch();
 		skin = Assets.manager.get("uiskin.json",Skin.class);
@@ -70,7 +101,7 @@ public class MenuScreen implements Screen {
 
 	/**
 	 * it´s responsible for the creation and positioning of all the buttons in
-	 * the stage
+	 * the stage.
 	 */
 	private void createButtons() {
 		playButton = new TextButton("Play", skin);
@@ -78,17 +109,17 @@ public class MenuScreen implements Screen {
 		exitButton = new TextButton("Exit", skin);
 		editorButton = new TextButton("Edit", skin);
 
-		playButton.setWidth(BUTTON_WIDTH);
-		playButton.setHeight(BUTTON_HEIGHT);
+		playButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		playButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
-		OptionsButton.setWidth(BUTTON_WIDTH);
-		OptionsButton.setHeight(BUTTON_HEIGHT);
+		OptionsButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		OptionsButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
-		exitButton.setWidth(BUTTON_WIDTH);
-		exitButton.setHeight(BUTTON_HEIGHT);
+		exitButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		exitButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
-		editorButton.setWidth(BUTTON_WIDTH);
-		editorButton.setHeight(BUTTON_HEIGHT);
+		editorButton.setWidth(MiniGolf.BUTTON_WIDTH);
+		editorButton.setHeight(MiniGolf.BUTTON_HEIGHT);
 
 		playButton.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH, MiniGolf.HEIGHT / 2 + DELTA_HEIGHT * 3);
 		editorButton.setPosition(MiniGolf.WIDTH / 2 - DELTA_WIDTH, MiniGolf.HEIGHT / 2 + DELTA_HEIGHT);
@@ -100,7 +131,7 @@ public class MenuScreen implements Screen {
 
 	/**
 	 * it ´s responsible for defining the behaviors of all the buttons that will
-	 * on the stage
+	 * on the stage.
 	 */
 	private void addListener() {
 		playButton.addListener(new ClickListener() {
@@ -132,6 +163,9 @@ public class MenuScreen implements Screen {
 		});
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -142,25 +176,40 @@ public class MenuScreen implements Screen {
 		stage.draw();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 		dispose();
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		batch.dispose();

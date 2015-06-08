@@ -2,7 +2,6 @@ package com.lpoo.MiniGolf.logic;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,18 +12,37 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.geometry.Geometry;
 
+/**
+ * The Class Floor.
+ */
 public class Floor extends Element {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The Constant GRASS_DRAG. */
 	public static final float GRASS_DRAG = 1.5f;
+	
+	/** The Constant SAND_DRAG. */
 	public static final float SAND_DRAG = 6.0f;
+	
+	/** The Constant ICE_DRAG. */
 	public static final float ICE_DRAG = 0.3f;
+	
+	/** The Constant ACCELERATOR_DRAG. */
 	public static final float ACCELERATOR_DRAG = -4.0f;
+	
+	/** The balls inside illusion. */
 	private int ballsInsideIllusion = 0;
 
+	/**
+	 * Instantiates a new floor.
+	 *
+	 * @param pos the pos
+	 * @param width the width
+	 * @param height the height
+	 * @param type the type
+	 */
 	public Floor(Vector2 pos, float width, float height, elementType type) {
 
 		super(pos, width, height, type);
@@ -34,6 +52,11 @@ public class Floor extends Element {
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 	}
 
+	/**
+	 * Instantiates a new floor.
+	 *
+	 * @param type the type
+	 */
 	public Floor(elementType type) {
 
 		super(type);
@@ -42,6 +65,9 @@ public class Floor extends Element {
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d.World)
+	 */
 	public void createBody(World w) {
 
 		PolygonShape square = new PolygonShape();
@@ -56,8 +82,6 @@ public class Floor extends Element {
 
 		body = w.createBody(bodyDef);
 		body.createFixture(fixDef);
-		//TODO tentar converter angulo
-	//	System.out.println("INITIALIZING BODY, ANGLE IN RADS IS: " + angle + " AND IN DEG: " + angle/Geometry.DEG_TO_RAD);
 		body.setTransform(startPos, angle);
 
 		switch (type) {
@@ -84,10 +108,12 @@ public class Floor extends Element {
 			break;
 		}
 
-		//System.out.println("Width:" + this.width + " Height: " + this.height + " PosX " + this.getPosX() + "  PodY: " + this.getPosY());
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#destroyBody()
+	 */
 	public void destroyBody() {
 		for (int i = 0; i < body.getFixtureList().size; i++) {
 			body.destroyFixture(body.getFixtureList().get(i));
@@ -95,28 +121,48 @@ public class Floor extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#draw()
+	 */
 	public void draw() {
-		// MiniGolf.batch.draw(image.getTexture(), image.getOriginX(),
-		// image.getOriginY(),image.getWidth(), image.getHeight(), 0, 0, 2, 1);
 		image.draw(MiniGolf.batch);
 	}
 
+	/**
+	 * Gets the balls inside illusion.
+	 *
+	 * @return the balls inside illusion
+	 */
 	public int getBallsInsideIllusion() {
 		return ballsInsideIllusion;
 	}
 
+	/**
+	 * Sets the balls inside illusion.
+	 *
+	 * @param ballsInsideIllusion the new balls inside illusion
+	 */
 	public void setBallsInsideIllusion(int ballsInsideIllusion) {
 		this.ballsInsideIllusion = ballsInsideIllusion;
 	}
 
+	/**
+	 * Increment balls illusion.
+	 */
 	public void incrementBallsIllusion() {
 		ballsInsideIllusion++;
 	}
 
+	/**
+	 * Decrement balls illusion.
+	 */
 	public void decrementBallsIllusion() {
 		ballsInsideIllusion--;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.lpoo.MiniGolf.logic.Element#initializeImage()
+	 */
 	public void initializeImage() {
 		image = new Sprite(Assets.manager.get(type.toString() + ".png", Texture.class));
 
@@ -124,7 +170,6 @@ public class Floor extends Element {
 		image.setPosition((startPos.x - width / 2f) * MiniGolf.BOX_TO_WORLD, (startPos.y - height / 2f) * MiniGolf.BOX_TO_WORLD);
 		image.setSize(width * MiniGolf.BOX_TO_WORLD, height * MiniGolf.BOX_TO_WORLD);
 		image.setOriginCenter();
-		//TODO tentar converter angulo
 		image.setRotation(angle * (1 / Geometry.DEG_TO_RAD));
 
 	}
