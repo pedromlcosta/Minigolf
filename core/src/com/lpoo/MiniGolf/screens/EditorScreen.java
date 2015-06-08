@@ -36,33 +36,83 @@ import com.lpoo.MiniGolf.logic.MiniGolf;
 import com.lpoo.MiniGolf.logic.Teleporter;
 import com.lpoo.MiniGolf.logic.Wall;
 
+/**
+ * The Class EditorScreen.
+ */
 public class EditorScreen implements Screen {
+
+	/** The skin. */
 	private Skin skin;
+
+	/** The stage. */
 	private Stage stage;
+
+	/** The select element. */
 	private SelectBox2<String> selectElement;
+
+	/** The scene. */
 	private Table scene;
 
+	/** The resete button. */
 	private TextButton goBackButton, doneButton, revertLastMoveButton, reseteButton;
 
+	/** The game. */
 	private MiniGolf game;
+
+	/** The created. */
 	private static Course created;
+
+	/** The element to add. */
 	private Element elementToAdd;
+
+	/** The Constant HOLE_RADIUS. */
 	private static final float HOLE_RADIUS = 0.3f;
+
+	/** The pos init. */
 	Vector2 posInit;
+
+	/** The circle element. */
 	private boolean drawElement, pressedLeftButton, pressedRightButton, pressedResetbutton, changedItem, circleElement;
+
+	/** The shape renderer. */
 	private ShapeRenderer shapeRenderer;
+
+	/** The cam. */
 	private OrthographicCamera cam;
+
+	/** The left y. */
 	private float cursorPosX, cursorPosY, leftX, leftY;
+
+	/** The n players placed. */
 	private int nPlayersPlaced = 0;
+
+	/** The n teleporters. */
 	private int nTeleporters = 0;
+
+	/** The n totalt. */
 	private int nTotalt = 0;
+
+	/** The grass floor. */
 	Floor grassFloor;
+
+	/** The r key pressed. */
 	public static boolean middleMousebutton, rKeyPressed;
 
+	/**
+	 * Instantiates a new editor screen.
+	 *
+	 * @param game
+	 *            the game
+	 */
 	public EditorScreen(MiniGolf game) {
 		this.game = game;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	@Override
 	public void show() {
 
@@ -89,6 +139,9 @@ public class EditorScreen implements Screen {
 
 	}
 
+	/**
+	 * Initiates the stage camera.
+	 */
 	public void initStageCamera() {
 		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
 		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -97,6 +150,11 @@ public class EditorScreen implements Screen {
 		cam = (OrthographicCamera) stage.getViewport().getCamera();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -121,6 +179,9 @@ public class EditorScreen implements Screen {
 		cam.update();
 	}
 
+	/**
+	 * Creates the auxiliar square.
+	 */
 	public void createAuxiliarSquare() {
 		if (!circleElement) {
 			shapeRendererDraw(Color.RED, shapes.line, leftX, leftY, leftX, cursorPosY, true);
@@ -131,13 +192,30 @@ public class EditorScreen implements Screen {
 	}
 
 	// TODO
+	/**
+	 * Removes the actor from editor.
+	 *
+	 * @param ele
+	 *            the ele
+	 * @param index
+	 *            the index
+	 * @param removed
+	 *            the removed
+	 */
 	private void removeActorFromEditor(ArrayList<Element> ele, int index, Element removed) {
 		ele.remove(index);
 		removed.destroyBody();
 		removed.remove();
 	}
 
+	/**
+	 * Adds the listeners.
+	 */
 	private void addListeners() {
+		/**
+		 * It only let´s the user leave after he placed MAX_PLAYERS starting
+		 * points Saves the course and adds it to the allCourses
+		 */
 		doneButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -154,6 +232,11 @@ public class EditorScreen implements Screen {
 				}
 			}
 		});
+
+		/**
+		 * Allows the user to leave if he has no more desires to complete the
+		 * Map
+		 */
 		goBackButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -161,6 +244,10 @@ public class EditorScreen implements Screen {
 			}
 		});
 
+		/**
+		 * Attempt to prevent the user from placing Elements in the buttons Also
+		 * allows user to revert Last Change
+		 */
 		revertLastMoveButton.addListener(new ClickListener() {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -187,6 +274,10 @@ public class EditorScreen implements Screen {
 
 		});
 
+		/**
+		 * Destroys all Elements and allows user to start fresh With the
+		 * exception of grass floor that´s the default floor type
+		 */
 		reseteButton.addListener(new ClickListener() {
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 				pressedResetbutton = true;
@@ -226,6 +317,9 @@ public class EditorScreen implements Screen {
 			}
 		});
 
+		/**
+		 * Drop down that selects the Element to be placed
+		 */
 		selectElement.addListener(new ChangeListener() {
 
 			@Override
@@ -251,6 +345,9 @@ public class EditorScreen implements Screen {
 			}
 
 		});
+		/**
+		 * Table where the buttons are placed
+		 */
 		scene.addListener(new ClickListener() {
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -276,6 +373,13 @@ public class EditorScreen implements Screen {
 	}
 
 	// replaces the current elementToAdd with the one selected in the drop down
+	/**
+	 * Gets the element selected in the dropDown.
+	 *
+	 * @param selected
+	 *            the selected
+	 * @return the element
+	 */
 	public void getElement(String selected) {
 		switch (selected) {
 		case "AcceleratorFloor":
@@ -323,6 +427,9 @@ public class EditorScreen implements Screen {
 	}
 
 	// creates the actor of the screen, buttons,table
+	/**
+	 * Creates the actors.
+	 */
 	private void createActors() {
 		created = new Course();
 		overrideStageListener();
@@ -376,8 +483,12 @@ public class EditorScreen implements Screen {
 		stage.addActor(scene);
 	}
 
-	// see if the elementToAdd is not overlapping any of the already placed
-	// elements
+	/**
+	 * Not overlapping. see if the elementToAdd is not overlapping any of the
+	 * already placed elements
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean notOverlapping() {
 		for (Element ele : created.getElementos()) {
 			if (ele.overlap(elementToAdd)) {
@@ -387,8 +498,23 @@ public class EditorScreen implements Screen {
 		return true;
 	}
 
-	// return the a new value be it for width or height depending whether if the
-	// element is a circle and/or of the points selected by the user
+	/**
+	 * return the a new value be it for width or height depending whether if the
+	 * element is a circle and/or of the points selected by the user Gets the
+	 * new element pos value.
+	 *
+	 * @param circle
+	 *            the circle
+	 * @param pos1
+	 *            the pos1
+	 * @param pos2
+	 *            the pos2
+	 * @param pos3
+	 *            the pos3
+	 * @param pos4
+	 *            the pos4
+	 * @return the new element pos value
+	 */
 	public float getNewElementPosValue(boolean circle, float pos1, float pos2, float pos3, float pos4) {
 		if (circle) {
 			if (changedItem) {
@@ -404,6 +530,10 @@ public class EditorScreen implements Screen {
 	// add an element to the course if he meets the requirements:
 	// Not being null
 	// Not overlapping any of the current Elements
+	/**
+	 * add an element to the course if he meets the requirements: Not being null
+	 * Not overlapping any of the current Elements
+	 */
 	private void addElement() {
 		if (elementToAdd == null)
 			return;
@@ -481,6 +611,9 @@ public class EditorScreen implements Screen {
 		pressedRightButton = false;
 	}
 
+	/**
+	 * Creates the element.
+	 */
 	public void createElement() {
 		stage.addActor(elementToAdd);
 		created.addEle(elementToAdd);
@@ -488,7 +621,13 @@ public class EditorScreen implements Screen {
 
 	}
 
-	// returns a new Pos depending on the placement of the element
+	/**
+	 * returns a new Pos depending on the placement of the element
+	 *
+	 * @param cursor
+	 * @param left
+	 * @return the pos initial
+	 */
 	public float getPosInitial(float cursor, float left) {
 		if (cursor - left < 0) {
 			return cursor;
@@ -496,11 +635,11 @@ public class EditorScreen implements Screen {
 			return left;
 	}
 
-	// Overrides the stage listeners:
-	// touchUp
-	// touchDown
-	// touchDragged
-	// mouseMoved
+	/**
+	 * Overrides the stage listeners: touchUp touchDown touchDragged mouseMoved
+	 *
+	 * Override stage listener.
+	 */
 	public void overrideStageListener() {
 
 		stage.addListener(new InputListener() {
@@ -596,6 +735,9 @@ public class EditorScreen implements Screen {
 	}
 
 	// draws the number of starting positions already placed
+	/**
+	 * Draw ball.
+	 */
 	public void drawBall() {
 
 		// System.out.println(created.getPositions().size());
@@ -607,8 +749,25 @@ public class EditorScreen implements Screen {
 		}
 	}
 
-	// draw using the shape Renderer, must be given color, an enum shap , and
-	// the positions
+	/**
+	 * draw using the shape Renderer, must be given color, an enum shap , and
+	 * the positions Shape renderer draw.
+	 *
+	 * @param color
+	 *            the color
+	 * @param shape
+	 *            the shape
+	 * @param pos1
+	 *            the pos1
+	 * @param pos2
+	 *            the pos2
+	 * @param pos3
+	 *            the pos3
+	 * @param pos4
+	 *            the pos4
+	 * @param autoShape
+	 *            the auto shape
+	 */
 	public void shapeRendererDraw(Color color, shapes shape, float pos1, float pos2, float pos3, float pos4, boolean autoShape) {
 		shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
 		shapeRenderer.setColor(color);
@@ -623,33 +782,62 @@ public class EditorScreen implements Screen {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		stage.dispose();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 		dispose();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 		cam.update();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}
 
-	// TODO
-	// Removes the last Element from the Elements Array from course, used by
-	// button revertLastMoveButton
+	/**
+	 * Removes the last Element from the Elements Array from course, used by
+	 * button revertLastMoveButton
+	 *
+	 * @param ele
+	 * 
+	 */
 	public void removeLastElement(ArrayList<Element> ele) {
 
 		int index = ele.size() - 1;
@@ -659,7 +847,12 @@ public class EditorScreen implements Screen {
 		removeActorFromEditor(ele, index, removed);
 	}
 
-	// removes the ball placed last
+	/**
+	 * Removes the last ball.
+	 *
+	 * @param posVec
+	 *            the pos vec
+	 */
 	public void removeLastBall(ArrayList<Vector2> posVec) {
 		int index = posVec.size() - 1;
 		if (index < 0)
@@ -668,6 +861,12 @@ public class EditorScreen implements Screen {
 		nPlayersPlaced--;
 	}
 
+	/**
+	 * Removes the from array element.
+	 *
+	 * @param ele
+	 *            the ele
+	 */
 	public static void removeFromArrayElement(Element ele) {
 		created.getElementos().remove(ele);
 	}

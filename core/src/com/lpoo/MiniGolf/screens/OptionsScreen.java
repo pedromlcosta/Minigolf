@@ -24,23 +24,49 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OptionsScreen.
+ */
 public class OptionsScreen implements Screen {
+	
+	/** The batch. */
 	private SpriteBatch batch;
+	
+	/** The skin. */
 	private Skin skin;
+	
+	/** The stage. */
 	private Stage stage;
+	
+	/** The max time slider. */
 	private Slider maxTimeSlider;
+	
+	/** The max time label. */
 	private Label maxTimeLabel;
+	
+	/** The background. */
 	private Sprite background;
+	
+	/** The number of players. */
 	private TextField numberOfPlayers;
+	
+	/** The number of courses. */
 	private TextField numberOfCourses;
+	
+	/** The go back button. */
 	private TextButton goBackButton;
+	
+	/** The game options table. */
 	private Table gameOptionsTable;
+	
+	/** The game. */
 	private MiniGolf game;
 
 	/**
-	 * Constructor of the screen
-	 * 
-	 * @param game
+	 * Constructor of the screen.
+	 *
+	 * @param game the game
 	 */
 	public OptionsScreen(MiniGolf game) {
 		this.game = game;
@@ -48,7 +74,7 @@ public class OptionsScreen implements Screen {
 	}
 
 	/**
-	 * Instantiates all elements that will be used through out the screen
+	 * Instantiates all elements that will be used through out the screen.
 	 */
 	@Override
 	public void show() {
@@ -68,7 +94,7 @@ public class OptionsScreen implements Screen {
 	}
 
 	/**
-	 * In charge of initializing the actors
+	 * In charge of initializing the actors.
 	 */
 	private void createMenuElements() {
 
@@ -88,7 +114,7 @@ public class OptionsScreen implements Screen {
 	}
 
 	/**
-	 * creates the tables that maintains the Menu
+	 * creates the tables that maintains the Menu.
 	 */
 	private void createTable() {
 		gameOptionsTable = new Table();
@@ -119,18 +145,14 @@ public class OptionsScreen implements Screen {
 		gameOptionsTable.add(numberOfCourses);
 		gameOptionsTable.row();
 
-		// TODO MiniGolf.WIDTH
-		// TODO MiniGolf.HEIGHT
 		gameOptionsTable.setPosition(MiniGolf.WIDTH / 2, MiniGolf.HEIGHT / 2 + 60f);
 
 		stage.addActor(gameOptionsTable);
 
-		// General table
-
 	}
 
 	/**
-	 * adds listeners to the actors
+	 * adds listeners to the actors.
 	 */
 	private void addListeners() {
 
@@ -191,7 +213,6 @@ public class OptionsScreen implements Screen {
 					numberOfCourses.setText("");
 					return false;
 				}
-				// TODO change for MAX_COURSES
 				if (valor > MiniGolf.getAllCourses().size() || valor <= 0)
 					return false;
 				else {
@@ -238,7 +259,7 @@ public class OptionsScreen implements Screen {
 	}
 
 	/**
-	 * Disposes of the screen Elements
+	 * Disposes of the screen Elements.
 	 */
 	@Override
 	public void dispose() {
@@ -247,17 +268,25 @@ public class OptionsScreen implements Screen {
 		stage.dispose();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 		dispose();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
 	/**
-	 * Redraws the screen
+	 * Redraws the screen.
+	 *
+	 * @param delta the delta
 	 */
 	@Override
 	public void render(float delta) {
@@ -272,12 +301,18 @@ public class OptionsScreen implements Screen {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 		stage.getViewport().update(width, height, true);
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}

@@ -10,6 +10,9 @@ import com.lpoo.MiniGolf.logic.Element;
 public class Geometry {
 
 	private final static float tolerance = 0.2f;
+	/**
+	 * Converters degrees into radians
+	 */
 	public static final float DEG_TO_RAD = (float) (Math.PI / 180);
 
 	/**
