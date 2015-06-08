@@ -6,15 +6,26 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Assets.
+ */
 public class Assets {
+
+	/** The manager. */
 	public static AssetManager manager = new AssetManager();
+
+	/** The menu skin. */
 	public static Skin menuSkin;
 
-	// In here we'll put everything that needs to be loaded in this format:
-	// manager.load("file location in assets", fileType.class);
-	//
-	// libGDX AssetManager currently supports: Pixmap, Texture, BitmapFont,
-	// TextureAtlas, TiledAtlas, TiledMapRenderer, Music and Sound.
+	/**
+	 * In here we'll put everything that needs to be loaded in this format:
+	 *
+	 * manager.load("file location in assets", fileType.class);
+	 *
+	 * libGDX AssetManager currently supports: Pixmap, Texture, BitmapFont,
+	 * TextureAtlas, TiledAtlas, TiledMapRenderer, Music and Sound.
+	 */
 	public static void queueLoading() {
 		// manager.load("grass.png", Texture.class);
 		manager.load("bola1.png", Texture.class);
@@ -41,18 +52,25 @@ public class Assets {
 		manager.load("teleporter.png", Texture.class);
 		Assets.manager.load("uiskin.atlas", TextureAtlas.class);
 		Assets.manager.load("uiskin.json", Skin.class);
-		 
+
 	}
 
-	// In here we'll create our skin, so we only have to create it once.
+	/**
+	 * In here we'll create our skin, so we only have to create it once. Sets
+	 * the menu skin.
+	 */
 	public static void setMenuSkin() {
 		if (menuSkin == null)
 			menuSkin = new Skin(Gdx.files.internal("uiskin.json"));
 	}
 
-	// This function gets called every render() and the AssetManager pauses the
-	// loading each frame
-	// so we can still run menus and loading screens smoothly
+	/**
+	 * This function gets called every render() and the AssetManager pauses the
+	 * so we can still run menus and loading screens smoothly loading each frame
+	 * Update.
+	 *
+	 * @return true, if successful
+	 */
 	public static boolean update() {
 		return manager.update();
 	}
