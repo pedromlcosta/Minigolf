@@ -45,56 +45,151 @@ import com.lpoo.MiniGolf.logic.MiniGolf;
 import com.lpoo.MiniGolf.logic.Player;
 import com.lpoo.MiniGolf.logic.Teleporter;
 
-
-//WHEN SPLASH SCREEN IS MADE, PASS ASSETS AND SKINS TO THERE
+/**
+ * The Class GameScreen. Basic game screen handling the drawing and processing
+ * of the game.
+ */
 public class GameScreen implements Screen, InputProcessor {
 
+	/** The skin used in this screen, for the actors, such as labels. */
 	private Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+
+	/**
+	 * The Constant W_STEP. Time frame that the Libgdx physics simulate in each
+	 * iteration of render.
+	 */
 	static final float W_STEP = 1f / 60f;
+
+	/**
+	 * The Constant FORCE_AUGMENT. Force multiplier constant when clicking to
+	 * push the ball, because the play radius is limited, having need of such a
+	 * constant to level out the forces.
+	 */
 	static final float FORCE_AUGMENT = 6.0f;
+
+	/**
+	 * The Constant PLAY_RADIUS. It is, in screen coordinates/pixels, the
+	 * maximum distance the player's ball->mouse vector will stretch. The force
+	 * applied to the ball is limited by this distance as well.
+	 */
 	static final float PLAY_RADIUS = MiniGolf.HEIGHT / 2f;
+
+	/**
+	 * The Constant BOX_TO_WORLD. When multiplied by this constant, transforms
+	 * BOX2D values in World values to be used as screen coordinates.
+	 */
 	static final float BOX_TO_WORLD = MiniGolf.BOX_TO_WORLD;
-	static final int WIDTH = (int) MiniGolf.WIDTH;
-	static final int HEIGHT = (int) MiniGolf.HEIGHT;
 
-	public final float units = 1.0f / 32.0f;
-
+	/** The game singleton reference. */
 	private MiniGolf game;
-	private Matrix4 debugMatrix;
-	private Box2DDebugRenderer debugRenderer;
-	private ShapeRenderer shapeRenderer;
-	private World w = MiniGolf.getW();
-	private OrthographicCamera cam = MiniGolf.cam;
 
+	/** The debug matrix for the debug renderer. */
+	private Matrix4 debugMatrix;
+
+	/** The debug renderer to check the bodies. */
+	private Box2DDebugRenderer debugRenderer;
+
+	/** The shape renderer to draw circle and line shapes. */
+	private ShapeRenderer shapeRenderer;
+
+	/**
+	 * The Libgdx physics world singleton reference, that contains the bodies,
+	 * which are the game's elements.
+	 */
+	private World w = MiniGolf.getW();
+
+	/** The camera used to control the display ratios, position, etc. */
+	private OrthographicCamera cam = new OrthographicCamera(MiniGolf.WIDTH, MiniGolf.HEIGHT);;
+
+	/** The Constant BUTTON_WIDTH, for actors such as labels, buttons, etc. */
 	private static final float BUTTON_WIDTH = 200f;
+
+	/** The Constant BUTTON_HEIGHT, for actors such as labels, buttons, etc. */
 	private static final float BUTTON_HEIGHT = 50f;
 
-	// TODO eliminate bodies after a game
+	/** The selected courses, part of all the courses available. */
 	private ArrayList<Course> selectedCourses;
+
+	/** The current course, that all the players are on. */
 	private Course currentCourse;
+
+	/**
+	 * The current course elements, which include all the obstacles, but not the
+	 * balls.
+	 */
 	ArrayList<Element> currentCourseElements;
+
+	/** The current course index. */
 	private int courseIndex = 0;
 
+	/** All the players that are on a match. */
 	private static ArrayList<Player> players = new ArrayList<Player>();
+
+	/** The actual players, that haven't finished the course yet. */
 	private static ArrayList<Player> actualPlayers = new ArrayList<Player>();
+
+	/**
+	 * The player removal list with the players queued for removal. These
+	 * players, along with the body of their balls are queued here and only
+	 * removed after the world step, so as not to interfere with it.
+	 */
 	public static ArrayList<Player> playerRemovalList = new ArrayList<Player>();
+
+	/**
+	 * The current player reference. This is the player that is playing on the
+	 * current turn.
+	 */
 	private static Player currentPlayer;
+
+	/** The turn start time. */
 	private long turnStart = System.currentTimeMillis();
+
+	/** The score. This is a table with all the labels that show the score. */
 	private Table score;
-	private Table buttonTable;
+
+	/** The elapsed time in seconds. Stores the time in seconds since turnStart. */
 	long elapsedTimeSeconds = 0;
-	public static int ballsInsideIllusion = 0;
+
+	/**
+	 * Ball movement boolean indicating whether there is any ball moving or not.
+	 * Useful for controlling actions that only happen when they are stopped.
+	 */
 	static boolean allBallsStopped = true;
+
+	/** The mouse X and Y coordinates. */
 	float mouseX, mouseY;
+
+	/** A Libgdx stage to draw all the actors added to it. */
 	private Stage stage;
+
+	/**
+	 * Indicates whether the mouse is on normal pointing mode or inverted, which
+	 * is if the ball is shot in the mouse way or the opposite one.
+	 */
 	boolean invertedPointMode = false;
+
+	/** The player id. */
 	private Label playerID;
+
+	/** Labels that show each player's "tacadas totais" */
 	private ArrayList<Label> tacadas;
+
+	// TODO: remove changeProcessor
+	/** The change processor. */
 	private boolean changeProcessor;
+
+	/** The label that shows the time left in the turn. */
 	private Label timeLabel;
 
+	/** The server for android connection. */
 	Server server = new Server();
-	
+
+	/**
+	 * Instantiates a new game screen.
+	 *
+	 * @param game
+	 *            The game singleton reference.
+	 */
 	public GameScreen(MiniGolf game) {
 		this.game = game;
 
@@ -105,6 +200,13 @@ public class GameScreen implements Screen, InputProcessor {
 	// SCREEN FUNCTIONS //
 	// ///////////////////////////////////////////
 
+	/*
+	 * Sets all the camera, batch and debugMatrix updates. Then proceeds to run
+	 * the game cycle, where the logic is handled, the world drawed and stepped.
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#render(float)
+	 */
 	@Override
 	public void render(float delta) {
 
@@ -114,8 +216,25 @@ public class GameScreen implements Screen, InputProcessor {
 			Gdx.input.setInputProcessor(this);
 		}
 
-		
-		
+		cam.update();
+
+		MiniGolf.batch.setProjectionMatrix(cam.combined);
+		debugMatrix = MiniGolf.batch.getProjectionMatrix().cpy().scale(MiniGolf.BOX_TO_WORLD, MiniGolf.BOX_TO_WORLD, 0);
+		debugRenderer.render(w, debugMatrix);
+
+		runGame();
+
+		stage.act(delta);
+		stage.draw();
+	}
+
+	/**
+	 * Main game Cycle. Only runs a course while there are players which haven't
+	 * finished (they are in the actualPlayers array). Checks the turn time and
+	 * the balls states. Draws the game and ends it, when necessary, disposing
+	 * of the elements, reseting everything.
+	 */
+	private void runGame() {
 		if (!actualPlayers.isEmpty()) { // no players on a course means it is
 										// over
 
@@ -134,12 +253,6 @@ public class GameScreen implements Screen, InputProcessor {
 			}
 
 			checkFallenBalls();
-
-			cam.update();
-
-			MiniGolf.batch.setProjectionMatrix(cam.combined);
-			debugMatrix = MiniGolf.batch.getProjectionMatrix().cpy().scale(MiniGolf.BOX_TO_WORLD, MiniGolf.BOX_TO_WORLD, 0);
-			debugRenderer.render(w, debugMatrix);
 
 			// BATCH FOR DRAWING
 
@@ -189,10 +302,13 @@ public class GameScreen implements Screen, InputProcessor {
 				courseIndex++;
 			}
 		}
-		stage.act(delta);
-		stage.draw();
 	}
 
+	/*
+	 * Updates cameras, stages and viewports. (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#resize(int, int)
+	 */
 	@Override
 	public void resize(int width, int height) {
 
@@ -203,11 +319,18 @@ public class GameScreen implements Screen, InputProcessor {
 
 	}
 
+	/*
+	 * Initializes all the variables (server, stage, renderers, camera, players,
+	 * courses, labels, etc). Sets this screen as the input processor and
+	 * installs the contact listeners.
+	 * 
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#show()
+	 */
 	@Override
 	public void show() {
-		
-		
-		
+
 		Kryo kryo = server.getKryo();
 		kryo.register(Comando.class);
 
@@ -217,23 +340,17 @@ public class GameScreen implements Screen, InputProcessor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 
 		server.addListener(new Listener() {
 			public void received(Connection connection, Object object) {
 				if (object instanceof Comando) {
 					Comando request = (Comando) object;
-					
+
 					// do stuff with command
 				}
 			}
 		});
-		
-		
-		
-		
-		
-		
+
 		stage = new Stage();
 		debugRenderer = new Box2DDebugRenderer();
 		shapeRenderer = new ShapeRenderer();
@@ -254,6 +371,7 @@ public class GameScreen implements Screen, InputProcessor {
 		});
 		// GameIO saveGame = new GameIO();
 
+		cam.translate(new Vector2(MiniGolf.WIDTH / 2, MiniGolf.HEIGHT / 2));
 		stage.setViewport(new FitViewport(MiniGolf.WIDTH, MiniGolf.HEIGHT));
 		OrthographicCamera secondaryCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		secondaryCamera.translate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() + 300f);
@@ -330,35 +448,59 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#hide()
+	 */
 	@Override
 	public void hide() {
 		dispose();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#pause()
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#resume()
+	 */
 	@Override
 	public void resume() {
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.Screen#dispose()
+	 */
 	@Override
 	public void dispose() {
 		// texture.dispose();
 		// stage.dispose();
 	}
 
+	/**
+	 * Cycles through the game elements and balls and calls the draw methods.
+	 */
 	public void courseDraw() {
 		ArrayList<Element> courseElements = currentCourse.getElementos();
 
 		for (int i = 0; i < courseElements.size(); i++) {
 			Element e = courseElements.get(i);
-			if(e instanceof Teleporter){
+			if (e instanceof Teleporter) {
+				// Teleporter animation
 				Teleporter tempTele = (Teleporter) e;
 				tempTele.getImage().rotate(-3);
 				tempTele.getDestinationImage().rotate(3);
-				
+
 			}
 			e.draw();
 
@@ -371,6 +513,12 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
+	/**
+	 * Render the play lines that show the ball force vector. It basically
+	 * renders the circle around the ball and the lines that connect the mouse
+	 * and ball, limiting them at the circle radius. Also renders the reversed
+	 * mode red dotted line.
+	 */
 	public void renderLine() {
 
 		// RENDER A LINE BETWEEN MOUSE POSITION AND BALL
@@ -406,11 +554,11 @@ public class GameScreen implements Screen, InputProcessor {
 
 			} else { // INVERTED MODE (RIGHT CLICK TO CHANGE)
 
-
 				if (Geometry.insideCircle(ballX, ballY, mouseX, mouseY, PLAY_RADIUS)) {
 					shapeRenderer.rectLine(ballX, ballY, ballX + (ballX - mouseX), ballY + (ballY - mouseY), 5);
 					shapeRenderer.setColor(Color.RED);
 					shapeRenderer.end();
+					shapeRenderer.begin(ShapeType.Filled);
 					drawDottedLine(shapeRenderer, 10, ball.x, ball.y, mouse.x, mouse.y);
 				} else {
 					Vector2 intersection = Geometry.intersectLineCircle(ball, mouse, PLAY_RADIUS);
@@ -418,6 +566,7 @@ public class GameScreen implements Screen, InputProcessor {
 					shapeRenderer.rectLine(ballX, ballY, ballX - (intersection.x - ballX), ballY - (intersection.y - ballY), 5);
 					shapeRenderer.setColor(Color.RED);
 					shapeRenderer.end();
+					shapeRenderer.begin(ShapeType.Filled);
 					drawDottedLine(shapeRenderer, 10, ball.x, ball.y, intersection.x, intersection.y);
 
 				}
@@ -432,6 +581,9 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
+	/**
+	 * Check if all the balls have stopped and sets the corresponding boolean.
+	 */
 	public void checkBallsStopped() {
 		for (int i = 0; i < actualPlayers.size(); i++) {
 			if (actualPlayers.get(i).getBallSpeedLen() != 0) {
@@ -448,6 +600,11 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 
+	/**
+	 * Drag handler. Makes all the calculations for floor surfaces and applies
+	 * the respective drag to the ball, removing (or adding, if accelerator)
+	 * speed
+	 */
 	public void dragHandler() {
 
 		for (int i = 0; i < actualPlayers.size(); i++) {
@@ -510,29 +667,42 @@ public class GameScreen implements Screen, InputProcessor {
 					if (newXSpeed == 0f && newYSpeed == 0f) {
 						ball.setLastPos(ballBody.getPosition());
 					}
-				}else{
-//					float rad = (float) Math.atan2(newXSpeed, newYSpeed);
-//					Vector2 newVel = new Vector2((float)newXSpeed, (float)newYSpeed);
-//					System.out.println("The X speed is: " + currentPlayer.getBallBody().getLinearVelocity().x);
-//					System.out.println("The Y speed is: " + currentPlayer.getBallBody().getLinearVelocity().y);
-//					System.out.println("The total speed is: " + currentPlayer.getBallBody().getLinearVelocity().len());
-//					System.out.println("The angle of the speed is: " + ball.accelAngle);
-//					if (rad == ball.accelAngle && newVel.len() < 0.5f){
-//						newXSpeed = 0f;
-//						newYSpeed = 0f;
-//					}
+				} else {
+					// float rad = (float) Math.atan2(newXSpeed, newYSpeed);
+					// Vector2 newVel = new Vector2((float)newXSpeed,
+					// (float)newYSpeed);
+					// System.out.println("The X speed is: " +
+					// currentPlayer.getBallBody().getLinearVelocity().x);
+					// System.out.println("The Y speed is: " +
+					// currentPlayer.getBallBody().getLinearVelocity().y);
+					// System.out.println("The total speed is: " +
+					// currentPlayer.getBallBody().getLinearVelocity().len());
+					// System.out.println("The angle of the speed is: " +
+					// ball.accelAngle);
+					// if (rad == ball.accelAngle && newVel.len() < 0.5f){
+					// newXSpeed = 0f;
+					// newYSpeed = 0f;
+					// }
 				}
 				ballBody.setLinearVelocity((float) newXSpeed, (float) newYSpeed);
 			}
 		}
 	}
 
+	/**
+	 * Check any balls that have fallen into the water or void
+	 */
 	public void checkFallenBalls() {
 		for (int i = 0; i < actualPlayers.size(); i++) {
 			actualPlayers.get(i).getBall().checkElementsTouched();
 		}
 	}
 
+	/**
+	 * Update current player. After each play, makes a subarray with the players
+	 * still in the course + the last one who played (whether he still is or
+	 * not) and decides who was next on the "queue", setting a new current.
+	 */
 	public void updateCurrentPlayer() {
 		ArrayList<Player> playerDecisionList = new ArrayList<Player>();
 
@@ -567,6 +737,11 @@ public class GameScreen implements Screen, InputProcessor {
 		invertedPointMode = false;
 	}
 
+	/**
+	 * Removes the balls/players, queued for removal, because they ended the
+	 * course. This function is always called after world.step() function, so as
+	 * not to interfere with it.
+	 */
 	public void removeBalls() {
 		for (int i = 0; i < playerRemovalList.size(); i++) {
 			// Destroys ball and removes player from the course
@@ -585,6 +760,12 @@ public class GameScreen implements Screen, InputProcessor {
 	/*
 	 * Called when the show() method is called, initializing the player
 	 * variables for the first time
+	 */
+	/**
+	 * Initialize players.
+	 *
+	 * @param course
+	 *            the course where they will be initialized
 	 */
 	public void initializePlayers(Course course) {
 		// INITIALIZE PLAYERS
@@ -608,6 +789,12 @@ public class GameScreen implements Screen, InputProcessor {
 
 	}
 
+	/**
+	 * Reset players.
+	 *
+	 * @param course
+	 *            the course where they will be reset
+	 */
 	public void resetPlayers(Course course) {
 
 		// Restoring booleans and the body to each ball
@@ -625,6 +812,12 @@ public class GameScreen implements Screen, InputProcessor {
 		actualPlayers = players;
 	}
 
+	/**
+	 * Initialize course.
+	 *
+	 * @param course
+	 *            the course to be initialized
+	 */
 	@SuppressWarnings("unchecked")
 	public void initializeCourse(Course course) {
 
@@ -658,6 +851,12 @@ public class GameScreen implements Screen, InputProcessor {
 
 	}
 
+	/**
+	 * Reset course.
+	 *
+	 * @param course
+	 *            the course to be reset
+	 */
 	public void resetCourse(Course course) {
 
 		for (int i = 0; i < currentCourseElements.size(); i++) {
@@ -671,6 +870,12 @@ public class GameScreen implements Screen, InputProcessor {
 	// InputProcessor Functions //
 	// ///////////////////////////////////////////
 
+	/*
+	 * Handles "Escape" and "S" key down events and quits or skips map
+	 * accordingly (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.InputProcessor#keyDown(int)
+	 */
 	@Override
 	public boolean keyDown(int keycode) {
 		// TODO borked don´t know enough of the way transitions between games
@@ -695,40 +900,56 @@ public class GameScreen implements Screen, InputProcessor {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.InputProcessor#keyTyped(char)
+	 */
 	@Override
 	public boolean keyTyped(char character) {
 
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.InputProcessor#keyUp(int)
+	 */
 	@Override
 	public boolean keyUp(int keycode) {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.InputProcessor#mouseMoved(int, int)
+	 */
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 
-		// Vector3 pos = cam.unproject(new Vector3(screenX, screenY, 0));
-		// System.out.println("Mouse Moved: " + pos.x + "  " + pos.y + "  " +
-		// (goBackButton.getHeight()));
-		// // BUTTON_WIDTH * 2 + "  " + BUTTON_WIDTH * 3);
-		// if (pos.x >= BUTTON_WIDTH * 2 && pos.x <= BUTTON_WIDTH * 3) {
-		// System.out.println("STEP1");
-		// if (pos.y >= goBackButton.getHeight()) {
-		// System.out.println("STEP2");
-		// Gdx.input.setInputProcessor(stage);
-		// }
-		// }
-		//
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.InputProcessor#scrolled(int)
+	 */
 	@Override
 	public boolean scrolled(int ammount) {
 		return false;
 	}
 
+	/*
+	 * Registers left click when button goes down and makes the play, applying a
+	 * force to the ball, linear to the mouse<->ball distance (limited by the
+	 * circle radius though)
+	 *  (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.InputProcessor#touchDown(int, int, int, int)
+	 */
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (button == Buttons.LEFT) {
@@ -770,7 +991,7 @@ public class GameScreen implements Screen, InputProcessor {
 					forceY *= -1;
 				}
 				Vector2 forceTest = new Vector2(forceX, forceY);
-				//System.out.println("Force lenght: " + forceTest.len());
+				// System.out.println("Force lenght: " + forceTest.len());
 
 				// (forceX/W_STEP) is as if the force where applied during 1
 				// second instead of 1/60 seconds
@@ -786,11 +1007,22 @@ public class GameScreen implements Screen, InputProcessor {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.InputProcessor#touchDragged(int, int, int)
+	 */
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		return false;
 	}
 
+	/*
+	 * Registers right click mouse move up, and changes the pointing mode.
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.InputProcessor#touchUp(int, int, int, int)
+	 */
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if (button == Buttons.RIGHT) {
@@ -799,6 +1031,10 @@ public class GameScreen implements Screen, InputProcessor {
 		return false;
 	}
 
+	/**
+	 * Initialize table with the "tacadas" and player id labels, giving them the
+	 * proper colors.
+	 */
 	public void initializeTable() {
 
 		// INITIALIZE PLAYERS
@@ -840,28 +1076,43 @@ public class GameScreen implements Screen, InputProcessor {
 
 	}
 
-	// TODO
+	/**
+	 * Initialize certain labels and any buttons if existing.
+	 */
 	public void initializeButtons() {
 		timeLabel = new Label("Time Elapsed: ", skin);
 		timeLabel.setColor(Color.BLACK);
-		timeLabel.setPosition(BUTTON_WIDTH * 2, (float) (MiniGolf.HEIGHT - BUTTON_HEIGHT*1.5));
-		
+		timeLabel.setPosition(BUTTON_WIDTH * 2, (float) (MiniGolf.HEIGHT - BUTTON_HEIGHT * 1.5));
+
 		Label temp = new Label("Press ESC to quit or S to skip track", skin);
 		temp.setSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 		temp.setPosition(BUTTON_WIDTH * 2, MiniGolf.HEIGHT - BUTTON_HEIGHT);
 		temp.setColor(Color.BLACK);
-		
+
 		stage.addActor(timeLabel);
 		stage.addActor(temp);
 		// stage.addActor(goBackButton);
 		// stage.addActor(nextMapButton);
 	}
 
-
-
+	/**
+	 * Draws a "dotted/dashed" line using the shapeRenderer. The shapeRenderer
+	 * must be ended before this function is called
+	 *
+	 * @param shapeRenderer
+	 *            Libgdx shapeRenderer.
+	 * @param dotDist
+	 *            the distance betweend dots/dashes
+	 * @param x1
+	 *            the x1 Initial X
+	 * @param y1
+	 *            the y1 Inital Y
+	 * @param x2
+	 *            the x2 Final X
+	 * @param y2
+	 *            the y2 Final Y
+	 */
 	private void drawDottedLine(ShapeRenderer shapeRenderer, float dotDist, float x1, float y1, float x2, float y2) {
-
-		shapeRenderer.begin(ShapeType.Filled);
 
 		Vector2 vec2 = new Vector2(x2, y2).sub(new Vector2(x1, y1));
 		float length = vec2.len();
@@ -872,6 +1123,5 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 
 	}
-	
 
 }
