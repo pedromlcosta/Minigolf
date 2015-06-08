@@ -13,35 +13,43 @@ import com.lpoo.MiniGolf.data.Assets;
 import com.lpoo.MiniGolf.geometry.Geometry;
 
 /**
- * The Class Floor.
+ * The Class Floor, subclass of Element, representing the elements which usually
+ * have sensors in them and have some kind of drag or acceleration.
  */
 public class Floor extends Element {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
-	/** The Constant GRASS_DRAG. */
+
+	/** The Constant GRASS_DRAG. Drag value for the type "grassFloor". */
 	public static final float GRASS_DRAG = 1.5f;
-	
-	/** The Constant SAND_DRAG. */
+
+	/** The Constant SAND_DRAG. Drag value for the type "sandFloor". */
 	public static final float SAND_DRAG = 6.0f;
-	
-	/** The Constant ICE_DRAG. */
+
+	/** The Constant ICE_DRAG. Drag value for the type "iceFloor". */
 	public static final float ICE_DRAG = 0.3f;
-	
-	/** The Constant ACCELERATOR_DRAG. */
+
+	/**
+	 * The Constant ACCELERATOR_DRAG. Accel value for the type
+	 * "acceleratorFloor".
+	 */
 	public static final float ACCELERATOR_DRAG = -4.0f;
-	
-	/** The balls inside illusion. */
+
+	/** The balls inside illusion. Applicable to illusionWalls, otherwise is 0. */
 	private int ballsInsideIllusion = 0;
 
 	/**
 	 * Instantiates a new floor.
 	 *
-	 * @param pos the pos
-	 * @param width the width
-	 * @param height the height
-	 * @param type the type
+	 * @param pos
+	 *            the central position of the floor
+	 * @param width
+	 *            the width
+	 * @param height
+	 *            the height
+	 * @param type
+	 *            the type of floor
 	 */
 	public Floor(Vector2 pos, float width, float height, elementType type) {
 
@@ -55,7 +63,8 @@ public class Floor extends Element {
 	/**
 	 * Instantiates a new floor.
 	 *
-	 * @param type the type
+	 * @param type
+	 *            the type of floor
 	 */
 	public Floor(elementType type) {
 
@@ -65,8 +74,12 @@ public class Floor extends Element {
 		image.getTexture().setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d.World)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.lpoo.MiniGolf.logic.Element#createBody(com.badlogic.gdx.physics.box2d
+	 * .World)
 	 */
 	public void createBody(World w) {
 
@@ -108,10 +121,11 @@ public class Floor extends Element {
 			break;
 		}
 
-
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#destroyBody()
 	 */
 	public void destroyBody() {
@@ -121,7 +135,9 @@ public class Floor extends Element {
 		body.getWorld().destroyBody(body);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#draw()
 	 */
 	public void draw() {
@@ -129,38 +145,42 @@ public class Floor extends Element {
 	}
 
 	/**
-	 * Gets the balls inside illusion.
+	 * Gets the number of balls inside the floor, if it is a illusionWall (which
+	 * is in reality a floor, masked as a wall)
 	 *
-	 * @return the balls inside illusion
+	 * @return the balls inside the floor
 	 */
 	public int getBallsInsideIllusion() {
 		return ballsInsideIllusion;
 	}
 
 	/**
-	 * Sets the balls inside illusion.
+	 * Sets the number of balls inside the illusionWall (floor).
 	 *
-	 * @param ballsInsideIllusion the new balls inside illusion
+	 * @param ballsInsideIllusion
+	 *            the new number of balls inside illusion
 	 */
 	public void setBallsInsideIllusion(int ballsInsideIllusion) {
 		this.ballsInsideIllusion = ballsInsideIllusion;
 	}
 
 	/**
-	 * Increment balls illusion.
+	 * Increment the number of balls in the illusion by 1.
 	 */
 	public void incrementBallsIllusion() {
 		ballsInsideIllusion++;
 	}
 
 	/**
-	 * Decrement balls illusion.
+	 * Decrement the number of balls in the illusion by 1.
 	 */
 	public void decrementBallsIllusion() {
 		ballsInsideIllusion--;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.lpoo.MiniGolf.logic.Element#initializeImage()
 	 */
 	public void initializeImage() {

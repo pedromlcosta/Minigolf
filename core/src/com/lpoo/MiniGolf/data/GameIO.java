@@ -1,74 +1,138 @@
 package com.lpoo.MiniGolf.data;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.lpoo.MiniGolf.logic.Course;
 import com.lpoo.MiniGolf.logic.MiniGolf;
 
+/**
+ * The Class GameIO, which handles saves and loads.
+ */
 public class GameIO {
+
+	/** The object output stream, to write the serialized version to a file. */
 	ObjectOutputStream out;
+
+	/** The object input stream, to read the deserialized version from a file. */
 	ObjectInputStream in;
+
+	/** The individual course, to be handled by the loads and saves. */
 	Course course = new Course();
+
+	/** The array with all the courses, to be handled by the loads and saves. */
 	ArrayList<Course> courses = new ArrayList<Course>();
 
+	/**
+	 * Instantiates a new GameIO class.
+	 */
 	public GameIO() {
 		out = null;
 		in = null;
 		this.course = null;
 		this.courses = null;
-		System.out.print(Paths.get(".").toAbsolutePath().normalize().toString());
 	}
 
+	/**
+	 * Instantiates a new GameIO class.
+	 *
+	 * @param courses
+	 *            the courses to be handled.
+	 */
 	public GameIO(ArrayList<Course> courses) {
 		out = null;
 		in = null;
 		this.courses = courses;
 	}
 
+	/**
+	 * Gets the object output stream.
+	 *
+	 * @return the object output stream.
+	 */
 	public ObjectOutputStream getOut() {
 		return out;
 	}
 
+	/**
+	 * Sets the object output stream.
+	 *
+	 * @param out
+	 *            the new object output stream.
+	 */
 	public void setOut(ObjectOutputStream out) {
 		this.out = out;
 	}
 
+	/**
+	 * Gets the object input stream.
+	 *
+	 * @return the object input stream.
+	 */
 	public ObjectInputStream getIn() {
 		return in;
 	}
 
+	/**
+	 * Sets the object input stream.
+	 *
+	 * @param in
+	 *            the new object input stream.
+	 */
 	public void setIn(ObjectInputStream in) {
 		this.in = in;
 	}
 
+	/**
+	 * Gets the course to be handled.
+	 *
+	 * @return the course
+	 */
 	public Course getCourse() {
 		return course;
 	}
 
+	/**
+	 * Sets the course to be handled.
+	 *
+	 * @param course
+	 *            the new course
+	 */
 	public void setCourse(Course course) {
 		this.course = course;
 	}
 
+	/**
+	 * Gets the courses to be handled.
+	 *
+	 * @return the courses
+	 */
 	public ArrayList<Course> getCourses() {
 		return courses;
 	}
 
+	/**
+	 * Sets the courses to be handled.
+	 *
+	 * @param courses
+	 *            the new courses
+	 */
 	public void setCourses(ArrayList<Course> courses) {
 		this.courses = courses;
 	}
 
+	/**
+	 * Save an individual course to a file, inside a folder in the local
+	 * directory. If the folder doesn't exist, it is created.
+	 *
+	 * @param course
+	 *            the course to be saved to the file
+	 */
 	public void saveIndividualCourse(Course course) {
 
 		// CREATE SAVE DIRECTORY
@@ -94,6 +158,13 @@ public class GameIO {
 
 	}
 
+	/**
+	 * Save all individual courses, one by one, inside a folder in the local
+	 * directory. If the folder doesn't exist, it is created.
+	 *
+	 * @param courses
+	 *            the courses to be saved to files
+	 */
 	public void saveAllIndividualCourses(ArrayList<Course> courses) {
 
 		// CREATE SAVE DIRECTORY
@@ -121,7 +192,14 @@ public class GameIO {
 			}
 		}
 	}
-	
+
+	/**
+	 * Load all individual courses, one by one, from inside the save directory.
+	 *
+	 * @return the array list with all the courses loaded
+	 * @throws ClassNotFoundException
+	 *             the class not found exception
+	 */
 	public ArrayList<Course> loadAllIndividualCourses() throws ClassNotFoundException {
 		ArrayList<Course> tempCourses = new ArrayList<Course>();
 
@@ -150,81 +228,5 @@ public class GameIO {
 
 	}
 
-	// WORKS!! DO NOT REMOVE!
-	public void saveAllCourses(ArrayList<Course> courses) {
-		FileHandle file = Gdx.files.local("AllCourses.sav");
-		OutputStream output = null;
-		try {
-			file.writeBytes(serialize(courses), false);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println(e.toString());
-		} finally {
-			if (output != null)
-				try {
-					output.close();
-				} catch (Exception e) {
-
-				}
-		}
-
-	}
-
-	public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
-		ArrayList<Course> tempCourses = null;
-		FileHandle file = Gdx.files.local("AllCourses.sav");
-		try {
-			if (file.exists()) {
-				tempCourses = (ArrayList<Course>) deserialize(file.readBytes());
-			} else {
-				System.out.println(Gdx.files.getLocalStoragePath());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return tempCourses;
-
-	}
-
-	// before version
-	// out = new ObjectOutputStream(new FileOutputStream("AllCourses.sav"));
-	// out.writeObject(courses);
-	// out.close();
-
-	
-
-	// WORKS!! DO NOT REMOVE!
-	// public ArrayList<Course> loadAllCourses() throws ClassNotFoundException {
-	//
-	// try {
-	// File test = new File("AllCourses.sav");
-	// if (!test.exists()) {
-	// return null;
-	// }
-	// FileInputStream stuff = new FileInputStream("AllCourses.sav");
-	// in = new ObjectInputStream(stuff);
-	// in.defaultReadObject();
-	// this.courses = (ArrayList<Course>) in.readObject();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// return courses;
-	//
-	// }
-
-	public static byte[] serialize(Object obj) throws IOException {
-		ByteArrayOutputStream b = new ByteArrayOutputStream();
-		ObjectOutputStream o = new ObjectOutputStream(b);
-
-		o.writeObject(obj);
-		return b.toByteArray();
-	}
-
-	public static Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-		ByteArrayInputStream b = new ByteArrayInputStream(bytes);
-		ObjectInputStream o = new ObjectInputStream(b);
-		return o.readObject();
-	}
 
 }
